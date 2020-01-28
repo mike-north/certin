@@ -1,0 +1,28 @@
+{
+  "name": "@certutils/workspace",
+  "version": "0.0.0-dev.0",
+  "main": "index.js",
+  "repository": "https://github.com/mike-north/certutils",
+  "author": "Mike North <michael.l.north@gmail.com> ",
+  "license": "BSD-2-Clause",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^13.5.0",
+    "@types/qunit": "^2.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "lerna": "^3.20.2",
+    "qunit": "^2.9.3",
+    "rimraf": "^3.0.1",
+    "scripty": "^1.9.1",
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "clean": "SCRIPTY_SILENT=true lerna run clean --parallel",
+    "build": "lerna run build",
+    "test": "lerna run test"
+  }
+}
