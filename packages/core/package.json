@@ -42,7 +42,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "commitizen": "^4.0.3",
     "validators": "^0.3.1"
-  }
+  },
+  "gitHead": "ac9d408de0825f1fd5741447f89c3782f2c39a28"
 }
