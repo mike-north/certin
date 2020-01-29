@@ -22,6 +22,7 @@
   },
   "scripts": {
     "build": "scripty",
+    "prepack": "scripty",
     "build:ts": "scripty",
     "lint": "scripty",
     "clean": "scripty",
