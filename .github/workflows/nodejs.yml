@@ -21,12 +21,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: yarn
     - run: yarn build
-    - run: tar -cvf ../build.tar ./*
+    - run: mkdir ../sync
+    - run: tar -cvf ../sync/build.tar ./*
     - name: Upload build
       uses: actions/upload-artifact@v1
       with:
-        name: build.tar
-        path: ../build.tar
+        name: sync
+        path: ../sync
   lint:
     name: lint
     needs: build
@@ -35,9 +36,9 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: build.tar
-          path: ../build.tar
-      - run: tar -xvf ../build.tar .
+          name: sync
+          path: ../sync
+      - run: tar -xvf ../sync/build.tar .
       - run: yarn lint
   test:
     name: test
@@ -47,7 +48,7 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: build.tar
-          path: ../build.tar
-      - run: tar -xvf ../build.tar .
+          name: sync
+          path: ../sync
+      - run: tar -xvf ../sync/build.tar .
       - run: yarn test
