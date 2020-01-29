@@ -28,6 +28,7 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
+    "ver": "scripty",
     "clean": "SCRIPTY_SILENT=true lerna run clean --parallel",
     "build": "lerna run build",
     "lint": "yarn lint:sh && yarn lint:js",
