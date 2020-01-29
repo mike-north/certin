@@ -4,14 +4,17 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "tsconfig.json"
   },
 
-  "env": { "node": true, "es6": true },
+  "env": { "es6": true },
   "plugins": ["@typescript-eslint", "prettier", "node"],
   "rules": {
     "@typescript-eslint/explicit-member-accessibility": 2,
@@ -21,9 +24,42 @@
   },
   "overrides": [
     {
-      "files": ["test/**/*.ts"],
+      "files": ["packages/core/src/**/*.ts"],
       "parserOptions": {
-        "project": "./test/tsconfig.json"
+        "project": "./tsconfig.json"
+      },
+      "env": {
+        "browser": false,
+        "node": false
+      }
+    },
+    {
+      "files": ["packages/certutils/src/**/*.ts"],
+      "parserOptions": {
+        "project": "packages/*/tsconfig.json"
+      },
+      "env": {
+        "browser": false,
+        "node": true
+      }
+    },
+    {
+      "files": ["packages/cli/src/**/*.ts"],
+      "parserOptions": {
+        "project": "tsconfig.json"
+      },
+      "env": {
+        "node": true
+      }
+    },
+    {
+      "files": ["packages/*/tests/**/*.ts"],
+      "parserOptions": {
+        "project": "packages/*/tests/tsconfig.json"
+      },
+      "env": {
+        "qunit": true,
+        "node": true
       },
       "rules": {
         "@typescript-eslint/no-misused-promises": 0

@@ -1,5 +1,5 @@
 export { core } from "@certutils/core";
 
-export function foo() {
+export function foo(): "bar" {
   return "bar";
 }

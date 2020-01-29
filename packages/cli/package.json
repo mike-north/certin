@@ -22,6 +22,7 @@
   "scripts": {
     "build": "scripty",
     "build:ts": "scripty",
+    "lint": "scripty",
     "clean": "scripty",
     "pretest": "scripty",
     "test": "scripty"
@@ -33,6 +34,8 @@
     "@certutils/core": "^0.0.0"
   },
   "devDependencies": {
+    "eslint-plugin-node": "^11.0.0",
+    "prettier": "^1.19.1",
     "qunit": "^2.9.3",
     "rimraf": "^3.0.1",
     "typescript": "^3.7.5"

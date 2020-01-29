@@ -3,7 +3,8 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "../tests_js",
-    "rootDir": "."
+    "rootDir": ".",
+    "types": ["qunit"]
   },
   "references": [{ "path": ".." }],
   "include": ["."]

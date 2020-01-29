@@ -1,3 +1,3 @@
-export function cli() {
+export function cli(): void {
   // TODO
 }
