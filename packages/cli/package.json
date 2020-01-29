@@ -1,6 +1,6 @@
 {
   "name": "@certin/cli",
-  "version": "0.0.1-dev.9",
+  "version": "0.0.1-dev.10",
   "description": "> TODO: description",
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
@@ -34,8 +34,8 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certin/cliux": "^0.0.1-dev.9",
-    "@certin/core": "^0.0.1-dev.4",
+    "@certin/cliux": "^0.0.1-dev.10",
+    "@certin/core": "^0.0.1-dev.5",
     "chalk": "^3.0.0",
     "commitizen": "^4.0.3",
     "yargs": "^15.1.0"
