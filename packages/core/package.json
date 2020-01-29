@@ -34,6 +34,7 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "devDependencies": {
+    "@types/qunit": "^2.9.0",
     "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",
     "qunit": "^2.9.3",

@@ -39,6 +39,8 @@
     "commitizen": "^4.0.3"
   },
   "devDependencies": {
+    "@types/node": "^13.5.1",
+    "@types/qunit": "^2.9.0",
     "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",
     "qunit": "^2.9.3",
