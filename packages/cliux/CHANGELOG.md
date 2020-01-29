@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## <small>0.0.1-dev.16 (2020-01-29)</small>
+
+* fix(cli): add debug dependency ([5cfc359](https://github.com/mike-north/certin/commit/5cfc359))
+
+
+
+
+
 ## <small>0.0.1-dev.15 (2020-01-29)</small>
 
 * fix: use lerna for changelogs ([2598b06](https://github.com/mike-north/certin/commit/2598b06))
