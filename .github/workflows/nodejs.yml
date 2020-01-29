@@ -36,11 +36,14 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: build_${{ matrix.node-version }}
+          name: build_12.x
           path: ../sync
       - run: tar -xvf ../sync/build.tar .
       - run: yarn lint
   test:
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
     name: test
     needs: build
     runs-on: ubuntu-latest
