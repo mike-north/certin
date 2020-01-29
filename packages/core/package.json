@@ -26,6 +26,7 @@
     "build:ts": "scripty",
     "lint": "scripty",
     "clean": "scripty",
+    "changelog": "scripty",
     "pretest": "scripty",
     "test": "scripty"
   },
