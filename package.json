@@ -42,11 +42,6 @@
     "node": "12.14.1",
     "yarn": "1.21.1"
   },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
-    }
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-lerna-changelog"
