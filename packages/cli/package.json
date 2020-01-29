@@ -1,6 +1,6 @@
 {
   "name": "@certin/cli",
-  "version": "0.0.1-dev.0",
+  "version": "0.0.1-dev.1",
   "description": "> TODO: description",
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
@@ -31,8 +31,8 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certin/cliux": "^0.0.1-dev.0",
-    "@certin/core": "^0.0.1-dev.0"
+    "@certin/cliux": "^0.0.1-dev.1",
+    "@certin/core": "^0.0.1-dev.1"
   },
   "devDependencies": {
     "eslint-plugin-node": "^11.0.0",
