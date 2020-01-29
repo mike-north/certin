@@ -1,3 +1,32 @@
+## <small>0.0.1-dev.9 (2020-01-29)</small>
+
+* intial commit ([7114afa](https://github.com/mike-north/certin/commit/7114afa))
+* Licenses ([e955bd6](https://github.com/mike-north/certin/commit/e955bd6))
+* prepack script ([13872ec](https://github.com/mike-north/certin/commit/13872ec))
+* Publish ([c78d972](https://github.com/mike-north/certin/commit/c78d972))
+* Publish ([051c759](https://github.com/mike-north/certin/commit/051c759))
+* Publish ([fb46941](https://github.com/mike-north/certin/commit/fb46941))
+* Publish ([4b5590a](https://github.com/mike-north/certin/commit/4b5590a))
+* Publish ([07d4ea0](https://github.com/mike-north/certin/commit/07d4ea0))
+* Publish ([efb48c5](https://github.com/mike-north/certin/commit/efb48c5))
+* save ([7889f13](https://github.com/mike-north/certin/commit/7889f13))
+* save ([6e1a6c9](https://github.com/mike-north/certin/commit/6e1a6c9))
+* tests ([b3d6ab3](https://github.com/mike-north/certin/commit/b3d6ab3))
+* version bump ([71601ff](https://github.com/mike-north/certin/commit/71601ff))
+* version bump ([59e31bc](https://github.com/mike-north/certin/commit/59e31bc))
+* version bump ([d42c309](https://github.com/mike-north/certin/commit/d42c309))
+* version bump ([1b76903](https://github.com/mike-north/certin/commit/1b76903))
+* chore: add changelogs and automatic changelog generation ([9a367b8](https://github.com/mike-north/certin/commit/9a367b8))
+* chore(cli): add Chalk ([1ec58c9](https://github.com/mike-north/certin/commit/1ec58c9))
+* chore(cli): add commitizen ([6a67164](https://github.com/mike-north/certin/commit/6a67164))
+* chore(cli): add yargs ([6240edb](https://github.com/mike-north/certin/commit/6240edb))
+* chore(core): validators ([be5c44b](https://github.com/mike-north/certin/commit/be5c44b))
+* chore(workspace): add shellcheck for linting shell scripts ([870bb55](https://github.com/mike-north/certin/commit/870bb55))
+* fix(cli): add missing @types/node ([cefd062](https://github.com/mike-north/certin/commit/cefd062))
+* docs(cli): publish changelog with npm packages ([d61fb31](https://github.com/mike-north/certin/commit/d61fb31))
+
+
+
 ## <small>0.0.1-dev.8 (2020-01-29)</small>
 
 * intial commit ([7114afa](https://github.com/mike-north/certin/commit/7114afa))
