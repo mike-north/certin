@@ -36,12 +36,14 @@
   "dependencies": {
     "@certin/core": "^0.0.1-dev.3",
     "chalk": "^3.0.0",
-    "commitizen": "^4.0.3"
+    "commitizen": "^4.0.3",
+    "yargs": "^15.1.0"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
     "@types/node": "^13.5.1",
     "@types/qunit": "^2.9.0",
+    "@types/yargs": "^15.0.2",
     "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",
     "qunit": "^2.9.3",
