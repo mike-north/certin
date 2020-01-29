@@ -25,7 +25,7 @@ jobs:
     - name: Upload build
       uses: actions/upload-artifact@v1
       with:
-        name: build
+        name: build.tar
         path: build.tar
   lint:
     name: lint
@@ -35,7 +35,7 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: build
+          name: build.tar
       - run: tar -xvf build.tar
       - run: yarn lint
   test:
@@ -46,6 +46,6 @@ jobs:
       - name: Download build
         uses: actions/download-artifact@v1
         with:
-          name: build
+          name: build.tar
       - run: tar -xvf build.tar
       - run: yarn test
