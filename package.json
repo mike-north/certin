@@ -24,11 +24,15 @@
     "qunit": "^2.9.3",
     "rimraf": "^3.0.1",
     "scripty": "^1.9.1",
+    "shellcheck": "^0.4.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
     "clean": "SCRIPTY_SILENT=true lerna run clean --parallel",
     "build": "lerna run build",
+    "lint": "yarn lint:sh && yarn lint:js",
+    "lint:sh": "shellcheck scripts/**/*.sh",
+    "lint:js": "lerna exec 'yarn lint'",
     "test": "lerna run test"
   },
   "workspaces": [
