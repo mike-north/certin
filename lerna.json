@@ -1,7 +1,14 @@
 {
-  "packages": ["packages/*"],
-
+  "packages": [
+    "packages/*"
+  ],
   "version": "independent",
+  "command": {
+    "version": {
+      "conventionalCommits": true,
+      "changelogPreset": "conventional-changelog-conventionalcommits"
+    }
+  },
   "npmClient": "yarn",
   "useWorkspaces": true
 }
