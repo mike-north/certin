@@ -35,9 +35,11 @@
   },
   "dependencies": {
     "@certin/cli": "^0.0.1-dev.15",
-    "@certin/core": "^0.0.1-dev.10"
+    "@certin/core": "^0.0.1-dev.10",
+    "debug": "^4.1.1"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.5",
     "@types/qunit": "^2.9.0",
     "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",

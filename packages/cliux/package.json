@@ -36,11 +36,13 @@
   "dependencies": {
     "@certin/core": "^0.0.1-dev.10",
     "chalk": "^3.0.0",
+    "debug": "^4.1.1",
     "ora": "^4.0.3",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
+    "@types/debug": "^4.1.5",
     "@types/node": "^13.5.1",
     "@types/ora": "^3.2.0",
     "@types/qunit": "^2.9.0",

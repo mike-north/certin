@@ -34,6 +34,7 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.5",
     "@types/qunit": "^2.9.0",
     "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",
@@ -42,6 +43,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "debug": "^4.1.1",
     "validators": "^0.3.1"
   },
   "gitHead": "ac9d408de0825f1fd5741447f89c3782f2c39a28"
