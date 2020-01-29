@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "@certin/cli": "^0.0.1-dev.1",
-    "@certin/core": "^0.0.1-dev.1"
+    "@certin/core": "^0.0.1-dev.1",
+    "commitizen": "^4.0.3"
   },
   "devDependencies": {
     "eslint-plugin-node": "^11.0.0",
