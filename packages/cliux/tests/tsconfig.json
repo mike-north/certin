@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../tests_js",
+    "rootDir": ".",
+    "types": ["qunit"]
+  },
+  "references": [{ "path": ".." }],
+  "include": ["."]
+}

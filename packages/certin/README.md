@@ -1,11 +1,11 @@
-# `certutils`
+# `certin`
 
 > TODO: description
 
 ## Usage
 
 ```
-const certutils = require('certutils');
+const certin = require('certin');
 
 // TODO: DEMONSTRATE API
 ```

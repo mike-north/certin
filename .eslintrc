@@ -13,9 +13,14 @@
   "parserOptions": {
     "project": "tsconfig.json"
   },
-
-  "env": { "es6": true },
-  "plugins": ["@typescript-eslint", "prettier", "node"],
+  "env": {
+    "es6": true
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "node"
+  ],
   "rules": {
     "@typescript-eslint/explicit-member-accessibility": 2,
     "@typescript-eslint/camelcase": 0,
@@ -24,7 +29,9 @@
   },
   "overrides": [
     {
-      "files": ["packages/core/src/**/*.ts"],
+      "files": [
+        "packages/core/src/**/*.ts"
+      ],
       "parserOptions": {
         "project": "./tsconfig.json"
       },
@@ -34,7 +41,9 @@
       }
     },
     {
-      "files": ["packages/certutils/src/**/*.ts"],
+      "files": [
+        "packages/certin/src/**/*.ts"
+      ],
       "parserOptions": {
         "project": "packages/*/tsconfig.json"
       },
@@ -44,7 +53,9 @@
       }
     },
     {
-      "files": ["packages/cli/src/**/*.ts"],
+      "files": [
+        "packages/cli/src/**/*.ts"
+      ],
       "parserOptions": {
         "project": "tsconfig.json"
       },
@@ -53,7 +64,9 @@
       }
     },
     {
-      "files": ["packages/*/tests/**/*.ts"],
+      "files": [
+        "packages/*/tests/**/*.ts"
+      ],
       "parserOptions": {
         "project": "packages/*/tests/tsconfig.json"
       },

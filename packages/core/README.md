@@ -1,11 +1,11 @@
-# `@certutils/core`
+# `@certin/core`
 
 > TODO: description
 
 ## Usage
 
 ```
-const core = require('@certutils/core');
+const core = require('@certin/core');
 
 // TODO: DEMONSTRATE API
 ```

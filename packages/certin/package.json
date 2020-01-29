@@ -1,9 +1,9 @@
 {
-  "name": "certutils",
+  "name": "certin",
   "version": "0.0.0",
   "description": "> TODO: description",
   "author": "Mike North <michael.l.north@gmail.com>",
-  "homepage": "https://github.com/mike-north/certutils#readme",
+  "homepage": "https://github.com/mike-north/certin#readme",
   "license": "BSD-2-Clause",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mike-north/certutils.git"
+    "url": "git+https://github.com/mike-north/certin.git"
   },
   "scripts": {
     "build": "scripty",
@@ -29,11 +29,11 @@
     "path": "../../scripts"
   },
   "bugs": {
-    "url": "https://github.com/mike-north/certutils/issues"
+    "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certutils/cli": "^0.0.0",
-    "@certutils/core": "^0.0.0"
+    "@certin/cli": "^0.0.0",
+    "@certin/core": "^0.0.0"
   },
   "devDependencies": {
     "eslint-plugin-node": "^11.0.0",
