@@ -32,9 +32,9 @@
   "scripts": {
     "ver": "scripty",
     "clean": "SCRIPTY_SILENT=true lerna run clean --parallel && rimraf temp 'docs/**/*.md'",
-    "build": "rimraf temp docs && yarn build:packages && yarn build:docs",
+    "build": "mv docs/_config.yml ./ && rimraf temp docs && yarn build:packages && yarn build:docs && mv ./_config.yml docs",
     "build:packages": "lerna run build",
-    "build:docs": "api-documenter markdown -i temp -o docs && git checkout docs/_config.yml",
+    "build:docs": "api-documenter markdown -i temp -o docs",
     "lint": "yarn lint:sh && yarn lint:js",
     "lint:sh": "shellcheck scripts/**/*.sh",
     "lint:js": "lerna exec 'yarn lint'",
