@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [8.11.3, 8.x, 10.x, 12.x]
+        node-version: [8.11.3, 8.x, 10.x, 12.x, 13.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -40,12 +40,55 @@ jobs:
           path: ../sync
       - run: tar -xvf ../sync/build.tar .
       - run: yarn lint
-  test:
+  updated_api_report:
+    name: API Report up-to-date
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v1
+        with:
+          name: build_12.x
+          path: ../sync
+      - run: tar -xvf ../sync/build.tar .
+      - run: |
+          echo "API reports that are out of date: " && git diff --exit-code --name-only HEAD 'packages/*/etc/*.md' && echo "NONE: this PR is ready for review\!"
+      - run: git diff -s --exit-code HEAD -- 'packages/*/etc/*.md'
+  updated_docs:
+    name: API Report up-to-date
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v1
+        with:
+          name: build_12.x
+          path: ../sync
+      - run: tar -xvf ../sync/build.tar .
+      - run: |
+          echo "Documentation files that are out of date: " && git diff --exit-code --name-only HEAD 'docs/**/*.md' && echo "NONE: this PR is ready for review\!"
+      - run: git diff -s --exit-code HEAD -- 'docs/**/*.md'
+  basic_test:
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
     name: test
-    needs: build
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v1
+        with:
+          name: build_${{ matrix.node-version }}
+          path: ../sync
+      - run: tar -xvf ../sync/build.tar .
+      - run: yarn test
+  compat_test:
+    strategy:
+      matrix:
+        node-version: [8.11.3, 8.x, 10.x, 13.x]
+    name: test
+    needs: [build, lint, basic_test, updated_docs, updated_api_report]
     runs-on: ubuntu-latest
     steps:
       - name: Download build
