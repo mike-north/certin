@@ -6,7 +6,7 @@ env:
   CI: true
 
 jobs:
-  install-deps:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
