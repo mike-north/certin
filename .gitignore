@@ -109,3 +109,7 @@ dist
 # Build output
 packages/*/dist/
 packages/*/tests_js/
+
+# API Extractor Temp
+temp/
+packages/*/temp/

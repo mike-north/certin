@@ -30,7 +30,9 @@
   "scripts": {
     "ver": "scripty",
     "clean": "SCRIPTY_SILENT=true lerna run clean --parallel",
-    "build": "lerna run build",
+    "build": "rimraf temp docs && yarn build:packages && yarn build:docs",
+    "build:packages": "lerna run build",
+    "build:docs": "api-documenter markdown -i temp -o docs",
     "lint": "yarn lint:sh && yarn lint:js",
     "lint:sh": "shellcheck scripts/**/*.sh",
     "lint:js": "lerna exec 'yarn lint'",
