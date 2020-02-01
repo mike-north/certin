@@ -6,12 +6,12 @@ env:
   CI: true
 
 jobs:
-  build:
+  install-deps:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [8.11.3, 8.x, 10.x, 12.x, 13.x]
+        node-version: [10.x, 12.x, 13.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +20,27 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn --ignore-optional
+      - run: mkdir ../sync
+      - run: tar -cvf ../sync/workspace.tar ./*
+      - name: Upload workspace
+        uses: actions/upload-artifact@v1
+        with:
+          name: workspace_${{ matrix.node-version }}
+          path: ../sync
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 13.x]
+    needs: install-deps
+    steps:
+      - name: Download workspace
+        uses: actions/download-artifact@v1
+        with:
+          name: workspace_12.x
+          path: ../sync
+      - run: tar -xvf ../sync/workspace.tar .
+      - run: rm ../sync/workspace.tar
       - run: yarn build
       - run: mkdir ../sync
       - run: tar -cvf ../sync/build.tar ./*
