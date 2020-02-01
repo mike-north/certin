@@ -22,5 +22,20 @@
     "@typescript-eslint/camelcase": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-unused-vars": 0
-  }
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.ts"],
+      "parserOptions": {
+        "project": "tests/tsconfig.json"
+      },
+      "env": {
+        "qunit": true,
+        "node": true
+      },
+      "rules": {
+        "@typescript-eslint/no-misused-promises": 0
+      }
+    }
+  ]
 }
