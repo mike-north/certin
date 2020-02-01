@@ -15,19 +15,19 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "lerna": "^2.11.0",
     "qunit": "^2.9.3",
     "rimraf": "^3.0.1",
     "scripty": "^1.9.1",
     "shellcheck": "^0.4.1",
-    "typescript": "^3.7.5",
-    "lerna": "^3.20.2"
+    "typescript": "^3.7.5"
   },
   "optionalDependencies": {
-    "husky": "^4.2.1",
-    "prettier": "^1.19.1",
+    "commitizen": "^4.0.3",
     "conventional-changelog-cli": "^2.0.31",
     "cz-conventional-changelog": "^3.1.0",
-    "commitizen": "^4.0.3"
+    "husky": "^4.2.1",
+    "prettier": "^1.19.1"
   },
   "scripts": {
     "ver": "scripty",
@@ -44,12 +44,15 @@
     "packages/*"
   ],
   "volta": {
-    "node": "13.7.0",
+    "node": "8.17.0",
     "yarn": "1.21.1"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "engines": {
+    "node": "8.10 - 8.17 || 10.* || >= 12.*"
   }
 }

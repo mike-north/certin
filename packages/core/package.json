@@ -38,6 +38,7 @@
     "@microsoft/api-extractor": "^7.7.8",
     "@types/debug": "^4.1.5",
     "@types/qunit": "^2.9.0",
+    "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",
     "qunit": "^2.9.3",
     "rimraf": "^3.0.1",
