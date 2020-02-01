@@ -11,14 +11,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 13.x]
+        node-version: [12.x]
 
     steps:
       - uses: actions/checkout@v2
-      - id: file_changes
-        uses: trilom/file-changes-action@v1
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -26,10 +22,9 @@ jobs:
       - run: |
           yarn --ignore-optional
           yarn build
+          echo "GIT IS HERE: $(which git)"
           mkdir ../sync
-          cp ./files_*.json ../sync/
-          ls -all ../sync/
-          tar -cvf ../sync/build.tar ./*
+          tar -cf ../sync/build.tar ./*
       - name: Upload build
         uses: actions/upload-artifact@v1
         with:
@@ -45,19 +40,22 @@ jobs:
         with:
           name: build_12.x
           path: ../sync
-      - run: tar -xvf ../sync/build.tar .
-      - run: yarn lint
+      - run: |
+          echo "GIT IS HERE: $(which git)"
+          tar -xf ../sync/build.tar .
+          yarn lint
   updated_api_report:
     name: API Report up-to-date
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Download build
         uses: actions/download-artifact@v1
         with:
           name: build_12.x
           path: ../sync
-      - run: tar -xvf ../sync/build.tar .
+      - run: tar -xf ../sync/build.tar .
       - run: |
           echo "API reports that are out of date: " && git diff --exit-code --name-only HEAD 'packages/*/etc/*.md' && echo "NONE: this PR is ready for review\!"
       - run: git diff -s --exit-code HEAD -- 'packages/*/etc/*.md'
@@ -66,12 +64,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Download build
         uses: actions/download-artifact@v1
         with:
           name: build_12.x
           path: ../sync
-      - run: tar -xvf ../sync/build.tar .
+      - run: tar -xf ../sync/build.tar .
       - run: |
           echo "Documentation files that are out of date: " && git diff --exit-code --name-only HEAD 'docs/**/*.md' && echo "NONE: this PR is ready for review\!"
       - run: git diff -s --exit-code HEAD -- 'docs/**/*.md'
@@ -88,7 +87,7 @@ jobs:
         with:
           name: build_${{ matrix.node-version }}
           path: ../sync
-      - run: tar -xvf ../sync/build.tar .
+      - run: tar -xf ../sync/build.tar .
       - run: yarn test
   compat_test:
     strategy:
@@ -103,5 +102,5 @@ jobs:
         with:
           name: build_${{ matrix.node-version }}
           path: ../sync
-      - run: tar -xvf ../sync/build.tar .
+      - run: tar -xf ../sync/build.tar .
       - run: yarn test
