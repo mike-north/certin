@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn
+      - run: yarn --ignore-optional
       - run: yarn build
       - run: mkdir ../sync
       - run: tar -cvf ../sync/build.tar ./*
