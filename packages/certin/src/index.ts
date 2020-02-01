@@ -1,5 +1,5 @@
 export { core } from "@certin/core";
 
-export function fooo(): "bar" {
+export function foo(): "bar" {
   return "bar";
 }
