@@ -11,23 +11,23 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [8.11.3, 8.x, 10.x, 12.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn build
-    - run: mkdir ../sync
-    - run: tar -cvf ../sync/build.tar ./*
-    - name: Upload build
-      uses: actions/upload-artifact@v1
-      with:
-        name: build_${{ matrix.node-version }}
-        path: ../sync
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: yarn build
+      - run: mkdir ../sync
+      - run: tar -cvf ../sync/build.tar ./*
+      - name: Upload build
+        uses: actions/upload-artifact@v1
+        with:
+          name: build_${{ matrix.node-version }}
+          path: ../sync
   lint:
     name: lint
     needs: build
