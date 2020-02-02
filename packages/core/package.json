@@ -50,6 +50,7 @@
     "@types/rimraf": "^2.0.2",
     "@types/tmp": "^0.0.33",
     "eslint-plugin-node": "^11.0.0",
+    "prettier": "^1.19.1",
     "typescript": "^3.7.5"
   },
   "dependencies": {
@@ -67,7 +68,6 @@
     "sudo-prompt": "^8.2.0",
     "tmp": "^0.0.33"
   },
-  "optionalDependencies": {},
   "engines": {
     "node": "8.10 - 8.17 || 10.* || >= 12.*"
   },
