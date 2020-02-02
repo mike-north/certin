@@ -1,3 +1,6 @@
-export function cli(): void {
-  // TODO
+/**
+ * @alpha
+ */
+export function cliux(): void {
+  3 + 4;
 }

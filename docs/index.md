@@ -10,6 +10,6 @@
 |  --- | --- |
 |  [@certin/cli](./cli.md) |  |
 |  [@certin/cliux](./cliux.md) |  |
-|  [@certin/core](./core.md) |  |
+|  [@certin/core](./core.md) | foo |
 |  [certin](./certin.md) |  |
 

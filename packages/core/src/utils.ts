@@ -8,6 +8,11 @@ import { configPath } from "./constants";
 
 const debug = createDebug("devcert:util");
 
+export function run(cmd: string, options: ExecSyncOptions = {}): string {
+  debug(`exec: \`${cmd}\``);
+  return execSync(cmd, options).toString();
+}
+
 export function openssl(cmd: string): string {
   return run(`openssl ${cmd}`, {
     stdio: "pipe",
@@ -18,11 +23,6 @@ export function openssl(cmd: string): string {
       process.env
     )
   }).toString();
-}
-
-export function run(cmd: string, options: ExecSyncOptions = {}): string {
-  debug(`exec: \`${cmd}\``);
-  return execSync(cmd, options).toString();
 }
 
 export function waitForUser(): Promise<void> {

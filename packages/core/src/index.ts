@@ -1,3 +1,5 @@
+/** @packageDocumentation foo */
+
 import {
   readFileSync as readFile,
   readdirSync as readdir,
@@ -17,20 +19,25 @@ import {
 } from "./constants";
 import currentPlatform from "./platforms";
 import installCertificateAuthority, {
-  ensureCACertReadable,
-  uninstall
+  ensureCACertReadable
 } from "./certificate-authority";
 import generateDomainCertificate from "./certificates";
 import UI, { UserInterface } from "./user-interface";
-export { uninstall };
-
+export { uninstall } from "./certificate-authority";
+export { UserInterface } from "./user-interface";
 const debug = createDebug("devcert");
+/**
+ * @alpha
+ */
 export interface CertOptions {
   /** Number of days before the CA expires */
   caCertExpiry: number;
   /** Number of days before the domain certificate expires */
   domainCertExpiry: number;
 }
+/**
+ * @alpha
+ */
 export interface Options /* extends Partial<ICaBufferOpts & ICaPathOpts>  */ {
   /** Return the CA certificate data? */
   getCaBuffer?: boolean;
@@ -44,23 +51,46 @@ export interface Options /* extends Partial<ICaBufferOpts & ICaPathOpts>  */ {
   ui?: UserInterface;
 }
 
-interface CaBuffer {
+/**
+ * @alpha
+ */
+export interface CaBuffer {
   ca: Buffer;
 }
-interface CaPath {
+
+/**
+ * @alpha
+ */
+export interface CaPath {
   caPath: string;
 }
-interface DomainData {
+
+/**
+ * @alpha
+ */
+export interface DomainData {
   key: Buffer;
   cert: Buffer;
 }
-type IReturnCa<O extends Options> = O["getCaBuffer"] extends true
+
+/**
+ * @alpha
+ */
+export type IReturnCa<O extends Options> = O["getCaBuffer"] extends true
   ? CaBuffer
   : false;
-type IReturnCaPath<O extends Options> = O["getCaPath"] extends true
+
+/**
+ * @alpha
+ */
+export type IReturnCaPath<O extends Options> = O["getCaPath"] extends true
   ? CaPath
   : false;
-type IReturnData<O extends Options = {}> = DomainData &
+
+/**
+ * @alpha
+ */
+export type IReturnData<O extends Options = {}> = DomainData &
   IReturnCa<O> &
   IReturnCaPath<O>;
 
@@ -68,62 +98,6 @@ const DEFAULT_CERT_OPTIONS: CertOptions = {
   caCertExpiry: 180,
   domainCertExpiry: 30
 };
-
-/**
- * Request an SSL certificate for the given app name signed by the devcert root
- * certificate authority. If devcert has previously generated a certificate for
- * that app name on this machine, it will reuse that certificate.
- *
- * If this is the first time devcert is being run on this machine, it will
- * generate and attempt to install a root certificate authority.
- *
- * Returns a promise that resolves with { key, cert }, where `key` and `cert`
- * are Buffers with the contents of the certificate private key and certificate
- * file, respectively
- *
- * If `options.getCaBuffer` is true, return value will include the ca certificate data
- * as { ca: Buffer }
- *
- * If `options.getCaPath` is true, return value will include the ca certificate path
- * as { caPath: string }
- */
-export async function certificateFor<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
-  domain: string,
-  options?: O,
-  partialCertOptions?: CO
-): Promise<IReturnData<O>>;
-export async function certificateFor<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
-  commonName: string,
-  alternativeNames: string[],
-  options?: O,
-  partialCertOptions?: CO
-): Promise<IReturnData<O>>;
-export async function certificateFor<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
-  commonName: string,
-  optionsOrAlternativeNames: string[] | O,
-  options?: O,
-  partialCertOptions?: CO
-): Promise<IReturnData<O>> {
-  if (Array.isArray(optionsOrAlternativeNames)) {
-    return certificateForImpl(
-      commonName,
-      optionsOrAlternativeNames,
-      options,
-      partialCertOptions
-    );
-  } else {
-    return certificateForImpl(commonName, [], options, partialCertOptions);
-  }
-}
 
 async function certificateForImpl<
   O extends Options,
@@ -195,14 +169,89 @@ async function certificateForImpl<
   return ret;
 }
 
+/**
+ * Request an SSL certificate for the given app name signed by the devcert root
+ * certificate authority. If devcert has previously generated a certificate for
+ * that app name on this machine, it will reuse that certificate.
+ *
+ * If this is the first time devcert is being run on this machine, it will
+ * generate and attempt to install a root certificate authority.
+ *
+ * Returns a promise that resolves with \{ key, cert \}, where `key` and `cert`
+ * are Buffers with the contents of the certificate private key and certificate
+ * file, respectively
+ *
+ * If `options.getCaBuffer` is true, return value will include the ca certificate data
+ * as \{ ca: Buffer \}
+ *
+ * If `options.getCaPath` is true, return value will include the ca certificate path
+ * as \{ caPath: string \}
+ *
+ *
+ *
+ * @alpha
+ */
+export async function certificateFor<
+  O extends Options,
+  CO extends Partial<CertOptions>
+>(
+  domain: string,
+  options?: O,
+  partialCertOptions?: CO
+): Promise<IReturnData<O>>;
+/**
+ * @alpha
+ */
+export async function certificateFor<
+  O extends Options,
+  CO extends Partial<CertOptions>
+>(
+  commonName: string,
+  alternativeNames: string[],
+  options?: O,
+  partialCertOptions?: CO
+): Promise<IReturnData<O>>;
+export async function certificateFor<
+  O extends Options,
+  CO extends Partial<CertOptions>
+>(
+  commonName: string,
+  optionsOrAlternativeNames: string[] | O,
+  options?: O,
+  partialCertOptions?: CO
+): Promise<IReturnData<O>> {
+  if (Array.isArray(optionsOrAlternativeNames)) {
+    return certificateForImpl(
+      commonName,
+      optionsOrAlternativeNames,
+      options,
+      partialCertOptions
+    );
+  } else {
+    return certificateForImpl(commonName, [], options, partialCertOptions);
+  }
+}
+/**
+ *
+ * @param commonName - commonName of certificate
+ * @internal
+ */
 export function hasCertificateFor(commonName: string): boolean {
   return exists(pathForDomain(commonName, `certificate.crt`));
 }
-
+/**
+ *
+ * @param commonName - commonName of certificate
+ * @internal
+ */
 export function configuredDomains(): string[] {
   return readdir(domainsDir);
 }
-
+/**
+ *
+ * @param commonName - commonName of certificate
+ * @internal
+ */
 export function removeDomain(commonName: string): void {
   rimraf.sync(pathForDomain(commonName));
 }

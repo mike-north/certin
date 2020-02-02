@@ -4,7 +4,7 @@ import { writeFileSync as write, readFileSync as read } from "fs";
 import { sync as rimraf } from "rimraf";
 import { Options } from "../index";
 import { assertNotTouchingFiles, openCertificateInFirefox } from "./shared";
-import { Platform } from ".";
+import { Platform } from "../platforms";
 import { run, sudo } from "../utils";
 import UI from "../user-interface";
 
@@ -23,7 +23,7 @@ export default class WindowsPlatform implements Platform {
    * machine to try updating the Firefox store is basically a nightmare, so we
    * don't even try it - we just bail out to the GUI.
    */
-  async addToTrustStores(
+  public async addToTrustStores(
     certificatePath: string,
     options: Options = {}
   ): Promise<void> {
@@ -47,7 +47,7 @@ export default class WindowsPlatform implements Platform {
     }
   }
 
-  removeFromTrustStores(certificatePath: string): void {
+  public removeFromTrustStores(certificatePath: string): void {
     debug("removing devcert root from Windows OS trust store");
     try {
       console.warn(
@@ -61,19 +61,19 @@ export default class WindowsPlatform implements Platform {
     }
   }
 
-  async addDomainToHostFileIfMissing(domain: string): Promise<void> {
+  public async addDomainToHostFileIfMissing(domain: string): Promise<void> {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
       await sudo(`echo 127.0.0.1  ${domain} >> ${this.HOST_FILE_PATH}`);
     }
   }
 
-  deleteProtectedFiles(filepath: string): void {
+  public deleteProtectedFiles(filepath: string): void {
     assertNotTouchingFiles(filepath, "delete");
     rimraf(filepath);
   }
 
-  async readProtectedFile(filepath: string): Promise<string> {
+  public async readProtectedFile(filepath: string): Promise<string> {
     assertNotTouchingFiles(filepath, "read");
     if (!encryptionKey) {
       encryptionKey = await UI.getWindowsEncryptionPassword();
@@ -91,7 +91,10 @@ export default class WindowsPlatform implements Platform {
     }
   }
 
-  async writeProtectedFile(filepath: string, contents: string): Promise<void> {
+  public async writeProtectedFile(
+    filepath: string,
+    contents: string
+  ): Promise<void> {
     assertNotTouchingFiles(filepath, "write");
     if (!encryptionKey) {
       encryptionKey = await UI.getWindowsEncryptionPassword();

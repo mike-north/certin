@@ -1,5 +1,3 @@
-export { core } from "@certin/core";
+export { certificateFor } from "@certin/core";
 
-export function foo(): "bar" {
-  return "bar";
-}
+// export const certificateFor = _certificateFor;

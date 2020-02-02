@@ -4,9 +4,3 @@
 
 ## cli package
 
-## Functions
-
-|  Function | Description |
-|  --- | --- |
-|  [cli()](./cli.cli.md) |  |
-
