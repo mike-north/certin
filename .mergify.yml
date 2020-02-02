@@ -1,0 +1,31 @@
+pull_request_rules:
+  - name: Automatic merge on approval
+    conditions:
+      - "#approved-reviews-by>=1"
+      - "status-success=node tests (8.x)"
+      - "status-success=node tests (10.x)"
+      - "status-success=lint"
+      - "status-success=node LTS tests (12.x)"
+      - "status-success=API Report up-to-date"
+      - "status-success=Docs up-to-date"
+      - "status-success=node tests (13.x)"
+      - label=auto-merge-when-ready
+    actions:
+      merge:
+        method: squash
+    
+pull_request_rules:
+  - name: Automatic merge on approval
+    conditions:
+      - author=mike-north
+      - "status-success=node tests (8.x)"
+      - "status-success=node tests (10.x)"
+      - "status-success=lint"
+      - "status-success=node LTS tests (12.x)"
+      - "status-success=API Report up-to-date"
+      - "status-success=Docs up-to-date"
+      - "status-success=node tests (13.x)"
+      - label=auto-merge-when-ready
+    actions:
+      merge:
+        method: squash

@@ -49,12 +49,9 @@
     "@types/ora": "^3.2.0",
     "@types/qunit": "^2.9.0",
     "@types/yargs": "^15.0.2",
-    "eslint": "^6.8.0",
     "eslint-plugin-node": "^11.0.0",
-    "prettier": "^1.19.1",
     "qunit": "^2.9.3",
     "rimraf": "^3.0.1",
     "typescript": "^3.7.5"
-  },
-  "gitHead": "ac9d408de0825f1fd5741447f89c3782f2c39a28"
+  }
 }
