@@ -1,12 +1,17 @@
 {
   "name": "@certin/core",
   "version": "0.0.1-dev.11",
-  "description": "> TODO: description",
+  "description": "Generate trusted local SSL/TLS certificates for local SSL development",
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
   "license": "BSD-2-Clause",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "contributors": [
+    {
+      "name": "Dave Wasmer"
+    }
+  ],
   "files": [
     "dist/*"
   ],
@@ -33,19 +38,52 @@
   "bugs": {
     "url": "https://github.com/mike-north/certin/issues"
   },
+  "engines": {
+    "node": "8.10 - 8.17 || 10.* || >= 12.*"
+  },
   "devDependencies": {
-    "@microsoft/api-documenter": "^7.7.12",
-    "@microsoft/api-extractor": "^7.7.8",
-    "@types/debug": "^4.1.5",
-    "@types/qunit": "^2.9.0",
+    "@types/command-exists": "^1.2.0",
+    "@types/configstore": "^2.1.1",
+    "@types/debug": "^0.0.30",
+    "@types/get-port": "^3.2.0",
+    "@types/glob": "^5.0.34",
+    "@types/lodash": "^4.14.92",
+    "@types/mkdirp": "^0.5.2",
+    "@types/node": "^8.5.7",
+    "@types/rimraf": "^2.0.2",
+    "@types/tmp": "^0.0.33",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-async-await": "^0.0.0",
     "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^1.19.1",
-    "qunit": "^2.9.3",
-    "rimraf": "^3.0.1",
+    "standard-version": "^4.3.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "debug": "^4.1.1",
-    "validators": "^0.3.1"
+    "application-config-path": "^0.1.0",
+    "command-exists": "^1.2.4",
+    "configstore": "^3.0.0",
+    "debug": "^3.1.0",
+    "eol": "^0.9.1",
+    "get-port": "^3.2.0",
+    "glob": "^7.1.2",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1",
+    "password-prompt": "^1.0.4",
+    "rimraf": "^2.6.2",
+    "sudo-prompt": "^8.2.0",
+    "tmp": "^0.0.33"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "8.10 - 8.17 || 10.* || >= 12.*"
+  },
+  "volta": {
+    "node": "8.11.1",
+    "yarn": "1.21.1"
   }
 }
