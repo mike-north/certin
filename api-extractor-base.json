@@ -330,6 +330,15 @@
       "default": {
         "logLevel": "warning",
         "addToApiReportFile": true
+      },
+      "ae-forgotten-export": {
+        "logLevel": "error"
+      },
+      "ae-missing-release-tag": {
+        "logLevel": "error"
+      },
+      "ae-internal-missing-underscore": {
+        "logLevel": "error"
       }
     },
 
@@ -344,6 +353,9 @@
       "default": {
         "logLevel": "warning",
         "addToApiReportFile": true
+      },
+      "tsdoc-malformed-inline-tag": {
+        "logLevel": "error"
       }
     }
   }

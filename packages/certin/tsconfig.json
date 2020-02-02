@@ -7,7 +7,14 @@
     "rootDir": "src",
     "outDir": "dist",
     "lib": ["ES2018"],
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@certin/core": [
+        "../../node_modules/@certin/core/dist/core-private.d.ts"
+      ],
+      "*": ["../../types/*"]
+    }
   },
   "include": ["src"]
 }

@@ -25,8 +25,51 @@ import { Options, CertOptions } from "./index";
 const debug = createDebug("devcert:certificate-authority");
 
 /**
+ * Initializes the files OpenSSL needs to sign certificates as a certificate
+ * authority, as well as our CA setup version
+ */
+function seedConfigFiles(): void {
+  // This is v2 of the devcert certificate authority setup
+  writeFile(caVersionFile, "2");
+  // OpenSSL CA files
+  writeFile(opensslDatabaseFilePath, "");
+  writeFile(opensslSerialFilePath, "01");
+}
+
+async function saveCertificateAuthorityCredentials(
+  keypath: string
+): Promise<void> {
+  debug(`Saving devcert's certificate authority credentials`);
+  const key = readFile(keypath, "utf-8");
+  await currentPlatform.writeProtectedFile(rootCAKeyPath, key);
+}
+/**
+ * Remove as much of the devcert files and state as we can. This is necessary
+ * when generating a new root certificate, and should be available to API
+ * consumers as well.
+ *
+ * Not all of it will be removable. If certutil is not installed, we'll leave
+ * Firefox alone. We try to remove files with maximum permissions, and if that
+ * fails, we'll silently fail.
+ *
+ * It's also possible that the command to untrust will not work, and we'll
+ * silently fail that as well; with no existing certificates anymore, the
+ * security exposure there is minimal.
+ *
+ * @alpha
+ */
+export function uninstall(): void {
+  currentPlatform.removeFromTrustStores(rootCACertPath);
+  currentPlatform.deleteProtectedFiles(domainsDir);
+  currentPlatform.deleteProtectedFiles(rootCADir);
+  currentPlatform.deleteProtectedFiles(getLegacyConfigDir());
+}
+
+/**
  * Install the once-per-machine trusted root CA. We'll use this CA to sign
  * per-app certs.
+ *
+ * @internal
  */
 export default async function installCertificateAuthority(
   options: Options = {},
@@ -62,17 +105,10 @@ export default async function installCertificateAuthority(
 }
 
 /**
- * Initializes the files OpenSSL needs to sign certificates as a certificate
- * authority, as well as our CA setup version
+ *
+ * @param cb
+ * @internal
  */
-function seedConfigFiles(): void {
-  // This is v2 of the devcert certificate authority setup
-  writeFile(caVersionFile, "2");
-  // OpenSSL CA files
-  writeFile(opensslDatabaseFilePath, "");
-  writeFile(opensslSerialFilePath, "01");
-}
-
 export async function withCertificateAuthorityCredentials(
   cb: ({
     caKeyPath,
@@ -90,14 +126,9 @@ export async function withCertificateAuthorityCredentials(
   rm(tmpCAKeyPath);
 }
 
-async function saveCertificateAuthorityCredentials(
-  keypath: string
-): Promise<void> {
-  debug(`Saving devcert's certificate authority credentials`);
-  const key = readFile(keypath, "utf-8");
-  await currentPlatform.writeProtectedFile(rootCAKeyPath, key);
-}
-
+/**
+ * @internal
+ */
 function certErrors(): string {
   try {
     openssl(`x509 -in "${rootCACertPath}" -noout`);
@@ -116,6 +147,8 @@ function certErrors(): string {
  * If a v1.0.x cert already exists, then devcert has written it with
  * platform.writeProtectedFile(), so an unprivileged readFile cannot access it.
  * Pre-detect and remedy this; it should only happen once per installation.
+ *
+ * @internal
  */
 export async function ensureCACertReadable(
   options: Options,
@@ -144,24 +177,4 @@ export async function ensureCACertReadable(
   if (remainingErrors) {
     return installCertificateAuthority(options, certOptions);
   }
-}
-
-/**
- * Remove as much of the devcert files and state as we can. This is necessary
- * when generating a new root certificate, and should be available to API
- * consumers as well.
- *
- * Not all of it will be removable. If certutil is not installed, we'll leave
- * Firefox alone. We try to remove files with maximum permissions, and if that
- * fails, we'll silently fail.
- *
- * It's also possible that the command to untrust will not work, and we'll
- * silently fail that as well; with no existing certificates anymore, the
- * security exposure there is minimal.
- */
-export function uninstall(): void {
-  currentPlatform.removeFromTrustStores(rootCACertPath);
-  currentPlatform.deleteProtectedFiles(domainsDir);
-  currentPlatform.deleteProtectedFiles(rootCADir);
-  currentPlatform.deleteProtectedFiles(getLegacyConfigDir());
 }

@@ -4,7 +4,12 @@
     "composite": true,
     "outDir": "../tests_js",
     "rootDir": ".",
-    "types": ["qunit"]
+    "types": ["qunit"],
+    "baseUrl": ".",
+    "paths": {
+      "certin": ["../dist/certin-private"],
+      "@certin/core": ["../../../node_modules/@certin/core/dist/core-private"]
+    }
   },
   "references": [{ "path": ".." }],
   "include": ["."]

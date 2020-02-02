@@ -1,6 +1,9 @@
 import passwordPrompt from "password-prompt";
 import { waitForUser } from "./utils";
 
+/**
+ * @alpha
+ */
 export interface UserInterface {
   getWindowsEncryptionPassword(): string | Promise<string>;
   warnChromeOnLinuxWithoutCertutil(): void | Promise<void>;

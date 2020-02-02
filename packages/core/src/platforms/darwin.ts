@@ -17,7 +17,7 @@ import {
   removeCertificateFromNSSCertDB,
   HOME
 } from "./shared";
-import { Platform } from ".";
+import { Platform } from "../platforms";
 
 const debug = createDebug("devcert:platforms:macos");
 
@@ -50,7 +50,7 @@ export default class MacOSPlatform implements Platform {
    * automatically install the cert with Firefox if we can use certutil via the
    * `nss` Homebrew package, otherwise we go manual with user-facing prompts.
    */
-  async addToTrustStores(
+  public async addToTrustStores(
     certificatePath: string,
     options: Options = {}
   ): Promise<void> {
@@ -104,7 +104,7 @@ export default class MacOSPlatform implements Platform {
     }
   }
 
-  removeFromTrustStores(certificatePath: string): void {
+  public removeFromTrustStores(certificatePath: string): void {
     debug("Removing devcert root CA from macOS system keychain");
     try {
       if (existsSync(certificatePath)) {
@@ -127,7 +127,7 @@ export default class MacOSPlatform implements Platform {
     }
   }
 
-  addDomainToHostFileIfMissing(domain: string): void {
+  public addDomainToHostFileIfMissing(domain: string): void {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
       run(
@@ -136,19 +136,19 @@ export default class MacOSPlatform implements Platform {
     }
   }
 
-  deleteProtectedFiles(filepath: string): void {
+  public deleteProtectedFiles(filepath: string): void {
     assertNotTouchingFiles(filepath, "delete");
     run(`sudo rm -rf "${filepath}"`);
   }
 
-  readProtectedFile(filepath: string): string {
+  public readProtectedFile(filepath: string): string {
     assertNotTouchingFiles(filepath, "read");
     return run(`sudo cat "${filepath}"`)
       .toString()
       .trim();
   }
 
-  writeProtectedFile(filepath: string, contents: string): void {
+  public writeProtectedFile(filepath: string, contents: string): void {
     assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
       run(`sudo rm "${filepath}"`);

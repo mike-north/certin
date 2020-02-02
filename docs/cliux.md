@@ -4,9 +4,3 @@
 
 ## cliux package
 
-## Functions
-
-|  Function | Description |
-|  --- | --- |
-|  [cli()](./cliux.cli.md) |  |
-

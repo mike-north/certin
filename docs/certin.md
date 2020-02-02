@@ -4,9 +4,3 @@
 
 ## certin package
 
-## Functions
-
-|  Function | Description |
-|  --- | --- |
-|  [foo()](./certin.foo.md) |  |
-

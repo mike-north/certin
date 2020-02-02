@@ -6,7 +6,7 @@
   "homepage": "https://github.com/mike-north/certin#readme",
   "license": "BSD-2-Clause",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/certin.d.ts",
   "directories": {
     "lib": "lib"
   },

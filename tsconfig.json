@@ -6,6 +6,14 @@
     "inlineSourceMap": true,
     "strictNullChecks": true,
     "strictBindCallApply": true,
-    "strictFunctionTypes": true
+    "strictFunctionTypes": true,
+    "stripInternal": true,
+    "baseUrl": ".",
+    "paths": {
+      "certin": ["packages/certin/dist/certin-private"],
+      "@certin/core": ["packages/core/dist/core-private"],
+      "@certin/cli": ["packages/cli/dist/cli-private"],
+      "@certin/cliux": ["packages/cliux/dist/cliux-private"]
+    }
   }
 }

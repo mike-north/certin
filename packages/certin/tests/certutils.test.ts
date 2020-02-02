@@ -1,7 +1,7 @@
-import { core } from "..";
+import { certificateFor } from "certin";
 
 QUnit.module("certin", () => {
-  QUnit.test("'core' export exists", assert => {
-    assert.ok(core);
+  QUnit.test("'certificateFor' export exists", assert => {
+    assert.ok(certificateFor);
   });
 });

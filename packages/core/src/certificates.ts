@@ -13,6 +13,13 @@ import { CertOptions } from "./index";
 
 const debug = createDebug("devcert:certificates");
 
+// Generate a cryptographic key, used to sign certificates or certificate signing requests.
+export function generateKey(filename: string): void {
+  debug(`generateKey: ${filename}`);
+  openssl(`genrsa -out "${filename}" 2048`);
+  chmod(filename, 400);
+}
+
 /**
  * Generate a domain certificate signed by the devcert root CA. Domain
  * certificates are cached in their own directories under
@@ -59,11 +66,4 @@ export default async function generateDomainCertificate(
       }
     );
   });
-}
-
-// Generate a cryptographic key, used to sign certificates or certificate signing requests.
-export function generateKey(filename: string): void {
-  debug(`generateKey: ${filename}`);
-  openssl(`genrsa -out "${filename}" 2048`);
-  chmod(filename, 400);
 }

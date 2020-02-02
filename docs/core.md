@@ -4,9 +4,5 @@
 
 ## core package
 
-## Functions
-
-|  Function | Description |
-|  --- | --- |
-|  [core()](./core.core.md) |  |
+foo
 

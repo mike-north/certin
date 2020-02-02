@@ -6,12 +6,12 @@
     "module": "CommonJS",
     "rootDir": "src",
     "outDir": "dist",
-    "lib": [
-      "ES2018"
-    ],
-    "types": []
+    "lib": ["ES2018"],
+    "types": [],
+    "baseUrl": ".",
+    "paths": {
+      "*": ["../../types/*"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

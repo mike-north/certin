@@ -4,9 +4,7 @@
 
 ```ts
 
-// Warning: (ae-missing-release-tag) "cli" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @alpha (undocumented)
 export function cli(): void;
 
 

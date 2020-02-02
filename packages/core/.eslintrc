@@ -4,6 +4,7 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
+    "plugin:promise/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:import/errors",
     "plugin:import/warnings",
@@ -16,7 +17,7 @@
   "env": {
     "es6": true
   },
-  "plugins": ["@typescript-eslint", "prettier", "node"],
+  "plugins": ["prettier", "node", "promise", "@typescript-eslint"],
   "rules": {
     "@typescript-eslint/explicit-member-accessibility": 2,
     "@typescript-eslint/camelcase": 0,
