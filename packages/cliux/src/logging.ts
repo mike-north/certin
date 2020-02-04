@@ -5,8 +5,9 @@ import * as termSize from "term-size";
 import * as wordWrap from "word-wrap";
 
 import * as _createDebug from "debug";
-import { ALERT_PERMISSION_REQUIRED } from "./messages";
+import { ALERT_PERMISSION_REQUIRED } from "@certin/messages";
 import UI from "./ui";
+import { AlertContent, Logger } from "@certin/types";
 
 // const appName = process.env["CERTIN_APP_NAME"] || "certin";
 
@@ -18,32 +19,6 @@ const BOX_MARGIN = 0;
 
 const BOX_WIDTH_MAX = 80;
 const BOX_WIDTH = Math.min(BOX_WIDTH_MAX, termSize().columns);
-
-/**
- * @internal
- */
-export interface AlertContent {
-  title: string;
-  nba: string;
-  body: string;
-}
-
-/**
- * A loging function, for exposing messages to end users
- * @public
- */
-export interface LoggerFn {
-  (...args: any[]): void;
-}
-
-/**
- * A logger, for exposing warnings and informational messages to end users
- * @public
- */
-export interface Logger {
-  log: LoggerFn;
-  warn: LoggerFn;
-}
 
 /**
  * Log a user-visible message to the console

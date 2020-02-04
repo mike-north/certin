@@ -4,31 +4,10 @@
 
 ```ts
 
-import { UI } from '@certin/cliux';
-
-// @public
-export interface CertGenerationOptions {
-    // (undocumented)
-    caDays: number;
-    // (undocumented)
-    days: number;
-    // (undocumented)
-    forceMode: boolean;
-    // (undocumented)
-    interactiveMode: boolean;
-    // (undocumented)
-    signDomainCertWithDevCa: boolean;
-    // (undocumented)
-    silentMode: boolean;
-    // (undocumented)
-    subjectAlternateNames: string[];
-}
-
-// @beta
-export function cleanupTrustStore(ui: UI): void;
-
-// @public
-export function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: UI): Promise<void>;
+// Warning: (ae-internal-missing-underscore) The name "main" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function main(_args: string[]): void;
 
 
 // (No @packageDocumentation comment for this package)

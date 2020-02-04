@@ -1,4 +1,4 @@
-import { CertGenerationOptions } from "../certificate";
+import { CertGenerationOptions } from "../cert-generation";
 import {
   LOG_SEARCHING_FOR_CERT,
   LOG_FOUND_EXISTING_CERT,
@@ -8,12 +8,11 @@ import {
   SUDO_REASON_NEW_CERT_PERMISSIONS,
   LOG_CERT_GENERATION_COMPLETE,
   ASSERT_KEY_EXISTS,
-  ASSERT_CERT_EXISTS,
-  hasSudo,
-  UI
-} from "@certin/cliux";
+  ASSERT_CERT_EXISTS
+} from "@certin/messages";
+import { hasSudo, UI } from "@certin/cliux";
 import * as _createDebug from "debug";
-import * as core from "@certin/core";
+import * as core from "../legacy";
 import * as assert from "assert";
 
 const debug = _createDebug("pemberly-secure:dev-cert");

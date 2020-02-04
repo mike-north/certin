@@ -15,7 +15,7 @@ import {
   HOME
 } from "./shared";
 import { run } from "../utils";
-import { Options } from "../index";
+import { Options } from "../legacy";
 import UI from "../user-interface";
 import { Platform } from "../platforms";
 

@@ -8,7 +8,7 @@ import {
 import * as createDebug from "debug";
 import { sync as commandExists } from "command-exists";
 import { run } from "../utils";
-import { Options } from "../index";
+import { Options } from "../legacy";
 import {
   addCertificateToNSSCertDB,
   assertNotTouchingFiles,

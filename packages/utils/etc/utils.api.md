@@ -5,6 +5,7 @@
 ```ts
 
 import * as execa from 'execa';
+import { ExtractArgs } from '@mike-north/types';
 
 // Warning: (ae-internal-missing-underscore) The name "ExecaChildProcess" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -14,15 +15,12 @@ export type ExecaChildProcess = ReturnType<typeof execa>;
 // Warning: (ae-internal-missing-underscore) The name "ExecAsyncOptions" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export type ExecAsyncOptions = _ExtractArg3<typeof execa>;
+export type ExecAsyncOptions = Exclude<ExtractArgs<typeof execa>[2], undefined>;
 
 // Warning: (ae-internal-missing-underscore) The name "ExecSyncOptions" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export type ExecSyncOptions = _ExtractArg3<typeof execa.sync>;
-
-// @internal (undocumented)
-export type _ExtractArg3<F> = F extends (_a: any, _b: any, c: Partial<infer T>) => any ? T : never;
+export type ExecSyncOptions = Exclude<ExtractArgs<typeof execa.sync>[2], undefined>;
 
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen

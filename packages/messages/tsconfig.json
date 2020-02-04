@@ -1,5 +1,4 @@
 {
-  "compileOnSave": false,
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
@@ -8,15 +7,9 @@
     "rootDir": "src",
     "outDir": "dist",
     "lib": ["ES2018"],
-    "types": [],
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@certin/cliux": [
-        "../../node_modules/@certin/cliux/dist/cliux-private.d.ts"
-      ],
-      "@certin/messages": [
-        "../../node_modules/@certin/messages/dist/messages-private.d.ts"
-      ],
       "@certin/types": [
         "../../node_modules/@certin/types/dist/types-private.d.ts"
       ],

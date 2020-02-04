@@ -1,6 +1,6 @@
-import * as core from "@certin/core";
+import * as core from "./legacy";
 import * as assert from "assert";
-import * as chalk from "chalk";
+import chalk from "chalk";
 import * as _debug from "debug";
 import * as fs from "fs-extra";
 import * as inquirer from "inquirer";
@@ -17,10 +17,9 @@ import {
   LOG_PROCEEDING_IN_DEV_MODE,
   LOG_PROCEEDING_IN_HEADLESS_MODE,
   PROMPT_SHOULD_WE_OVERWRITE_IT,
-  SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS,
-  hasSudo,
-  UI
-} from "@certin/cliux";
+  SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS
+} from "@certin/messages";
+import { hasSudo, UI } from "@certin/cliux";
 
 const debug = _debug("pemberly-secure");
 

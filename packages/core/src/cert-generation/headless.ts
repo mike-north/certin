@@ -1,5 +1,5 @@
 import * as selfsigned from "selfsigned";
-import { CertGenerationOptions } from "../certificate";
+import { CertGenerationOptions } from "../cert-generation";
 import { UI } from "@certin/cliux";
 
 export function ensureHeadlessCertExists(

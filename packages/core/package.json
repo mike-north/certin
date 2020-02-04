@@ -41,6 +41,7 @@
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
     "@types/configstore": "^2.1.1",
+    "@types/chalk": "^2.2.0",
     "@types/debug": "^0.0.30",
     "@types/get-port": "^3.2.0",
     "@types/glob": "^5.0.34",
@@ -54,6 +55,8 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "@certin/cliux": "^0.0.1-dev.16",
+    "@certin/messages": "^0.0.0-dev.0",
     "@certin/utils": "^0.0.0-dev.0",
     "application-config-path": "^0.1.0",
     "command-exists": "^1.2.4",

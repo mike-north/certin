@@ -19,6 +19,9 @@
       "@certin/utils": [
         "../../node_modules/@certin/utils/dist/utils-private.d.ts"
       ],
+      "@certin/types": [
+        "../../node_modules/@certin/types/dist/types-private.d.ts"
+      ],
       "*": ["../../types/*"]
     }
   },

@@ -1,14 +1,17 @@
 import * as execa from "execa";
 import * as _createDebug from "debug";
 import { logArgs } from "./logging";
-import { _ExtractArg3 } from "./types";
+import { ExtractArgs } from "@mike-north/types";
 
 const debug = _createDebug("certin:utils:exec");
 
 /** @internal */
-export type ExecAsyncOptions = _ExtractArg3<typeof execa>;
+export type ExecAsyncOptions = Exclude<ExtractArgs<typeof execa>[2], undefined>;
 /** @internal */
-export type ExecSyncOptions = _ExtractArg3<typeof execa.sync>;
+export type ExecSyncOptions = Exclude<
+  ExtractArgs<typeof execa.sync>[2],
+  undefined
+>;
 /** @internal */
 export type ExecaChildProcess = ReturnType<typeof execa>;
 

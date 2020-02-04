@@ -10,6 +10,12 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
+      "@certin/messages": [
+        "../../node_modules/@certin/messages/dist/messages-private.d.ts"
+      ],
+      "@certin/types": [
+        "../../node_modules/@certin/types/dist/types-private.d.ts"
+      ],
       "*": ["../../types/*"]
     }
   },

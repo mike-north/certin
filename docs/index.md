@@ -10,7 +10,8 @@
 |  --- | --- |
 |  [@certin/cli](./cli.md) |  |
 |  [@certin/cliux](./cliux.md) |  |
-|  [@certin/core](./core.md) | foo |
+|  [@certin/core](./core.md) |  |
+|  [@certin/messages](./messages.md) |  |
 |  [@certin/types](./types.md) |  |
 |  [@certin/utils](./utils.md) |  |
 |  [certin](./certin.md) |  |

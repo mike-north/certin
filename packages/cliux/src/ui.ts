@@ -1,5 +1,6 @@
 import * as chalk from "chalk";
-import { Logger, logPasswordRequestNotice, makeLogger } from "./logging";
+import { logPasswordRequestNotice, makeLogger } from "./logging";
+import { Logger } from "@certin/types";
 
 /**
  * @internal

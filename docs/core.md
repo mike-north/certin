@@ -4,5 +4,16 @@
 
 ## core package
 
-foo
+## Functions
+
+|  Function | Description |
+|  --- | --- |
+|  [cleanupTrustStore(ui)](./core.cleanuptruststore.md) | <b><i>(BETA)</i></b> Remove any existing pemberly-secure self-signed certificates from the trust store.<!-- -->NOTE: if other tools use \[devcert\](https://github.com/davewasmer/devcert) to manage certificates, their certs will be removed as well |
+|  [ensureCertExists(subjectName, pemPath, opts, ui)](./core.ensurecertexists.md) | Generate a certificate, bound to a particular subject name (i.e., a domain) |
+
+## Interfaces
+
+|  Interface | Description |
+|  --- | --- |
+|  [CertGenerationOptions](./core.certgenerationoptions.md) | Certificate generation options |
 

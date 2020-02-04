@@ -1,4 +1,4 @@
-import { Options } from "../index";
+import { Options } from "../legacy";
 
 export interface Platform {
   addToTrustStores(

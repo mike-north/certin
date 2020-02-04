@@ -1,5 +1,5 @@
 import * as execa from "execa";
-import { ERROR_WHILE_SUDOING } from "./messages";
+import { ERROR_WHILE_SUDOING } from "@certin/messages";
 
 /**
  * @internal

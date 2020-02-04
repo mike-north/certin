@@ -237,10 +237,10 @@
   resolved "https://registry.yarnpkg.com/@mike-north/js-lib-renovate-config/-/js-lib-renovate-config-1.3.1.tgz#25a801e877377901006f385e6f080562c061d028"
   integrity sha512-jJJb3knBvLnbyN4Mg0NwqJRHf64h2Ea2hD9RgxYLQCKRA7ALJy/CiH+JWbsko+hBoBdF97/syOKexen+TLXU6g==
 
-"@mike-north/types@^1.2.2":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@mike-north/types/-/types-1.3.1.tgz#2b5726abf13e23e674b80194150ee2bdd22ccd3c"
-  integrity sha512-O/5LQ1aj8DMPLBkDybxjjfb943f/WRhbBCFanHho9fMzLoGAxCY1edy6JXdiS6yXXqkv5jR86LhMGgitqOdU1Q==
+"@mike-north/types@^1.2.2", "@mike-north/types@^1.3.1":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@mike-north/types/-/types-1.3.2.tgz#490c6e6af20d6770f62d6da7ba5dcec4b9b1c606"
+  integrity sha512-U89ov/mjc+58YUjIZvU1o2Asz/S59rTasDC+NxrOu0bO0Ko68jqzFh41YlJmocsjg/sKQy35msS69OXLMdTbxA==
   optionalDependencies:
     "@commitlint/cli" "8.3.5"
     "@commitlint/config-conventional" "8.3.4"

@@ -1,4 +1,4 @@
-import { AlertContent } from "./logging";
+import { AlertContent } from "@certin/types";
 import * as chalk from "chalk";
 import { resolve } from "path";
 

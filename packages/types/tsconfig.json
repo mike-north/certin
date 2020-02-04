@@ -10,9 +10,6 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@mike-north/types": [
-        "../../node_modules/@mike-north/types/dist/types/types-beta.d.ts"
-      ],
       "*": ["../../types/*"]
     }
   },

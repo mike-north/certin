@@ -10,6 +10,16 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
+      "@certin/cliux": [
+        "../../node_modules/@certin/cliux/dist/cliux-private.d.ts"
+      ],
+      "@certin/cli": ["../../node_modules/@certin/cli/dist/cli-private.d.ts"],
+      "@certin/types": [
+        "../../node_modules/@certin/types/dist/types-private.d.ts"
+      ],
+      "@certin/utils": [
+        "../../node_modules/@certin/utils/dist/utils-private.d.ts"
+      ],
       "@certin/core": [
         "../../node_modules/@certin/core/dist/core-private.d.ts"
       ],

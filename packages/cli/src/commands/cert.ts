@@ -9,7 +9,7 @@ import {
   assertIsString,
   assertIsArray
 } from "../validation";
-import { ensureCertExists } from "../../certificate";
+import { ensureCertExists } from "@certin/core";
 import chalk = require("chalk");
 import { existsSync } from "fs-extra";
 import { UI, UIOptions } from "@certin/cliux";
@@ -120,7 +120,7 @@ function addCertCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
         .then(() => {
           return debug("[generate-cert] completed execution");
         })
-        .catch(e => {
+        .catch((e: any) => {
           throw new Error(
             "Error encountered while trying to get or create cert\n" + e
           );

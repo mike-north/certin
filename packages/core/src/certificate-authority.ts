@@ -20,7 +20,7 @@ import {
 import currentPlatform from "./platforms";
 import { openssl, mktmp } from "./utils";
 import { generateKey } from "./certificates";
-import { Options, CertOptions } from "./index";
+import { Options, CertOptions } from "./legacy";
 
 const debug = createDebug("devcert:certificate-authority");
 

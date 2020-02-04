@@ -1,7 +1,7 @@
 import * as yargs from "yargs";
 import * as _createDebug from "debug";
 import { assertIsBoolean } from "../validation";
-import { cleanupTrustStore } from "../../certificate";
+import { cleanupTrustStore } from "@certin/core";
 import { UI, UIOptions } from "@certin/cliux";
 
 const debug = _createDebug("pemberly-secure:cli:cert");

@@ -4,9 +4,9 @@
 
 ```ts
 
-import { certificateFor } from '@certin/core';
+import { ensureCertExists } from '@certin/core';
 
-export { certificateFor }
+export { ensureCertExists }
 
 
 // (No @packageDocumentation comment for this package)
