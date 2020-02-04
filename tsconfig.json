@@ -7,7 +7,6 @@
     "strictNullChecks": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
-    "stripInternal": true,
     "baseUrl": ".",
     "paths": {
       "certin": ["packages/certin/dist/certin-private"],

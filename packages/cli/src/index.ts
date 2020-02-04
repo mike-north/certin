@@ -1,6 +1,5 @@
-/**
- * @alpha
- */
-export function cli(): void {
-  // TODO
-}
+export {
+  cleanupTrustStore,
+  ensureCertExists,
+  CertGenerationOptions
+} from "./certificate";

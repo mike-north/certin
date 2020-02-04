@@ -7,9 +7,18 @@
     "rootDir": "src",
     "outDir": "dist",
     "lib": ["ES2018"],
-    "types": [],
+    "types": ["debug", "node", "is-ci", "yargs"],
     "baseUrl": ".",
     "paths": {
+      "@certin/core": [
+        "../../node_modules/@certin/core/dist/core-private.d.ts"
+      ],
+      "@certin/cliux": [
+        "../../node_modules/@certin/cliux/dist/cliux-private.d.ts"
+      ],
+      "@certin/utils": [
+        "../../node_modules/@certin/utils/dist/utils-private.d.ts"
+      ],
       "*": ["../../types/*"]
     }
   },

@@ -4,8 +4,31 @@
 
 ```ts
 
-// @alpha (undocumented)
-export function cli(): void;
+import { UI } from '@certin/cliux';
+
+// @public
+export interface CertGenerationOptions {
+    // (undocumented)
+    caDays: number;
+    // (undocumented)
+    days: number;
+    // (undocumented)
+    forceMode: boolean;
+    // (undocumented)
+    interactiveMode: boolean;
+    // (undocumented)
+    signDomainCertWithDevCa: boolean;
+    // (undocumented)
+    silentMode: boolean;
+    // (undocumented)
+    subjectAlternateNames: string[];
+}
+
+// @beta
+export function cleanupTrustStore(ui: UI): void;
+
+// @public
+export function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: UI): Promise<void>;
 
 
 // (No @packageDocumentation comment for this package)

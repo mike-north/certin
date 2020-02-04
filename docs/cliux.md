@@ -4,3 +4,10 @@
 
 ## cliux package
 
+## Interfaces
+
+|  Interface | Description |
+|  --- | --- |
+|  [Logger](./cliux.logger.md) | A logger, for exposing warnings and informational messages to end users |
+|  [LoggerFn](./cliux.loggerfn.md) | A loging function, for exposing messages to end users |
+

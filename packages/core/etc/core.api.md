@@ -28,6 +28,11 @@ export interface CertOptions {
     domainCertExpiry: number;
 }
 
+// Warning: (ae-internal-missing-underscore) The name "configuredDomains" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function configuredDomains(): string[];
+
 // @alpha (undocumented)
 export interface DomainData {
     // (undocumented)
@@ -35,6 +40,11 @@ export interface DomainData {
     // (undocumented)
     key: Buffer;
 }
+
+// Warning: (ae-internal-missing-underscore) The name "hasCertificateFor" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function hasCertificateFor(commonName: string): boolean;
 
 // @alpha (undocumented)
 export type IReturnCa<O extends Options> = O["getCaBuffer"] extends true ? CaBuffer : false;
@@ -53,6 +63,11 @@ export interface Options {
     skipHostsFile?: boolean;
     ui?: UserInterface;
 }
+
+// Warning: (ae-internal-missing-underscore) The name "removeDomain" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function removeDomain(commonName: string): void;
 
 // @alpha
 export function uninstall(): void;
