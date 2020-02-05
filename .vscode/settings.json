@@ -8,6 +8,11 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
+    "**/dist": true,
+    "**/temp": true,
+    "**/.private-types": true,
+    "**/tests_js": true,
+    "**/node_modules": true,
     "**/.DS_Store": true,
     "packages/*/tests_js": true,
     "**/tsconfig.tsbuildinfo": true
