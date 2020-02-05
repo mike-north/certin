@@ -9,6 +9,7 @@
   "typings": "dist/types.d.ts",
   "files": [
     "dist/**/*",
+    "etc/**/*",
     "CHANGELOG.md"
   ],
   "publishConfig": {

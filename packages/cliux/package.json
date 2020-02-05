@@ -9,6 +9,7 @@
   "typings": "dist/cliux.d.ts",
   "files": [
     "dist/**/*",
+    "etc/**/*",
     "CHANGELOG.md"
   ],
   "publishConfig": {

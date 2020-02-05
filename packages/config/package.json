@@ -9,6 +9,8 @@
   "typings": "dist/config.d.ts",
   "files": [
     "dist/**/*",
+    "etc/**/*",
+    "openssl-templates/**/*",
     "CHANGELOG.md"
   ],
   "publishConfig": {

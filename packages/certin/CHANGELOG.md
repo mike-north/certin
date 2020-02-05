@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.0.1-dev.0"></a>
+## [0.0.1-dev.0](https://github.com/mike-north/certin/compare/certin@0.0.0-dev.19...certin@0.0.1-dev.0) (2020-02-05)
+
+
+
+
+**Note:** Version bump only for package certin
+
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## 0.0.0-dev.16 (2020-01-29)
 
 - fix(cli): add debug dependency ([5cfc359](https://github.com/mike-north/certin/commit/5cfc359))
