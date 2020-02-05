@@ -1,2 +1,2 @@
 #!/bin/bash
-yarn build:ts && yarn tsc -p tests
+yarn build:ts && yarn rimraf tests_js && yarn tsc -p tests

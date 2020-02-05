@@ -7,7 +7,10 @@
     "types": ["qunit"],
     "baseUrl": ".",
     "paths": {
-      "@certin/cliux": ["../dist/cliux-private"]
+      "@certin/utils": ["../dist/utils-private.d.ts"],
+      "@certin/types": ["../../types/dist/types-private.d.ts"],
+      "@certin/messages": ["../../messages/dist/messages-private.d.ts"],
+      "*": ["../../../types/*"]
     }
   },
   "references": [{ "path": ".." }],
