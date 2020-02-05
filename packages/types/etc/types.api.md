@@ -6,10 +6,12 @@
 
 import { ExtractArgs } from '@mike-north/types';
 
-// Warning: (ae-internal-missing-underscore) The name "AlertContent" should be prefixed with an underscore because the declaration is marked as @internal
+export { ExtractArgs }
+
+// Warning: (ae-internal-missing-underscore) The name "IAlertContent" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface AlertContent {
+export interface IAlertContent {
     // (undocumented)
     body: string;
     // (undocumented)
@@ -18,34 +20,196 @@ export interface AlertContent {
     title: string;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "CliUI" should be prefixed with an underscore because the declaration is marked as @internal
+// @alpha (undocumented)
+export interface ICaBuffer {
+    // (undocumented)
+    ca: Buffer;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ICACertConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface CliUI {
+export interface ICACertConfigOptions {
     // (undocumented)
-    logger(): Logger;
+    defaultDays: number;
+    // (undocumented)
+    name: string;
+}
+
+// @alpha (undocumented)
+export interface ICaPath {
+    // (undocumented)
+    caPath: string;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ICertinConfig" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface ICertinConfig {
+    // (undocumented)
+    caSelfSignConfig: string;
+    // (undocumented)
+    caVersionFile: string;
+    // (undocumented)
+    configDir: string;
+    // (undocumented)
+    domainsDir: string;
+    // (undocumented)
+    ensureConfigDirs(): void;
+    // (undocumented)
+    getConfigDir(): string;
+    // (undocumented)
+    getConfigPath(...pathSegments: string[]): string;
+    // (undocumented)
+    getPathForDomain(domain: string, ...pathSegments: string[]): string;
+    // (undocumented)
+    opensslDatabaseFilePath: string;
+    // (undocumented)
+    opensslSerialFilePath: string;
+    // (undocumented)
+    rootCACertPath: string;
+    // (undocumented)
+    rootCADir: string;
+    // (undocumented)
+    rootCAKeyPath: string;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ICertinConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface ICertinConfigOptions {
+    // (undocumented)
+    ca: ICACertConfigOptions;
+    // (undocumented)
+    domainCert: IDomainCertificateConfigOptions;
+    // (undocumented)
+    domainCsr: IDomainSigningRequestConfigOptions;
+    // (undocumented)
+    ux: ICertinConfigUxOptions;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ICertinConfigUxOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface ICertinConfigUxOptions {
+    // (undocumented)
+    appName: string;
+    // (undocumented)
+    forceMode: boolean;
+    // (undocumented)
+    interactiveMode: boolean;
+    // (undocumented)
+    silentMode: boolean;
+}
+
+// @public (undocumented)
+export interface ICertinUserFacingOptions {
+    // (undocumented)
+    ca?: {
+        name?: string;
+        label?: string;
+        daysUntilExpire?: number;
+    };
+    // (undocumented)
+    domainCert?: {
+        commonName: string;
+        signWithDevCa?: boolean;
+        subjectAlternativeNames?: string[];
+        daysUntilExpire?: number;
+    };
+    // (undocumented)
+    ux?: {
+        appName?: string;
+        interactiveMode?: boolean;
+        forceMode?: boolean;
+        silentMode?: boolean;
+    };
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ICliUI" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface ICliUI {
+    // (undocumented)
+    logger(): ILogger;
     // (undocumented)
     logPasswordRequestNotice(reason: string): void;
 }
 
-export { ExtractArgs }
-
-// Warning: (ae-internal-missing-underscore) The name "Logger" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "IDomainCertificateConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
 //
-// @internal
-export interface Logger {
+// @internal (undocumented)
+export interface IDomainCertificateConfigOptions {
     // (undocumented)
-    log: LoggerFn;
+    commonName: string;
     // (undocumented)
-    warn: LoggerFn;
+    database: string;
+    // (undocumented)
+    defaultCa: string;
+    // (undocumented)
+    defaultDays: number;
+    // (undocumented)
+    newCertsDir: string;
+    // (undocumented)
+    serial: string;
+    // (undocumented)
+    signWithDevCa: boolean;
+    // (undocumented)
+    subjectAltNames: string[];
 }
 
-// Warning: (ae-internal-missing-underscore) The name "LoggerFn" should be prefixed with an underscore because the declaration is marked as @internal
+// @alpha (undocumented)
+export interface IDomainData {
+    // (undocumented)
+    cert: Buffer;
+    // (undocumented)
+    key: Buffer;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "IDomainSigningRequestConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface IDomainSigningRequestConfigOptions {
+    // (undocumented)
+    commonName: string;
+    // (undocumented)
+    subjectAltNames: string[];
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ILogger" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export interface LoggerFn {
+export interface ILogger {
+    // (undocumented)
+    log: ILoggerFn;
+    // (undocumented)
+    warn: ILoggerFn;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "ILoggerFn" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export interface ILoggerFn {
     // (undocumented)
     (...args: any[]): void;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "IPartialCertinConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface IPartialCertinConfigOptions {
+    // (undocumented)
+    ca?: Partial<ICACertConfigOptions>;
+    // (undocumented)
+    domainCert?: Partial<IDomainCertificateConfigOptions> & {
+        commonName: string;
+    };
+    // (undocumented)
+    domainCsr?: Partial<IDomainSigningRequestConfigOptions> & {
+        commonName: string;
+    };
+    // (undocumented)
+    ux?: Partial<ICertinConfigUxOptions>;
 }
 
 

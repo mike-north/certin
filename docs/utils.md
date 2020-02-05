@@ -4,3 +4,11 @@
 
 ## utils package
 
+## Variables
+
+|  Variable | Description |
+|  --- | --- |
+|  [isLinux](./utils.islinux.md) |  |
+|  [isMac](./utils.ismac.md) |  |
+|  [isWindows](./utils.iswindows.md) |  |
+

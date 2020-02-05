@@ -4,12 +4,12 @@
 
 ```ts
 
-import { AlertContent } from '@certin/types';
+import { IAlertContent } from '@certin/types';
 
 // Warning: (ae-internal-missing-underscore) The name "ALERT_PERMISSION_REQUIRED" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal
-export const ALERT_PERMISSION_REQUIRED: Pick<AlertContent, "title" | "nba">;
+export const ALERT_PERMISSION_REQUIRED: Pick<IAlertContent, "title" | "nba">;
 
 // Warning: (ae-internal-missing-underscore) The name "ASSERT_CERT_EXISTS" should be prefixed with an underscore because the declaration is marked as @internal
 //

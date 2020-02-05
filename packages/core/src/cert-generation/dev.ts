@@ -1,32 +1,34 @@
-import { CertGenerationOptions } from "../cert-generation";
 import {
-  LOG_SEARCHING_FOR_CERT,
+  ASSERT_CERT_EXISTS,
+  ASSERT_KEY_EXISTS,
+  LOG_CERT_GENERATION_COMPLETE,
+  LOG_CREATE_NEW_CERT,
   LOG_FOUND_EXISTING_CERT,
   LOG_NO_EXISTING_CERT_FOUND,
-  LOG_CREATE_NEW_CERT,
+  LOG_SEARCHING_FOR_CERT,
   LOG_SUDO_MISSING,
-  SUDO_REASON_NEW_CERT_PERMISSIONS,
-  LOG_CERT_GENERATION_COMPLETE,
-  ASSERT_KEY_EXISTS,
-  ASSERT_CERT_EXISTS
+  SUDO_REASON_NEW_CERT_PERMISSIONS
 } from "@certin/messages";
-import { CliUI } from "@certin/types";
+import { ICliUI } from "@certin/types";
 import { hasSudo } from "@certin/utils";
+import * as assert from "assert";
 import * as _createDebug from "debug";
 import * as core from "../legacy";
-import * as assert from "assert";
+import Workspace from "../workspace";
 
 const debug = _createDebug("pemberly-secure:dev-cert");
 
 export async function ensureDevCertExists(
+  workspace: Workspace,
   subjectName: string,
-  options: CertGenerationOptions,
-  ui: CliUI
+  ui: ICliUI
 ): Promise<{ key: string; cert: string }> {
-  const { subjectAlternateNames, days, caDays } = options;
+  const {
+    subjectAltNames: subjectAlternateNames
+  } = workspace.cfg.options.domainCert;
   const { log } = ui.logger();
   debug(LOG_SEARCHING_FOR_CERT(subjectName));
-  if (core.hasCertificateFor(subjectName)) {
+  if (workspace.hasCertificateFor(subjectName)) {
     debug(LOG_FOUND_EXISTING_CERT(subjectName));
   } else {
     log(LOG_NO_EXISTING_CERT_FOUND(subjectName));
@@ -37,13 +39,10 @@ export async function ensureDevCertExists(
     }
   }
   const returnVal = await core.certificateFor(
+    workspace,
     subjectName,
     subjectAlternateNames,
-    {},
-    {
-      domainCertExpiry: days,
-      caCertExpiry: caDays
-    }
+    {}
   );
   const { key: keyBuffer, cert: certBuffer } = returnVal;
   debug(LOG_CERT_GENERATION_COMPLETE(subjectName));

@@ -1,11 +1,11 @@
 import * as selfsigned from "selfsigned";
-import { CertGenerationOptions } from "../cert-generation";
-import { CliUI } from "@certin/types";
+import { ICliUI } from "@certin/types";
+import Workspace from "../workspace";
 
 export function ensureHeadlessCertExists(
+  workspace: Workspace,
   subjectName: string,
-  options: CertGenerationOptions,
-  _ui: CliUI
+  _ui: ICliUI
 ): { key: string; cert: string } {
   const attrs = [{ name: "commonName", value: subjectName }];
   const pems = selfsigned.generate(attrs, {
@@ -32,7 +32,10 @@ export function ensureHeadlessCertExists(
       },
       {
         name: "subjectAltName",
-        altNames: [subjectName, ...options.subjectAlternateNames]
+        altNames: [
+          subjectName,
+          ...workspace.cfg.options.domainCert.subjectAltNames
+        ]
           .reduce((list, item) => {
             list.push(item, `*.${item}`);
             return list;

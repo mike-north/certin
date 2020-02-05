@@ -1,69 +1,12 @@
-import {
-  unlinkSync as rm,
-  readFileSync as readFile,
-  writeFileSync as writeFile
-} from "fs";
 import * as createDebug from "debug";
-
-import {
-  domainsDir,
-  rootCADir,
-  ensureConfigDirs,
-  getLegacyConfigDir,
-  rootCAKeyPath,
-  rootCACertPath,
-  caSelfSignConfig,
-  opensslSerialFilePath,
-  opensslDatabaseFilePath,
-  caVersionFile
-} from "./constants";
-import currentPlatform from "./platforms";
-import { openssl, mktmp } from "./utils";
+import { writeFileSync as writeFile } from "fs";
 import { generateKey } from "./certificates";
-import { Options, CertOptions } from "./legacy";
+import { IOptions } from "./legacy";
+import currentPlatform from "./platforms";
+import { mktmp, openssl } from "./utils";
+import Workspace from "./workspace";
 
 const debug = createDebug("certin:certificate-authority");
-
-/**
- * Initializes the files OpenSSL needs to sign certificates as a certificate
- * authority, as well as our CA setup version
- */
-function seedConfigFiles(): void {
-  // This is v2 of the certificate authority setup
-  writeFile(caVersionFile, "2");
-  // OpenSSL CA files
-  writeFile(opensslDatabaseFilePath, "");
-  writeFile(opensslSerialFilePath, "01");
-}
-
-async function saveCertificateAuthorityCredentials(
-  keypath: string
-): Promise<void> {
-  debug(`Saving certificate authority credentials`);
-  const key = readFile(keypath, "utf-8");
-  await currentPlatform.writeProtectedFile(rootCAKeyPath, key);
-}
-/**
- * Remove as much of this libary's files and state as we can. This is necessary
- * when generating a new root certificate, and should be available to API
- * consumers as well.
- *
- * Not all of it will be removable. If certutil is not installed, we'll leave
- * Firefox alone. We try to remove files with maximum permissions, and if that
- * fails, we'll silently fail.
- *
- * It's also possible that the command to untrust will not work, and we'll
- * silently fail that as well; with no existing certificates anymore, the
- * security exposure there is minimal.
- *
- * @alpha
- */
-export function uninstall(): void {
-  currentPlatform.removeFromTrustStores(rootCACertPath);
-  currentPlatform.deleteProtectedFiles(domainsDir);
-  currentPlatform.deleteProtectedFiles(rootCADir);
-  currentPlatform.deleteProtectedFiles(getLegacyConfigDir());
-}
 
 /**
  * Install the once-per-machine trusted root CA. We'll use this CA to sign
@@ -72,14 +15,14 @@ export function uninstall(): void {
  * @internal
  */
 export default async function installCertificateAuthority(
-  options: Options = {},
-  certOptions: CertOptions
+  workspace: Workspace,
+  options: IOptions = {}
 ): Promise<void> {
   debug(
     `Uninstalling existing certificates, which will be void once any existing CA is gone`
   );
-  uninstall();
-  ensureConfigDirs();
+  workspace.uninstallCA();
+  workspace.cfg.ensureConfigDirs();
 
   debug(`Making a temp working directory for files to copied in`);
   const rootKeyPath = mktmp();
@@ -87,51 +30,27 @@ export default async function installCertificateAuthority(
   debug(
     `Generating the OpenSSL configuration needed to setup the certificate authority`
   );
-  seedConfigFiles();
+  workspace.seedConfigFiles();
 
   debug(`Generating a private key`);
-  generateKey(rootKeyPath);
+  generateKey(workspace, rootKeyPath);
 
   debug(`Generating a CA certificate`);
-  openssl(
-    `req -new -x509 -config "${caSelfSignConfig}" -key "${rootKeyPath}" -out "${rootCACertPath}" -days ${certOptions.caCertExpiry}`
-  );
+  openssl(workspace.cfg, workspace.getOpenSSLCaGenerationCommand(rootKeyPath));
 
   debug("Saving certificate authority credentials");
-  await saveCertificateAuthorityCredentials(rootKeyPath);
+  await workspace.saveCertificateAuthorityCredentials(rootKeyPath);
 
   debug(`Adding the root certificate authority to trust stores`);
-  await currentPlatform.addToTrustStores(rootCACertPath, options);
-}
-
-/**
- *
- * @param cb
- * @internal
- */
-export async function withCertificateAuthorityCredentials(
-  cb: ({
-    caKeyPath,
-    caCertPath
-  }: {
-    caKeyPath: string;
-    caCertPath: string;
-  }) => Promise<void> | void
-): Promise<void> {
-  debug(`Retrieving certificate authority credentials`);
-  const tmpCAKeyPath = mktmp();
-  const caKey = await currentPlatform.readProtectedFile(rootCAKeyPath);
-  writeFile(tmpCAKeyPath, caKey);
-  await cb({ caKeyPath: tmpCAKeyPath, caCertPath: rootCACertPath });
-  rm(tmpCAKeyPath);
+  await currentPlatform.addToTrustStores(workspace.cfg.rootCACertPath, options);
 }
 
 /**
  * @internal
  */
-function certErrors(): string {
+function certErrors(workspace: Workspace): string {
   try {
-    openssl(`x509 -in "${rootCACertPath}" -noout`);
+    openssl(workspace.cfg, `x509 -in "${workspace.cfg.rootCACertPath}" -noout`);
     return "";
   } catch (e) {
     return e.toString();
@@ -151,10 +70,10 @@ function certErrors(): string {
  * @internal
  */
 export async function ensureCACertReadable(
-  options: Options,
-  certOptions: CertOptions
+  workspace: Workspace,
+  options: IOptions
 ): Promise<void> {
-  if (!certErrors()) {
+  if (!certErrors(workspace)) {
     return;
   }
   /**
@@ -164,17 +83,17 @@ export async function ensureCACertReadable(
    */
   try {
     const caFileContents = await currentPlatform.readProtectedFile(
-      rootCACertPath
+      workspace.cfg.rootCACertPath
     );
-    currentPlatform.deleteProtectedFiles(rootCACertPath);
-    writeFile(rootCACertPath, caFileContents);
+    currentPlatform.deleteProtectedFiles(workspace.cfg.rootCACertPath);
+    writeFile(workspace.cfg.rootCACertPath, caFileContents);
   } catch (e) {
-    return installCertificateAuthority(options, certOptions);
+    return installCertificateAuthority(workspace, options);
   }
 
   // double check that we have a live one
-  const remainingErrors = certErrors();
+  const remainingErrors = certErrors(workspace);
   if (remainingErrors) {
-    return installCertificateAuthority(options, certOptions);
+    return installCertificateAuthority(workspace, options);
   }
 }

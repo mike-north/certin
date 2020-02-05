@@ -1,16 +1,16 @@
 import * as chalk from "chalk";
 import { logPasswordRequestNotice, makeLogger } from "./logging";
-import { Logger, CliUI } from "@certin/types";
+import { ILogger, ICliUI } from "@certin/types";
 
 /**
  * @internal
  */
-export interface UIOptions {
+export interface IUIOptions {
   appName: string;
   silent: boolean;
 }
 
-const DEFAULT_UI_OPTIONS: UIOptions = {
+const DEFAULT_UI_OPTIONS: IUIOptions = {
   silent: false,
   appName: "cert-in"
 };
@@ -18,13 +18,13 @@ const DEFAULT_UI_OPTIONS: UIOptions = {
 /**
  * @internal
  */
-class UI implements CliUI {
-  protected options: UIOptions;
+class UI implements ICliUI {
+  protected options: IUIOptions;
   public readonly LOG_PREFIX_TXT: string;
   public readonly LOG_PREFIX: string;
   public readonly WARN_PREFIX: string;
-  private _logger: Logger;
-  public constructor(opts: Partial<UIOptions>) {
+  private _logger: ILogger;
+  public constructor(opts: Partial<IUIOptions>) {
     this.options = { ...DEFAULT_UI_OPTIONS, ...opts };
     this.LOG_PREFIX_TXT = `[${this.options.appName.toUpperCase()}]`;
     this.LOG_PREFIX = chalk.white(this.LOG_PREFIX_TXT);
@@ -32,7 +32,7 @@ class UI implements CliUI {
     this._logger = makeLogger(this, this.options.silent);
   }
 
-  public logger(): Logger {
+  public logger(): ILogger {
     return this._logger;
   }
 

@@ -4,7 +4,7 @@ import { waitForUser } from "./utils";
 /**
  * @alpha
  */
-export interface UserInterface {
+export interface IUserInterface {
   getWindowsEncryptionPassword(): string | Promise<string>;
   warnChromeOnLinuxWithoutCertutil(): void | Promise<void>;
   closeFirefoxBeforeContinuing(): void | Promise<void>;
@@ -13,7 +13,7 @@ export interface UserInterface {
   waitForFirefoxWizard(): void | Promise<void>;
 }
 
-const DefaultUI: UserInterface = {
+const DefaultUI: IUserInterface = {
   async getWindowsEncryptionPassword() {
     return await passwordPrompt(
       "cert password (http://bit.ly/devcert-what-password?):"

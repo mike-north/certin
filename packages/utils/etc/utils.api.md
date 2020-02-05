@@ -6,6 +6,7 @@
 
 import * as execa from 'execa';
 import { ExtractArgs } from '@mike-north/types';
+import * as tmp from 'tmp';
 
 // Warning: (ae-internal-missing-underscore) The name "ExecaChildProcess" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -26,6 +27,26 @@ export type ExecSyncOptions = Exclude<ExtractArgs<typeof execa.sync>[2], undefin
 //
 // @internal (undocumented)
 export function hasSudo(): boolean;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (ae-internal-missing-underscore) The name "includeWildcards" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export function includeWildcards(list: string[]): string[];
+
+// @public (undocumented)
+export const isLinux: boolean;
+
+// @public (undocumented)
+export const isMac: boolean;
+
+// @public (undocumented)
+export const isWindows: boolean;
+
+// Warning: (ae-internal-missing-underscore) The name "mkTmpFile" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export function mkTmpFile(): tmp.SynchrounousResult;
 
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen

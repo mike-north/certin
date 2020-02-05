@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@certin/messages": "^0.0.0-dev.0",
+    "application-config-path": "^0.1.0",
     "debug": "^4.1.1",
     "execa": "^0.7.0"
   },

@@ -8,16 +8,16 @@ import {
 import * as createDebug from "debug";
 import { sync as commandExists } from "command-exists";
 import { run } from "../utils";
-import { Options } from "../legacy";
+import { IOptions } from "../legacy";
 import {
   addCertificateToNSSCertDB,
-  assertNotTouchingFiles,
   openCertificateInFirefox,
   closeFirefox,
   removeCertificateFromNSSCertDB,
   HOME
 } from "./shared";
-import { Platform } from "../platforms";
+import { IPlatform } from "../platforms";
+import Workspace from "../workspace";
 
 const debug = createDebug("certin:platforms:macos");
 
@@ -30,7 +30,8 @@ const getCertUtilPath = (): string =>
     "certutil"
   );
 
-export default class MacOSPlatform implements Platform {
+export default class MacOSPlatform implements IPlatform {
+  public constructor(protected workspace: Workspace) {}
   private FIREFOX_BUNDLE_PATH = "/Applications/Firefox.app";
   private FIREFOX_BIN_PATH = path.join(
     this.FIREFOX_BUNDLE_PATH,
@@ -52,7 +53,7 @@ export default class MacOSPlatform implements Platform {
    */
   public async addToTrustStores(
     certificatePath: string,
-    options: Options = {}
+    options: IOptions = {}
   ): Promise<void> {
     // Chrome, Safari, system utils
     debug("Adding root CA to macOS system keychain");
@@ -135,19 +136,19 @@ export default class MacOSPlatform implements Platform {
   }
 
   public deleteProtectedFiles(filepath: string): void {
-    assertNotTouchingFiles(filepath, "delete");
+    this.workspace.assertNotTouchingFiles(filepath, "delete");
     run(`sudo rm -rf "${filepath}"`);
   }
 
   public readProtectedFile(filepath: string): string {
-    assertNotTouchingFiles(filepath, "read");
+    this.workspace.assertNotTouchingFiles(filepath, "read");
     return run(`sudo cat "${filepath}"`)
       .toString()
       .trim();
   }
 
   public writeProtectedFile(filepath: string, contents: string): void {
-    assertNotTouchingFiles(filepath, "write");
+    this.workspace.assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
       run(`sudo rm "${filepath}"`);
     }
