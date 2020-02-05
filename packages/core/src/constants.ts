@@ -16,7 +16,7 @@ export const isLinux = process.platform === "linux";
 export const isWindows = process.platform === "win32";
 
 // Common paths
-export const configDir = applicationConfigPath("devcert");
+export const configDir = applicationConfigPath("certin");
 export const configPath: (...pathSegments: string[]) => string = path.join.bind(
   path,
   configDir
@@ -28,7 +28,7 @@ export const pathForDomain: (
   ...pathSegments: string[]
 ) => string = path.join.bind(path, domainsDir);
 
-export const caVersionFile = configPath("devcert-ca-version");
+export const caVersionFile = configPath("certin-ca-version");
 export const opensslSerialFilePath = configPath(
   "certificate-authority",
   "serial"
@@ -74,7 +74,7 @@ export function withDomainSigningRequestConfig(
 
 export function withDomainCertificateConfig(
   commonName: string,
-  alternativeNames: string[],
+  { alternativeNames }: { alternativeNames: string[] },
   cb: (filepath: string) => void
 ): void {
   const tmpFile = mktmp();
@@ -112,14 +112,14 @@ export const rootCACertPath = configPath(
 // Exposed for uninstallation purposes.
 export function getLegacyConfigDir(): string {
   if (isWindows && process.env.LOCALAPPDATA) {
-    return path.join(process.env.LOCALAPPDATA, "devcert", "config");
+    return path.join(process.env.LOCALAPPDATA, "certin", "config");
   } else {
     const uid = process.getuid && process.getuid();
     const userHome =
       isLinux && uid === 0
         ? path.resolve("/usr/local/share")
         : require("os").homedir();
-    return path.join(userHome, ".config", "devcert");
+    return path.join(userHome, ".config", "certin");
   }
 }
 

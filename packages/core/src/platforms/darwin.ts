@@ -19,7 +19,7 @@ import {
 } from "./shared";
 import { Platform } from "../platforms";
 
-const debug = createDebug("devcert:platforms:macos");
+const debug = createDebug("certin:platforms:macos");
 
 const getCertUtilPath = (): string =>
   path.join(
@@ -55,16 +55,14 @@ export default class MacOSPlatform implements Platform {
     options: Options = {}
   ): Promise<void> {
     // Chrome, Safari, system utils
-    debug("Adding devcert root CA to macOS system keychain");
+    debug("Adding root CA to macOS system keychain");
     run(
       `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain -p ssl -p basic "${certificatePath}"`
     );
 
     if (this.isFirefoxInstalled()) {
       // Try to use certutil to install the cert automatically
-      debug(
-        "Firefox install detected. Adding devcert root CA to Firefox trust store"
-      );
+      debug("Firefox install detected. Adding root CA to Firefox trust store");
       if (!this.isNSSInstalled()) {
         if (!options.skipCertutilInstall) {
           if (commandExists("brew")) {
@@ -105,7 +103,7 @@ export default class MacOSPlatform implements Platform {
   }
 
   public removeFromTrustStores(certificatePath: string): void {
-    debug("Removing devcert root CA from macOS system keychain");
+    debug("Removing root CA from macOS system keychain");
     try {
       if (existsSync(certificatePath)) {
         run(`sudo security remove-trusted-cert -d "${certificatePath}"`);

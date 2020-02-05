@@ -6,7 +6,7 @@ import sudoPrompt from "sudo-prompt";
 
 import { configPath } from "./constants";
 
-const debug = createDebug("devcert:util");
+const debug = createDebug("certin:util");
 
 export function run(cmd: string, options: ExecSyncOptions = {}): string {
   debug(`exec: \`${cmd}\``);
@@ -34,7 +34,7 @@ export function waitForUser(): Promise<void> {
 
 export function reportableError(message: string): Error {
   return new Error(
-    `${message} | This is a bug in devcert, please report the issue at https://github.com/davewasmer/devcert/issues`
+    `${message} | This is a bug in certin, please report the issue at https://github.com/mike-north/certin/issues`
   );
 }
 
@@ -48,7 +48,7 @@ export function sudo(cmd: string): Promise<string | null> {
   return new Promise((resolve, reject) => {
     sudoPrompt.exec(
       cmd,
-      { name: "devcert" },
+      { name: "certin" },
       (err: Error | null, stdout: string | null, stderr: string | null) => {
         const error =
           err ||

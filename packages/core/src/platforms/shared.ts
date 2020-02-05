@@ -12,7 +12,7 @@ import { isMac, isLinux, configDir, getLegacyConfigDir } from "../constants";
 import UI from "../user-interface";
 import { execSync as exec } from "child_process";
 
-const debug = createDebug("devcert:platforms:shared");
+const debug = createDebug("certin:platforms:shared");
 
 export const HOME = process.env.HOME
   ? process.env.HOME
@@ -62,7 +62,7 @@ export function addCertificateToNSSCertDB(
   doForNSSCertDB(nssDirGlob, (dir, version) => {
     const dirArg = version === "modern" ? `sql:${dir}` : dir;
     run(
-      `${certutilPath} -A -d "${dirArg}" -t 'C,,' -i "${certPath}" -n devcert`
+      `${certutilPath} -A -d "${dirArg}" -t 'C,,' -i "${certPath}" -n certin`
     );
   });
   debug(
@@ -81,7 +81,7 @@ export function removeCertificateFromNSSCertDB(
     try {
       if (existsSync(certPath)) {
         run(
-          `${certutilPath} -A -d "${dirArg}" -t 'C,,' -i "${certPath}" -n devcert`
+          `${certutilPath} -A -d "${dirArg}" -t 'C,,' -i "${certPath}" -n certin`
         );
       }
     } catch (e) {
@@ -93,6 +93,24 @@ export function removeCertificateFromNSSCertDB(
   debug(
     `finished scanning & installing certificate in NSS databases in ${nssDirGlob}`
   );
+}
+
+/**
+ * Check if Firefox is currently open
+ */
+function isFirefoxOpen(): boolean {
+  // NOTE: We use some Windows-unfriendly methods here (ps) because Windows
+  // never needs to check this, because it doesn't update the NSS DB
+  // automaticaly.
+  assert(
+    isMac || isLinux,
+    "checkForOpenFirefox was invoked on a platform other than Mac or Linux"
+  );
+  return exec("ps aux").includes("firefox");
+}
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
@@ -110,24 +128,6 @@ export async function closeFirefox(): Promise<void> {
       await sleep(50);
     }
   }
-}
-
-/**
- * Check if Firefox is currently open
- */
-function isFirefoxOpen(): boolean {
-  // NOTE: We use some Windows-unfriendly methods here (ps) because Windows
-  // never needs to check this, because it doesn't update the NSS DB
-  // automaticaly.
-  assert(
-    isMac || isLinux,
-    "checkForOpenFirefox was invoked on a platform other than Mac or Linux"
-  );
-  return exec("ps aux").indexOf("firefox") > -1;
-}
-
-async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
@@ -172,10 +172,15 @@ export async function openCertificateInFirefox(
         res.writeHead(200);
         Promise.resolve(
           UI.firefoxWizardPromptPage(`http://localhost:${port}/certificate`)
-        ).then(userResponse => {
-          res.write(userResponse);
-          res.end();
-        });
+        )
+          .then(userResponse => {
+            res.write(userResponse);
+            res.end();
+            return;
+          })
+          .catch((err: unknown) => {
+            throw new Error(`Problem writing certificate\n${err}`);
+          });
       }
     })
     .listen(port);
@@ -197,7 +202,7 @@ export function assertNotTouchingFiles(
     !filepath.startsWith(getLegacyConfigDir())
   ) {
     throw new Error(
-      `Devcert cannot ${operation} ${filepath}; it is outside known devcert config directories!`
+      `Cannot ${operation} ${filepath}; it is outside known certin config directories!`
     );
   }
 }
