@@ -1,6 +1,6 @@
 {
   "name": "@certin/cliux",
-  "version": "0.0.1-dev.18",
+  "version": "0.0.1-dev.19",
   "description": "> TODO: description",
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
@@ -37,8 +37,8 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certin/messages": "^0.0.0-dev.2",
-    "@certin/types": "^0.0.0-dev.2",
+    "@certin/messages": "^0.0.0-dev.3",
+    "@certin/types": "^0.0.0-dev.3",
     "chalk": "^3.0.0",
     "debug": "^4.1.1",
     "ora": "^4.0.3",
