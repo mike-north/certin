@@ -19,7 +19,7 @@ import { Options } from "../legacy";
 import UI from "../user-interface";
 import { Platform } from "../platforms";
 
-const debug = createDebug("devcert:platforms:linux");
+const debug = createDebug("certin:platforms:linux");
 
 export default class LinuxPlatform implements Platform {
   private FIREFOX_NSS_DIR = path.join(HOME, ".mozilla/firefox/*");
@@ -42,10 +42,10 @@ export default class LinuxPlatform implements Platform {
     certificatePath: string,
     options: Options = {}
   ): Promise<void> {
-    debug("Adding devcert root CA to Linux system-wide trust stores");
-    // run(`sudo cp ${ certificatePath } /etc/ssl/certs/devcert.crt`);
+    debug("Adding root CA to Linux system-wide trust stores");
+    // run(`sudo cp ${ certificatePath } /etc/ssl/certs/certin.crt`);
     run(
-      `sudo cp "${certificatePath}" /usr/local/share/ca-certificates/devcert.crt`
+      `sudo cp "${certificatePath}" /usr/local/share/ca-certificates/certin.crt`
     );
     // run(`sudo bash -c "cat ${ certificatePath } >> /etc/ssl/certs/ca-certificates.crt"`);
     run(`sudo update-ca-certificates`);
@@ -53,7 +53,7 @@ export default class LinuxPlatform implements Platform {
     if (this.isFirefoxInstalled()) {
       // Firefox
       debug(
-        "Firefox install detected: adding devcert root CA to Firefox-specific trust stores ..."
+        "Firefox install detected: adding local root CA to Firefox-specific trust stores ..."
       );
       if (!commandExists("certutil")) {
         if (options.skipCertutilInstall) {
@@ -85,7 +85,7 @@ export default class LinuxPlatform implements Platform {
 
     if (this.isChromeInstalled()) {
       debug(
-        "Chrome install detected: adding devcert root CA to Chrome trust store ..."
+        "Chrome install detected: adding root CA to Chrome trust store ..."
       );
       if (!commandExists("certutil")) {
         UI.warnChromeOnLinuxWithoutCertutil();
@@ -106,7 +106,7 @@ export default class LinuxPlatform implements Platform {
 
   public removeFromTrustStores(certificatePath: string): void {
     try {
-      run(`sudo rm /usr/local/share/ca-certificates/devcert.crt`);
+      run(`sudo rm /usr/local/share/ca-certificates/certin.crt`);
       run(`sudo update-ca-certificates`);
     } catch (e) {
       debug(

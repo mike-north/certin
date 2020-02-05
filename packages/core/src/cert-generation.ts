@@ -119,10 +119,9 @@ export async function ensureCertExists(
 }
 
 /**
- * Remove any existing pemberly-secure self-signed
+ * Remove any existing self-signed
  * certificates from the trust store.
  *
- * NOTE: if other tools use [devcert](https://github.com/davewasmer/devcert) to manage certificates, their certs will be removed as well
  * @beta
  */
 export function cleanupTrustStore(ui: UI): void {

@@ -11,7 +11,7 @@ import { openssl } from "./utils";
 import { withCertificateAuthorityCredentials } from "./certificate-authority";
 import { CertOptions } from "./legacy";
 
-const debug = createDebug("devcert:certificates");
+const debug = createDebug("certin:certificates");
 
 // Generate a cryptographic key, used to sign certificates or certificate signing requests.
 export function generateKey(filename: string): void {
@@ -21,10 +21,10 @@ export function generateKey(filename: string): void {
 }
 
 /**
- * Generate a domain certificate signed by the devcert root CA. Domain
+ * Generate a domain certificate signed by the root CA. Domain
  * certificates are cached in their own directories under
  * CONFIG_ROOT/domains/<domain>, and reused on subsequent requests. Because the
- * individual domain certificates are signed by the devcert root CA (which was
+ * individual domain certificates are signed by the root CA (which was
  * added to the OS/browser trust stores), they are trusted.
  */
 export default async function generateDomainCertificate(
@@ -58,7 +58,7 @@ export default async function generateDomainCertificate(
   await withCertificateAuthorityCredentials(({ caKeyPath, caCertPath }) => {
     withDomainCertificateConfig(
       commonName,
-      alternativeNames,
+      { alternativeNames },
       domainCertConfigPath => {
         openssl(
           `ca -config "${domainCertConfigPath}" -in "${csrFile}" -out "${domainCertPath}" -keyfile "${caKeyPath}" -cert "${caCertPath}" -days ${certOptions.domainCertExpiry} -batch`

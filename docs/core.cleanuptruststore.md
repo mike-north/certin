@@ -7,9 +7,7 @@
 > This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
 > 
 
-Remove any existing pemberly-secure self-signed certificates from the trust store.
-
-NOTE: if other tools use \[devcert\](https://github.com/davewasmer/devcert) to manage certificates, their certs will be removed as well
+Remove any existing self-signed certificates from the trust store.
 
 <b>Signature:</b>
 

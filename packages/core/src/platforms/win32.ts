@@ -8,7 +8,7 @@ import { Platform } from "../platforms";
 import { run, sudo } from "../utils";
 import UI from "../user-interface";
 
-const debug = createDebug("devcert:platforms:windows");
+const debug = createDebug("certin:platforms:windows");
 
 let encryptionKey: string | null;
 
@@ -28,7 +28,7 @@ export default class WindowsPlatform implements Platform {
     options: Options = {}
   ): Promise<void> {
     // IE, Chrome, system utils
-    debug("adding devcert root to Windows OS trust store");
+    debug("adding root to Windows OS trust store");
     try {
       run(`certutil -addstore -user root "${certificatePath}"`);
     } catch (e) {
@@ -38,7 +38,7 @@ export default class WindowsPlatform implements Platform {
         }
       });
     }
-    debug("adding devcert root to Firefox trust store");
+    debug("adding root to Firefox trust store");
     // Firefox (don't even try NSS certutil, no easy install for Windows)
     try {
       await openCertificateInFirefox("start firefox", certificatePath);
@@ -48,12 +48,12 @@ export default class WindowsPlatform implements Platform {
   }
 
   public removeFromTrustStores(certificatePath: string): void {
-    debug("removing devcert root from Windows OS trust store");
+    debug("removing root from Windows OS trust store");
     try {
       console.warn(
-        "Removing old certificates from trust stores. You may be prompted to grant permission for this. It's safe to delete old devcert certificates."
+        "Removing old certificates from trust stores. You may be prompted to grant permission for this. It's safe to delete old certificates."
       );
-      run(`certutil -delstore -user root devcert`);
+      run(`certutil -delstore -user root certin`);
     } catch (e) {
       debug(
         `failed to remove ${certificatePath} from Windows OS trust store, continuing. ${e.toString()}`

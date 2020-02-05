@@ -22,14 +22,14 @@ import { openssl, mktmp } from "./utils";
 import { generateKey } from "./certificates";
 import { Options, CertOptions } from "./legacy";
 
-const debug = createDebug("devcert:certificate-authority");
+const debug = createDebug("certin:certificate-authority");
 
 /**
  * Initializes the files OpenSSL needs to sign certificates as a certificate
  * authority, as well as our CA setup version
  */
 function seedConfigFiles(): void {
-  // This is v2 of the devcert certificate authority setup
+  // This is v2 of the certificate authority setup
   writeFile(caVersionFile, "2");
   // OpenSSL CA files
   writeFile(opensslDatabaseFilePath, "");
@@ -39,12 +39,12 @@ function seedConfigFiles(): void {
 async function saveCertificateAuthorityCredentials(
   keypath: string
 ): Promise<void> {
-  debug(`Saving devcert's certificate authority credentials`);
+  debug(`Saving certificate authority credentials`);
   const key = readFile(keypath, "utf-8");
   await currentPlatform.writeProtectedFile(rootCAKeyPath, key);
 }
 /**
- * Remove as much of the devcert files and state as we can. This is necessary
+ * Remove as much of this libary's files and state as we can. This is necessary
  * when generating a new root certificate, and should be available to API
  * consumers as well.
  *
@@ -118,7 +118,7 @@ export async function withCertificateAuthorityCredentials(
     caCertPath: string;
   }) => Promise<void> | void
 ): Promise<void> {
-  debug(`Retrieving devcert's certificate authority credentials`);
+  debug(`Retrieving certificate authority credentials`);
   const tmpCAKeyPath = mktmp();
   const caKey = await currentPlatform.readProtectedFile(rootCAKeyPath);
   writeFile(tmpCAKeyPath, caKey);
@@ -144,7 +144,7 @@ function certErrors(): string {
  * In v1.1.0 there are new options for retrieving the CA cert directly,
  * to help third-party Node apps trust the root CA.
  *
- * If a v1.0.x cert already exists, then devcert has written it with
+ * If a v1.0.x cert already exists, then we have written it with
  * platform.writeProtectedFile(), so an unprivileged readFile cannot access it.
  * Pre-detect and remedy this; it should only happen once per installation.
  *

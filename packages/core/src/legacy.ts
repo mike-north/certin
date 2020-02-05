@@ -25,7 +25,7 @@ import generateDomainCertificate from "./certificates";
 import UI, { UserInterface } from "./user-interface";
 export { uninstall } from "./certificate-authority";
 export { UserInterface } from "./user-interface";
-const debug = createDebug("devcert");
+const debug = createDebug("certin");
 /**
  * @alpha
  */
@@ -141,7 +141,7 @@ async function certificateForImpl<
     await installCertificateAuthority(options, certOptions);
   } else if (options.getCaBuffer || options.getCaPath) {
     debug(
-      "Root CA is not readable, but it probably is because an earlier version of devcert locked it. Trying to fix..."
+      "Root CA is not readable, but it probably is because an earlier version of certin locked it. Trying to fix..."
     );
     await ensureCACertReadable(options, certOptions);
   }
@@ -170,11 +170,11 @@ async function certificateForImpl<
 }
 
 /**
- * Request an SSL certificate for the given app name signed by the devcert root
- * certificate authority. If devcert has previously generated a certificate for
+ * Request an SSL certificate for the given app name signed by the root
+ * certificate authority. If this library has previously generated a certificate for
  * that app name on this machine, it will reuse that certificate.
  *
- * If this is the first time devcert is being run on this machine, it will
+ * If this is the first time this library is being run on this machine, it will
  * generate and attempt to install a root certificate authority.
  *
  * Returns a promise that resolves with \{ key, cert \}, where `key` and `cert`
