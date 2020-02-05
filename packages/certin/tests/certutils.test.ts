@@ -1,7 +1,7 @@
-import { certificateFor } from "certin";
+import { ensureCertExists } from "certin";
 
 QUnit.module("certin", () => {
-  QUnit.test("'certificateFor' export exists", assert => {
-    assert.ok(certificateFor);
+  QUnit.test("'ensureCertExists' export exists", assert => {
+    assert.ok(ensureCertExists);
   });
 });

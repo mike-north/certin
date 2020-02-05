@@ -9,7 +9,7 @@ import {
 } from "./constants";
 import { openssl } from "./utils";
 import { withCertificateAuthorityCredentials } from "./certificate-authority";
-import { CertOptions } from "./index";
+import { CertOptions } from "./legacy";
 
 const debug = createDebug("devcert:certificates");
 

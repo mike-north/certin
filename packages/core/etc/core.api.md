@@ -4,74 +4,33 @@
 
 ```ts
 
-// @alpha (undocumented)
-export interface CaBuffer {
+import { UI } from '@certin/cliux';
+
+// @public
+export interface CertGenerationOptions {
     // (undocumented)
-    ca: Buffer;
+    caDays: number;
+    // (undocumented)
+    days: number;
+    // (undocumented)
+    forceMode: boolean;
+    // (undocumented)
+    interactiveMode: boolean;
+    // (undocumented)
+    signDomainCertWithDevCa: boolean;
+    // (undocumented)
+    silentMode: boolean;
+    // (undocumented)
+    subjectAlternateNames: string[];
 }
 
-// @alpha (undocumented)
-export interface CaPath {
-    // (undocumented)
-    caPath: string;
-}
+// @beta
+export function cleanupTrustStore(ui: UI): void;
 
-// @alpha
-export function certificateFor<O extends Options, CO extends Partial<CertOptions>>(domain: string, options?: O, partialCertOptions?: CO): Promise<IReturnData<O>>;
+// @public
+export function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: UI): Promise<void>;
 
-// @alpha (undocumented)
-export function certificateFor<O extends Options, CO extends Partial<CertOptions>>(commonName: string, alternativeNames: string[], options?: O, partialCertOptions?: CO): Promise<IReturnData<O>>;
 
-// @alpha (undocumented)
-export interface CertOptions {
-    caCertExpiry: number;
-    domainCertExpiry: number;
-}
-
-// @alpha (undocumented)
-export interface DomainData {
-    // (undocumented)
-    cert: Buffer;
-    // (undocumented)
-    key: Buffer;
-}
-
-// @alpha (undocumented)
-export type IReturnCa<O extends Options> = O["getCaBuffer"] extends true ? CaBuffer : false;
-
-// @alpha (undocumented)
-export type IReturnCaPath<O extends Options> = O["getCaPath"] extends true ? CaPath : false;
-
-// @alpha (undocumented)
-export type IReturnData<O extends Options = {}> = DomainData & IReturnCa<O> & IReturnCaPath<O>;
-
-// @alpha (undocumented)
-export interface Options {
-    getCaBuffer?: boolean;
-    getCaPath?: boolean;
-    skipCertutilInstall?: boolean;
-    skipHostsFile?: boolean;
-    ui?: UserInterface;
-}
-
-// @alpha
-export function uninstall(): void;
-
-// @alpha (undocumented)
-export interface UserInterface {
-    // (undocumented)
-    closeFirefoxBeforeContinuing(): void | Promise<void>;
-    // (undocumented)
-    firefoxWizardPromptPage(certificateURL: string): string | Promise<string>;
-    // (undocumented)
-    getWindowsEncryptionPassword(): string | Promise<string>;
-    // (undocumented)
-    startFirefoxWizard(certificateHost: string): void | Promise<void>;
-    // (undocumented)
-    waitForFirefoxWizard(): void | Promise<void>;
-    // (undocumented)
-    warnChromeOnLinuxWithoutCertutil(): void | Promise<void>;
-}
-
+// (No @packageDocumentation comment for this package)
 
 ```

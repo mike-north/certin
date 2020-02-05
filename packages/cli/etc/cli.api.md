@@ -4,8 +4,10 @@
 
 ```ts
 
-// @alpha (undocumented)
-export function cli(): void;
+// Warning: (ae-internal-missing-underscore) The name "main" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function main(_args: string[]): void;
 
 
 // (No @packageDocumentation comment for this package)

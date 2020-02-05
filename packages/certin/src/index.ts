@@ -1,3 +1,3 @@
-export { certificateFor } from "@certin/core";
+export { ensureCertExists } from "@certin/core";
 
 // export const certificateFor = _certificateFor;

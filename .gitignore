@@ -113,3 +113,4 @@ packages/*/tests_js/
 # API Extractor Temp
 temp/
 packages/*/temp/
+packages/*/.private-types

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-yarn rimraf dist temp
+yarn rimraf dist temp '.private-types'

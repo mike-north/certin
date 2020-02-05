@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../tests_js",
+    "rootDir": ".",
+    "types": ["qunit"],
+    "baseUrl": ".",
+    "paths": {
+      "@certin/types": ["../dist/types-private.d.ts"]
+    }
+  },
+  "references": [{ "path": ".." }],
+  "include": ["."]
+}

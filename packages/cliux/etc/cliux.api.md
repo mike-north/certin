@@ -4,8 +4,41 @@
 
 ```ts
 
-// @alpha (undocumented)
-export function cliux(): void;
+import { Logger } from '@certin/types';
+
+// Warning: (ae-internal-missing-underscore) The name "hasSudo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function hasSudo(): boolean;
+
+// Warning: (ae-internal-missing-underscore) The name "UI" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export class UI {
+    constructor(opts: Partial<UIOptions>);
+    // (undocumented)
+    readonly LOG_PREFIX: string;
+    // (undocumented)
+    readonly LOG_PREFIX_TXT: string;
+    // (undocumented)
+    logger(): Logger;
+    // (undocumented)
+    logPasswordRequestNotice(reason: string): void;
+    // (undocumented)
+    protected options: UIOptions;
+    // (undocumented)
+    readonly WARN_PREFIX: string;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "UIOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface UIOptions {
+    // (undocumented)
+    appName: string;
+    // (undocumented)
+    silent: boolean;
+}
 
 
 // (No @packageDocumentation comment for this package)

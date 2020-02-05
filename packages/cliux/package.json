@@ -35,7 +35,8 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certin/core": "^0.0.1-dev.11",
+    "@certin/messages": "^0.0.0-dev.0",
+    "@certin/types": "^0.0.0-dev.0",
     "chalk": "^3.0.0",
     "debug": "^4.1.1",
     "ora": "^4.0.3",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@microsoft/api-documenter": "^7.7.12",
     "@microsoft/api-extractor": "^7.7.8",
+    "@mike-north/types": "^1.3.1",
     "@types/chalk": "^2.2.0",
     "@types/debug": "^4.1.5",
     "@types/node": "^8.5.7",
