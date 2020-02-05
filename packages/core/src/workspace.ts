@@ -24,6 +24,7 @@ import {
   writeFileSync as writeFile
 } from "fs";
 import * as rimraf from "rimraf";
+import * as path from "path";
 import { IPlatform, IPlatformFactory } from "./platforms";
 
 const debug = _createDebug("certin:core:workspace");
@@ -39,8 +40,11 @@ class Workspace {
     const platformName = process.platform;
     assert(platformName, "platform name is missing");
     debug(`identified current platform name: ${platformName}`);
-    const PlatformClass = require(`./${platformName}`)
-      .default as IPlatformFactory;
+    const PlatformClass = require(path.join(
+      __dirname,
+      "platforms",
+      platformName
+    )).default as IPlatformFactory;
     assert(PlatformClass, "platform class is missing");
     debug(`found platform class ${PlatformClass}`);
     this.platform = new PlatformClass(this);

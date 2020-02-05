@@ -132,43 +132,54 @@ function reifyOptions(
  */
 class CertinConfig implements ICertinConfig {
   public options: ICertinConfigOptions;
-  public readonly configDir = applicationConfigPath(this.options.ux.appName);
-  public readonly caVersionFile = this.getConfigPath(
-    this.options.ux.appName + "-ca-version"
-  );
-  public readonly opensslSerialFilePath = this.getConfigPath(
-    "certificate-authority",
-    "serial"
-  );
-  public readonly opensslDatabaseFilePath = this.getConfigPath(
-    "certificate-authority",
-    "index.txt"
-  );
-  private readonly openSSLConfigPath = path.join(
-    __dirname,
-    "../openssl-configurations" // TODO
-  );
-  public readonly caSelfSignConfig = this.getPathForOpenSSLConfig(
-    "certificate-authority-self-signing.conf"
-  );
-  public readonly domainCsrConfig = this.getPathForOpenSSLConfig(
-    "domain-certificate-signing-requests.conf"
-  );
-  public readonly domainCertConfig = this.getPathForOpenSSLConfig(
-    "domain-certificates.conf"
-  );
-  public readonly rootCADir = this.getConfigPath("certificate-authority");
-  public readonly rootCAKeyPath = this.getConfigPath(
-    "certificate-authority",
-    "private-key.key"
-  );
-  public readonly rootCACertPath = this.getConfigPath(
-    "certificate-authority",
-    "certificate.cert"
-  );
 
+  public readonly configDir: string;
+  public readonly caVersionFile: string;
+  public readonly opensslSerialFilePath: string;
+  public readonly opensslDatabaseFilePath: string;
+  private readonly openSSLConfigPath: string;
+  public readonly caSelfSignConfig: string;
+  public readonly domainCsrConfig: string;
+  public readonly domainCertConfig: string;
+  public readonly rootCADir: string;
+  public readonly rootCAKeyPath: string;
+  public readonly rootCACertPath: string;
   public constructor(options: ICertinUserFacingOptions) {
     this.options = reifyOptions(convertFromUserFacingOptions(options));
+    this.configDir = applicationConfigPath(this.options.ux.appName);
+    this.caVersionFile = this.getConfigPath(
+      this.options.ux.appName + "-ca-version"
+    );
+    this.opensslSerialFilePath = this.getConfigPath(
+      "certificate-authority",
+      "serial"
+    );
+    this.opensslDatabaseFilePath = this.getConfigPath(
+      "certificate-authority",
+      "index.txt"
+    );
+    this.openSSLConfigPath = path.join(
+      __dirname,
+      "../openssl-configurations" // TODO
+    );
+    this.caSelfSignConfig = this.getPathForOpenSSLConfig(
+      "certificate-authority-self-signing.conf"
+    );
+    this.domainCsrConfig = this.getPathForOpenSSLConfig(
+      "domain-certificate-signing-requests.conf"
+    );
+    this.domainCertConfig = this.getPathForOpenSSLConfig(
+      "domain-certificates.conf"
+    );
+    this.rootCADir = this.getConfigPath("certificate-authority");
+    this.rootCAKeyPath = this.getConfigPath(
+      "certificate-authority",
+      "private-key.key"
+    );
+    this.rootCACertPath = this.getConfigPath(
+      "certificate-authority",
+      "certificate.cert"
+    );
   }
   public getConfigPath(...pathSegments: string[]): string {
     return path.join(this.configDir, ...pathSegments);

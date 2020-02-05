@@ -114,3 +114,8 @@ packages/*/tests_js/
 temp/
 packages/*/temp/
 packages/*/.private-types
+
+## Certs
+**/*.pem
+**/*.crt
+**/*.key
