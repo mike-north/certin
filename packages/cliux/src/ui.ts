@@ -1,6 +1,6 @@
 import * as chalk from "chalk";
 import { logPasswordRequestNotice, makeLogger } from "./logging";
-import { Logger } from "@certin/types";
+import { Logger, CliUI } from "@certin/types";
 
 /**
  * @internal
@@ -18,7 +18,7 @@ const DEFAULT_UI_OPTIONS: UIOptions = {
 /**
  * @internal
  */
-class UI {
+class UI implements CliUI {
   protected options: UIOptions;
   public readonly LOG_PREFIX_TXT: string;
   public readonly LOG_PREFIX: string;

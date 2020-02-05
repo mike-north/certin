@@ -1,2 +1,2 @@
 #!/bin/bash
-yarn tsc
+yarn tsc && yarn api-extractor run --local --verbose 

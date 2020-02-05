@@ -19,7 +19,8 @@ import {
   PROMPT_SHOULD_WE_OVERWRITE_IT,
   SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS
 } from "@certin/messages";
-import { hasSudo, UI } from "@certin/cliux";
+import { CliUI } from "@certin/types";
+import { hasSudo } from "@certin/utils";
 
 const debug = _debug("pemberly-secure");
 
@@ -57,7 +58,7 @@ export async function ensureCertExists(
   subjectName: string,
   pemPath: string,
   opts: Partial<CertGenerationOptions> = {},
-  ui: UI
+  ui: CliUI
 ): Promise<void> {
   const options = { ...DEFAULT_CERT_GENERATION_OPTIONS, ...opts };
   const { log } = ui.logger();
@@ -124,7 +125,7 @@ export async function ensureCertExists(
  *
  * @beta
  */
-export function cleanupTrustStore(ui: UI): void {
+export function cleanupTrustStore(ui: CliUI): void {
   const { log } = ui.logger();
   log(LOG_CLEANING_UP_TRUST_STORE);
   if (!hasSudo()) {

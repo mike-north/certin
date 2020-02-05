@@ -1,8 +1,15 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "eslint.enable": true,
-  "eslint.workingDirectories": [{ "pattern": "./packages/*/" }],
-  "files.associations": { "*.json": "jsonc" },
+  "eslint.workingDirectories": [
+    {
+      "pattern": "./packages/*/"
+    }
+  ],
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.json": "jsonc"
+  },
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -15,5 +22,11 @@
     "**/.DS_Store": true,
     "packages/*/tests_js": true,
     "**/tsconfig.tsbuildinfo": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/tests_js": true
   }
 }

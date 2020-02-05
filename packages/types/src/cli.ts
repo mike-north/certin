@@ -23,3 +23,11 @@ export interface Logger {
   log: LoggerFn;
   warn: LoggerFn;
 }
+
+/**
+ * @internal
+ */
+export interface CliUI {
+  logger(): Logger;
+  logPasswordRequestNotice(reason: string): void;
+}

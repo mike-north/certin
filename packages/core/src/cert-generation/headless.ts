@@ -1,11 +1,11 @@
 import * as selfsigned from "selfsigned";
 import { CertGenerationOptions } from "../cert-generation";
-import { UI } from "@certin/cliux";
+import { CliUI } from "@certin/types";
 
 export function ensureHeadlessCertExists(
   subjectName: string,
   options: CertGenerationOptions,
-  _ui: UI
+  _ui: CliUI
 ): { key: string; cert: string } {
   const attrs = [{ name: "commonName", value: subjectName }];
   const pems = selfsigned.generate(attrs, {

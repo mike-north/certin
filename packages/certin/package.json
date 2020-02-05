@@ -5,7 +5,7 @@
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
   "license": "BSD-2-Clause",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "typings": "dist/certin.d.ts",
   "directories": {
     "lib": "lib"
@@ -19,6 +19,8 @@
   },
   "scripts": {
     "build": "scripty",
+    "watch": "SCRIPTY_PARALLEL=true scripty",
+    "extract-api": "scripty",
     "prepack": "scripty",
     "build:ts": "scripty",
     "lint": "scripty",
