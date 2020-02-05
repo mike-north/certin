@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.0.3-dev.4"></a>
+## [0.0.3-dev.4](https://github.com/mike-north/certin/compare/@certin/cliux@0.0.3-dev.3...@certin/cliux@0.0.3-dev.4) (2020-02-05)
+
+
+
+
+**Note:** Version bump only for package @certin/cliux
+
 <a name="0.0.3-dev.3"></a>
 ## [0.0.3-dev.3](https://github.com/mike-north/certin/compare/@certin/cliux@0.0.1-dev.19...@certin/cliux@0.0.3-dev.3) (2020-02-05)
 

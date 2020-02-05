@@ -1,6 +1,6 @@
 {
   "name": "certin",
-  "version": "0.0.3-dev.3",
+  "version": "0.0.3-dev.4",
   "description": "> TODO: description",
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
@@ -39,8 +39,8 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certin/cli": "^0.0.4-dev.3",
-    "@certin/core": "^0.0.3-dev.3",
+    "@certin/cli": "^0.0.4-dev.4",
+    "@certin/core": "^0.0.3-dev.4",
     "debug": "^4.1.1"
   },
   "devDependencies": {

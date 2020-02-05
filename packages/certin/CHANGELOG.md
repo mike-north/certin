@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.0.3-dev.4"></a>
+## [0.0.3-dev.4](https://github.com/mike-north/certin/compare/certin@0.0.3-dev.3...certin@0.0.3-dev.4) (2020-02-05)
+
+
+
+
+**Note:** Version bump only for package certin
+
 <a name="0.0.3-dev.3"></a>
 ## [0.0.3-dev.3](https://github.com/mike-north/certin/compare/certin@0.0.0-dev.19...certin@0.0.3-dev.3) (2020-02-05)
 
