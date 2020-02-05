@@ -4,7 +4,7 @@ import { assertIsBoolean } from "../validation";
 import { cleanupTrustStore, Workspace } from "@certin/core";
 import { UI, IUIOptions } from "@certin/cliux";
 
-const debug = _createDebug("pemberly-secure:cli:cert");
+const debug = _createDebug("certin:cli:cert");
 
 function addCleanCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
   return y.command(

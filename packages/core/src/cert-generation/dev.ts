@@ -16,7 +16,7 @@ import * as _createDebug from "debug";
 import * as core from "../legacy";
 import Workspace from "../workspace";
 
-const debug = _createDebug("pemberly-secure:dev-cert");
+const debug = _createDebug("certin:dev-cert");
 
 export async function ensureDevCertExists(
   workspace: Workspace,

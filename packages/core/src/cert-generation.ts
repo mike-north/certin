@@ -23,7 +23,7 @@ import { ICliUI } from "@certin/types";
 import { hasSudo } from "@certin/utils";
 import Workspace from "./workspace";
 
-const debug = _debug("pemberly-secure");
+const debug = _debug("certin");
 
 // /**
 //  * Certificate generation options

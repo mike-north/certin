@@ -14,11 +14,11 @@ export function main(_args: string[]): void {
       "strip-dashed": true,
       "strip-aliased": true
     })
-    .env("PEMBERLY_SECURE")
+    .env("CERTIN")
     .config("config", function(configPath) {
       return readJSONSync(configPath);
     })
-    .pkgConf("pemberly-secure")
+    .pkgConf("certin")
     .option("non-interactive", {
       type: "boolean",
       default: !isInteractive(),

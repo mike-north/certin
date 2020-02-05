@@ -72,10 +72,10 @@ export const LOG_CERT_GENERATION_COMPLETE = (subjectName: string): string =>
 
 /** @internal */
 export const SUDO_REASON_NEW_CERT_PERMISSIONS =
-  "pemberly-secure is attempting to set appropriate file permissions on your new cert and private key";
+  "we are attempting to set appropriate file permissions on your new cert and private key";
 /** @internal */
 export const SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS =
-  "pemberly-secure needs your permission to access your OS trust store, in order to remove any pertinent self-signed certificates";
+  "we need your permission to access your OS trust store, in order to remove any pertinent self-signed certificates";
 
 /** @internal */
 export const LOG_CERT_WROTE_TO_LOCATION = ({
@@ -135,7 +135,7 @@ export const ASSERT_CERT_EXISTS = "cert content exists";
 export const ASSERT_KEY_EXISTS = "key content exists";
 
 /** @internal */
-export const LOG_CLEANING_UP_TRUST_STORE = `Cleaning up any pemberly-secure self-signed certificates from your trust store`;
+export const LOG_CLEANING_UP_TRUST_STORE = `Cleaning up any relevant self-signed certificates from your trust store`;
 /** @internal */
 export const ERROR_WHILE_SUDOING = (err: any): string =>
   `Unexpected error while trying to detect sudo elevation: ${err.toString()}`;

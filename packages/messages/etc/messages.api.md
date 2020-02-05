@@ -54,7 +54,7 @@ export const LOG_CERT_WROTE_TO_LOCATION: ({ subjectName, subjectAlternateNames, 
 // Warning: (ae-internal-missing-underscore) The name "LOG_CLEANING_UP_TRUST_STORE" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export const LOG_CLEANING_UP_TRUST_STORE = "Cleaning up any pemberly-secure self-signed certificates from your trust store";
+export const LOG_CLEANING_UP_TRUST_STORE = "Cleaning up any relevant self-signed certificates from your trust store";
 
 // Warning: (ae-internal-missing-underscore) The name "LOG_CREATE_NEW_CERT" should be prefixed with an underscore because the declaration is marked as @internal
 //
@@ -117,12 +117,12 @@ export const PROMPT_SHOULD_WE_OVERWRITE_IT: (pemPath: string) => string;
 // Warning: (ae-internal-missing-underscore) The name "SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export const SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS = "pemberly-secure needs your permission to access your OS trust store, in order to remove any pertinent self-signed certificates";
+export const SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS = "we need your permission to access your OS trust store, in order to remove any pertinent self-signed certificates";
 
 // Warning: (ae-internal-missing-underscore) The name "SUDO_REASON_NEW_CERT_PERMISSIONS" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export const SUDO_REASON_NEW_CERT_PERMISSIONS = "pemberly-secure is attempting to set appropriate file permissions on your new cert and private key";
+export const SUDO_REASON_NEW_CERT_PERMISSIONS = "we are attempting to set appropriate file permissions on your new cert and private key";
 
 
 // (No @packageDocumentation comment for this package)
