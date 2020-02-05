@@ -21,6 +21,9 @@
   "scripty": {
     "path": "../../scripts"
   },
+  "bin": {
+    "certin": "bin/certin"
+  },
   "scripts": {
     "build": "scripty",
     "watch": "SCRIPTY_PARALLEL=true scripty",
