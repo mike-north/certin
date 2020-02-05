@@ -4,17 +4,13 @@
 
 ```ts
 
+import { CliUI } from '@certin/types';
 import { Logger } from '@certin/types';
-
-// Warning: (ae-internal-missing-underscore) The name "hasSudo" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export function hasSudo(): boolean;
 
 // Warning: (ae-internal-missing-underscore) The name "UI" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export class UI {
+export class UI implements CliUI {
     constructor(opts: Partial<UIOptions>);
     // (undocumented)
     readonly LOG_PREFIX: string;

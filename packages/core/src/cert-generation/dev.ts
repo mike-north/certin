@@ -10,7 +10,8 @@ import {
   ASSERT_KEY_EXISTS,
   ASSERT_CERT_EXISTS
 } from "@certin/messages";
-import { hasSudo, UI } from "@certin/cliux";
+import { CliUI } from "@certin/types";
+import { hasSudo } from "@certin/utils";
 import * as _createDebug from "debug";
 import * as core from "../legacy";
 import * as assert from "assert";
@@ -20,7 +21,7 @@ const debug = _createDebug("pemberly-secure:dev-cert");
 export async function ensureDevCertExists(
   subjectName: string,
   options: CertGenerationOptions,
-  ui: UI
+  ui: CliUI
 ): Promise<{ key: string; cert: string }> {
   const { subjectAlternateNames, days, caDays } = options;
   const { log } = ui.logger();

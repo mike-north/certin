@@ -17,6 +17,7 @@
     "@types/yargs": "^13.0.5",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
+    "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-async-await": "^0.0.0",
@@ -24,6 +25,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
     "lerna": "^2.11.0",
+    "nodemon": "^2.0.2",
     "qunit": "^2.9.3",
     "rimraf": "^3.0.1",
     "scripty": "^1.9.1",
@@ -39,6 +41,7 @@
   },
   "scripts": {
     "ver": "scripty",
+    "watch": "lerna run watch --stream --parallel",
     "clean": "SCRIPTY_SILENT=true lerna run clean --parallel && rimraf temp 'docs/**/*.md'",
     "build": "( test -f docs/_config.yml && mv docs/_config.yml ./ ) || rimraf temp docs && yarn build:packages && yarn build:docs && mv ./_config.yml docs",
     "build:packages": "lerna run build",

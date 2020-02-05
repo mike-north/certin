@@ -4,7 +4,7 @@
 
 ```ts
 
-import { UI } from '@certin/cliux';
+import { CliUI } from '@certin/types';
 
 // @public
 export interface CertGenerationOptions {
@@ -25,10 +25,10 @@ export interface CertGenerationOptions {
 }
 
 // @beta
-export function cleanupTrustStore(ui: UI): void;
+export function cleanupTrustStore(ui: CliUI): void;
 
 // @public
-export function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: UI): Promise<void>;
+export function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: CliUI): Promise<void>;
 
 
 // (No @packageDocumentation comment for this package)

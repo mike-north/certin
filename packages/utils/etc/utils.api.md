@@ -22,6 +22,11 @@ export type ExecAsyncOptions = Exclude<ExtractArgs<typeof execa>[2], undefined>;
 // @internal (undocumented)
 export type ExecSyncOptions = Exclude<ExtractArgs<typeof execa.sync>[2], undefined>;
 
+// Warning: (ae-internal-missing-underscore) The name "hasSudo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function hasSudo(): boolean;
+
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (ae-internal-missing-underscore) The name "run" should be prefixed with an underscore because the declaration is marked as @internal

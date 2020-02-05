@@ -18,6 +18,16 @@ export interface AlertContent {
     title: string;
 }
 
+// Warning: (ae-internal-missing-underscore) The name "CliUI" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface CliUI {
+    // (undocumented)
+    logger(): Logger;
+    // (undocumented)
+    logPasswordRequestNotice(reason: string): void;
+}
+
 export { ExtractArgs }
 
 // Warning: (ae-internal-missing-underscore) The name "Logger" should be prefixed with an underscore because the declaration is marked as @internal

@@ -4,3 +4,5 @@ export {
   ExecSyncOptions,
   ExecaChildProcess
 } from "./exec";
+
+export { hasSudo } from "./sudo";
