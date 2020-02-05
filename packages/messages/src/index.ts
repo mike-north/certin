@@ -1,4 +1,4 @@
-import { AlertContent } from "@certin/types";
+import { IAlertContent } from "@certin/types";
 import * as chalk from "chalk";
 import { resolve } from "path";
 
@@ -34,7 +34,7 @@ function stringifySubjectNameAndAltNames(
  * @param reason - a description of why we need the user's password
  * @internal
  */
-export const ALERT_PERMISSION_REQUIRED: Pick<AlertContent, "title" | "nba"> = {
+export const ALERT_PERMISSION_REQUIRED: Pick<IAlertContent, "title" | "nba"> = {
   title: `Your permission is required.`,
   nba: `Please enter your machine (sudo) password if you wish to proceed`
 };

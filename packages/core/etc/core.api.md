@@ -4,31 +4,61 @@
 
 ```ts
 
-import { CliUI } from '@certin/types';
+import { Config } from '@certin/config';
+import { ICertinUserFacingOptions } from '@certin/types';
+import { ICliUI } from '@certin/types';
+import { IDomainSigningRequestConfigOptions } from '@certin/types';
 
-// @public
-export interface CertGenerationOptions {
-    // (undocumented)
-    caDays: number;
-    // (undocumented)
-    days: number;
-    // (undocumented)
-    forceMode: boolean;
-    // (undocumented)
-    interactiveMode: boolean;
-    // (undocumented)
-    signDomainCertWithDevCa: boolean;
-    // (undocumented)
-    silentMode: boolean;
-    // (undocumented)
-    subjectAlternateNames: string[];
-}
-
+// Warning: (ae-incompatible-release-tags) The symbol "cleanupTrustStore" is marked as @beta, but its signature references "Workspace" which is marked as @internal
+//
 // @beta
-export function cleanupTrustStore(ui: CliUI): void;
+export function cleanupTrustStore(ui: ICliUI, workspace: Workspace): void;
 
+// Warning: (ae-incompatible-release-tags) The symbol "ensureCertExists" is marked as @public, but its signature references "Workspace" which is marked as @internal
+//
 // @public
-export function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: CliUI): Promise<void>;
+export function ensureCertExists(workspace: Workspace, subjectName: string, pemPath: string, ui: ICliUI): Promise<void>;
+
+// Warning: (ae-internal-missing-underscore) The name "Workspace" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export class Workspace {
+    constructor(opts: ICertinUserFacingOptions);
+    // (undocumented)
+    assertNotTouchingFiles(filepath: string, operation: string): void;
+    // (undocumented)
+    readonly cfg: Config;
+    // (undocumented)
+    configuredDomains(): string[];
+    // (undocumented)
+    getOpenSSLCaGenerationCommand(rootKeyPath: string): string;
+    // (undocumented)
+    hasCertificateFor(commonName: string): boolean;
+    // Warning: (ae-forgotten-export) The symbol "IPlatform" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    platform: IPlatform;
+    // (undocumented)
+    removeDomain(commonName: string): void;
+    // (undocumented)
+    saveCertificateAuthorityCredentials(keypath: string): Promise<void>;
+    seedConfigFiles(): void;
+    // @alpha
+    uninstallCA(): void;
+    // (undocumented)
+    withCertAuthorityConfig(cb: (filepath: string) => void): void;
+    // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+    //
+    // (undocumented)
+    withCertificateAuthorityCredentials(cb: ({ caKeyPath, caCertPath }: {
+        caKeyPath: string;
+        caCertPath: string;
+    }) => Promise<void> | void): Promise<void>;
+    // (undocumented)
+    withDomainCertificateConfig(opts: Partial<IDomainSigningRequestConfigOptions>, cb: (filepath: string) => void): void;
+    // (undocumented)
+    withDomainSigningRequestConfig(opts: Partial<IDomainSigningRequestConfigOptions>, cb: (filepath: string) => void): void;
+}
 
 
 // (No @packageDocumentation comment for this package)

@@ -1,5 +1,2 @@
-export {
-  cleanupTrustStore,
-  CertGenerationOptions,
-  ensureCertExists
-} from "./cert-generation";
+export { cleanupTrustStore, ensureCertExists } from "./cert-generation";
+export { default as Workspace } from "./workspace";

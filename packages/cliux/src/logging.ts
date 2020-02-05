@@ -7,7 +7,7 @@ import * as wordWrap from "word-wrap";
 import * as _createDebug from "debug";
 import { ALERT_PERMISSION_REQUIRED } from "@certin/messages";
 import UI from "./ui";
-import { AlertContent, Logger } from "@certin/types";
+import { IAlertContent, ILogger } from "@certin/types";
 
 // const appName = process.env["CERTIN_APP_NAME"] || "certin";
 
@@ -48,12 +48,12 @@ const makeWarnerLogFn = (ui: UI, silentMode: boolean) => (
  * @param silent silent mode (no user-visible messages, other than errors)
  * @internal
  */
-export const makeLogger = (ui: UI, silent: boolean): Logger => ({
+export const makeLogger = (ui: UI, silent: boolean): ILogger => ({
   log: makeLoggerLogFn(ui, silent),
   warn: makeWarnerLogFn(ui, silent)
 });
 
-function makeConsoleAlert(ui: UI, alertContent: AlertContent): string {
+function makeConsoleAlert(ui: UI, alertContent: IAlertContent): string {
   const { title, nba, body } = alertContent;
   return boxen(
     `${chalk.yellowBright(ui.LOG_PREFIX_TXT)}
@@ -75,7 +75,7 @@ ${chalk.blueBright(wordWrap(nba, { width: BOX_WIDTH - 10 }))}`,
  * Print a console alert to the screen
  * @param alertContent alertContent
  */
-function consoleAlert(ui: UI, alertContent: AlertContent): void {
+function consoleAlert(ui: UI, alertContent: IAlertContent): void {
   console.log(makeConsoleAlert(ui, alertContent));
 }
 

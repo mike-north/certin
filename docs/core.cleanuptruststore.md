@@ -12,14 +12,15 @@ Remove any existing self-signed certificates from the trust store.
 <b>Signature:</b>
 
 ```typescript
-export declare function cleanupTrustStore(ui: CliUI): void;
+export declare function cleanupTrustStore(ui: ICliUI, workspace: Workspace): void;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  ui | <code>CliUI</code> |  |
+|  ui | <code>ICliUI</code> |  |
+|  workspace | <code>Workspace</code> |  |
 
 <b>Returns:</b>
 

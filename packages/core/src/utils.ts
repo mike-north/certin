@@ -3,8 +3,9 @@ import * as tmp from "tmp";
 import * as createDebug from "debug";
 import * as path from "path";
 import sudoPrompt from "sudo-prompt";
+import { ICertinConfig } from "@certin/types";
 
-import { configPath } from "./constants";
+// import { configPath } from "./constants";
 
 const debug = createDebug("certin:util");
 
@@ -13,12 +14,12 @@ export function run(cmd: string, options: ExecSyncOptions = {}): string {
   return execSync(cmd, options).toString();
 }
 
-export function openssl(cmd: string): string {
+export function openssl(config: ICertinConfig, cmd: string): string {
   return run(`openssl ${cmd}`, {
     stdio: "pipe",
     env: Object.assign(
       {
-        RANDFILE: path.join(configPath(".rnd"))
+        RANDFILE: path.join(config.getConfigPath(".rnd"))
       },
       process.env
     )

@@ -9,17 +9,17 @@ Generate a certificate, bound to a particular subject name (i.e., a domain)
 <b>Signature:</b>
 
 ```typescript
-export declare function ensureCertExists(subjectName: string, pemPath: string, opts: Partial<CertGenerationOptions> | undefined, ui: CliUI): Promise<void>;
+export declare function ensureCertExists(workspace: Workspace, subjectName: string, pemPath: string, ui: ICliUI): Promise<void>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
+|  workspace | <code>Workspace</code> |  |
 |  subjectName | <code>string</code> | subject name of certificate |
 |  pemPath | <code>string</code> |  |
-|  opts | <code>Partial&lt;CertGenerationOptions&gt; &#124; undefined</code> |  |
-|  ui | <code>CliUI</code> |  |
+|  ui | <code>ICliUI</code> |  |
 
 <b>Returns:</b>
 

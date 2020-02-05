@@ -1,9 +1,13 @@
-import { Options } from "../legacy";
+import { IOptions } from "../legacy";
+import Workspace from "../workspace";
 
-export interface Platform {
+export interface IPlatformFactory {
+  new (workspace: Workspace): IPlatform;
+}
+export interface IPlatform {
   addToTrustStores(
     certificatePath: string,
-    options?: Options
+    options?: IOptions
   ): void | Promise<void>;
   removeFromTrustStores(certificatePath: string): void;
   addDomainToHostFileIfMissing(domain: string): void | Promise<void>;
@@ -13,4 +17,4 @@ export interface Platform {
 }
 
 const PlatformClass = require(`./${process.platform}`).default;
-export default new PlatformClass() as Platform;
+export default new PlatformClass() as IPlatform;

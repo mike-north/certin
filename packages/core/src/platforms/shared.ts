@@ -8,9 +8,11 @@ import { existsSync } from "fs";
 import { sync as glob } from "glob";
 import { readFileSync as readFile, existsSync as exists } from "fs";
 import { run } from "../utils";
-import { isMac, isLinux, configDir, getLegacyConfigDir } from "../constants";
+// import { configDir, getLegacyConfigDir } from "../constants";
 import UI from "../user-interface";
 import { execSync as exec } from "child_process";
+import { isMac, isLinux } from "@certin/utils";
+import { ICertinConfig } from "@certin/types";
 
 const debug = createDebug("certin:platforms:shared");
 
@@ -191,18 +193,4 @@ export async function openCertificateInFirefox(
   run(`${firefoxPath} http://localhost:${port}`);
   await UI.waitForFirefoxWizard();
   server.close();
-}
-
-export function assertNotTouchingFiles(
-  filepath: string,
-  operation: string
-): void {
-  if (
-    !filepath.startsWith(configDir) &&
-    !filepath.startsWith(getLegacyConfigDir())
-  ) {
-    throw new Error(
-      `Cannot ${operation} ${filepath}; it is outside known certin config directories!`
-    );
-  }
 }

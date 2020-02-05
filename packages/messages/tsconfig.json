@@ -6,38 +6,18 @@
     "module": "CommonJS",
     "rootDir": ".",
     "outDir": "dist",
-    "lib": [
-      "ES2018"
-    ],
-    "types": [
-      "node"
-    ],
+    "lib": ["ES2018"],
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "certin": [
-        "../utils/certin/certin-private.d.ts"
-      ],
-      "@certin/cli": [
-        "../cli/dist/cli-private.d.ts"
-      ],
-      "@certin/cliux": [
-        "../cliux/dist/cliux-private.d.ts"
-      ],
-      "@certin/core": [
-        "../core/dist/core-private.d.ts"
-      ],
-      "@certin/types": [
-        "../types/dist/types-private.d.ts"
-      ],
-      "@certin/messages": [
-        "../messages/dist/messages-private.d.ts"
-      ],
-      "*": [
-        "../../types/*"
-      ]
+      "certin": ["../utils/certin/certin-private.d.ts"],
+      "@certin/cli": ["../cli/dist/cli-private.d.ts"],
+      "@certin/cliux": ["../cliux/dist/cliux-private.d.ts"],
+      "@certin/core": ["../core/dist/core-private.d.ts"],
+      "@certin/types": ["../types/dist/types-private.d.ts"],
+      "@certin/messages": ["../messages/dist/messages-private.d.ts"],
+      "*": ["../../types/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

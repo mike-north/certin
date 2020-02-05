@@ -1,1 +1,1 @@
-export { default as UI, UIOptions } from "./ui";
+export { default as UI, IUIOptions } from "./ui";

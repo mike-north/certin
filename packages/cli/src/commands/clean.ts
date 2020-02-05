@@ -1,8 +1,8 @@
 import * as yargs from "yargs";
 import * as _createDebug from "debug";
 import { assertIsBoolean } from "../validation";
-import { cleanupTrustStore } from "@certin/core";
-import { UI, UIOptions } from "@certin/cliux";
+import { cleanupTrustStore, Workspace } from "@certin/core";
+import { UI, IUIOptions } from "@certin/cliux";
 
 const debug = _createDebug("pemberly-secure:cli:cert");
 
@@ -13,15 +13,24 @@ function addCleanCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
     {},
     argv => {
       debug("[clean] running command", argv);
-      const { silent } = (argv as any) as { silent: boolean };
+      const { nonInteractive, force, silent } = argv as any;
       assertIsBoolean(silent, "silent");
-      const opts: Partial<UIOptions> = { silent };
+      const opts: Partial<IUIOptions> = { silent };
       if (process.env["CERTIN_APP_NAME"]) {
         opts.appName = process.env["CERTIN_APP_NAME"];
       }
+      assertIsBoolean(force, "force");
+      assertIsBoolean(silent, "silent");
+      assertIsBoolean(nonInteractive, "non-interactive");
       const ui = new UI(opts);
-
-      cleanupTrustStore(ui);
+      const workspace = new Workspace({
+        ux: {
+          forceMode: force,
+          silentMode: silent,
+          interactiveMode: !nonInteractive
+        }
+      });
+      cleanupTrustStore(ui, workspace);
       debug("[clean] completed execution", argv);
     }
   );

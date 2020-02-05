@@ -2,17 +2,20 @@ import * as createDebug from "debug";
 import * as crypto from "crypto";
 import { writeFileSync as write, readFileSync as read } from "fs";
 import { sync as rimraf } from "rimraf";
-import { Options } from "../legacy";
-import { assertNotTouchingFiles, openCertificateInFirefox } from "./shared";
-import { Platform } from "../platforms";
+import { IOptions } from "../legacy";
+import { openCertificateInFirefox } from "./shared";
+import { IPlatform } from "../platforms";
 import { run, sudo } from "../utils";
 import UI from "../user-interface";
+import Workspace from "../workspace";
 
 const debug = createDebug("certin:platforms:windows");
 
 let encryptionKey: string | null;
 
-export default class WindowsPlatform implements Platform {
+export default class WindowsPlatform implements IPlatform {
+  public constructor(protected workspace: Workspace) {}
+
   private HOST_FILE_PATH = "C:\\Windows\\System32\\Drivers\\etc\\hosts";
 
   /**
@@ -25,7 +28,7 @@ export default class WindowsPlatform implements Platform {
    */
   public async addToTrustStores(
     certificatePath: string,
-    options: Options = {}
+    options: IOptions = {}
   ): Promise<void> {
     // IE, Chrome, system utils
     debug("adding root to Windows OS trust store");
@@ -69,12 +72,12 @@ export default class WindowsPlatform implements Platform {
   }
 
   public deleteProtectedFiles(filepath: string): void {
-    assertNotTouchingFiles(filepath, "delete");
+    this.workspace.assertNotTouchingFiles(filepath, "delete");
     rimraf(filepath);
   }
 
   public async readProtectedFile(filepath: string): Promise<string> {
-    assertNotTouchingFiles(filepath, "read");
+    this.workspace.assertNotTouchingFiles(filepath, "read");
     if (!encryptionKey) {
       encryptionKey = await UI.getWindowsEncryptionPassword();
     }
@@ -95,7 +98,7 @@ export default class WindowsPlatform implements Platform {
     filepath: string,
     contents: string
   ): Promise<void> {
-    assertNotTouchingFiles(filepath, "write");
+    this.workspace.assertNotTouchingFiles(filepath, "write");
     if (!encryptionKey) {
       encryptionKey = await UI.getWindowsEncryptionPassword();
     }

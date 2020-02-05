@@ -8,12 +8,6 @@
 
 |  Function | Description |
 |  --- | --- |
-|  [cleanupTrustStore(ui)](./core.cleanuptruststore.md) | <b><i>(BETA)</i></b> Remove any existing self-signed certificates from the trust store. |
-|  [ensureCertExists(subjectName, pemPath, opts, ui)](./core.ensurecertexists.md) | Generate a certificate, bound to a particular subject name (i.e., a domain) |
-
-## Interfaces
-
-|  Interface | Description |
-|  --- | --- |
-|  [CertGenerationOptions](./core.certgenerationoptions.md) | Certificate generation options |
+|  [cleanupTrustStore(ui, workspace)](./core.cleanuptruststore.md) | <b><i>(BETA)</i></b> Remove any existing self-signed certificates from the trust store. |
+|  [ensureCertExists(workspace, subjectName, pemPath, ui)](./core.ensurecertexists.md) | Generate a certificate, bound to a particular subject name (i.e., a domain) |
 

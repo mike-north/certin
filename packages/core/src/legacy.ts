@@ -1,44 +1,25 @@
 /** @packageDocumentation foo */
 
-import {
-  readFileSync as readFile,
-  readdirSync as readdir,
-  existsSync as exists
-} from "fs";
-import * as createDebug from "debug";
+import { isLinux, isMac, isWindows } from "@certin/utils";
 import { sync as commandExists } from "command-exists";
-import * as rimraf from "rimraf";
-import {
-  isMac,
-  isLinux,
-  isWindows,
-  pathForDomain,
-  domainsDir,
-  rootCAKeyPath,
-  rootCACertPath
-} from "./constants";
-import currentPlatform from "./platforms";
+import * as _createDebug from "debug";
+import { existsSync as exists, readFileSync as readFile } from "fs";
 import installCertificateAuthority, {
   ensureCACertReadable
 } from "./certificate-authority";
 import generateDomainCertificate from "./certificates";
-import UI, { UserInterface } from "./user-interface";
-export { uninstall } from "./certificate-authority";
-export { UserInterface } from "./user-interface";
-const debug = createDebug("certin");
+
+import currentPlatform from "./platforms";
+import UI, { IUserInterface } from "./user-interface";
+import Workspace from "./workspace";
+import { ICaBuffer, ICaPath, IDomainData } from "@certin/types";
+
+const debug = _createDebug("certin");
+
 /**
  * @alpha
  */
-export interface CertOptions {
-  /** Number of days before the CA expires */
-  caCertExpiry: number;
-  /** Number of days before the domain certificate expires */
-  domainCertExpiry: number;
-}
-/**
- * @alpha
- */
-export interface Options /* extends Partial<ICaBufferOpts & ICaPathOpts>  */ {
+export interface IOptions /* extends Partial<ICaBufferOpts & ICaPathOpts>  */ {
   /** Return the CA certificate data? */
   getCaBuffer?: boolean;
   /** Return the path to the CA certificate? */
@@ -48,75 +29,41 @@ export interface Options /* extends Partial<ICaBufferOpts & ICaPathOpts>  */ {
   /** Do not update your systems host file with the domain name of the certificate */
   skipHostsFile?: boolean;
   /** User interface hooks */
-  ui?: UserInterface;
+  ui?: IUserInterface;
 }
 
 /**
  * @alpha
  */
-export interface CaBuffer {
-  ca: Buffer;
-}
-
-/**
- * @alpha
- */
-export interface CaPath {
-  caPath: string;
-}
-
-/**
- * @alpha
- */
-export interface DomainData {
-  key: Buffer;
-  cert: Buffer;
-}
-
-/**
- * @alpha
- */
-export type IReturnCa<O extends Options> = O["getCaBuffer"] extends true
-  ? CaBuffer
+export type IReturnCa<O extends IOptions> = O["getCaBuffer"] extends true
+  ? ICaBuffer
   : false;
 
 /**
  * @alpha
  */
-export type IReturnCaPath<O extends Options> = O["getCaPath"] extends true
-  ? CaPath
+export type IReturnCaPath<O extends IOptions> = O["getCaPath"] extends true
+  ? ICaPath
   : false;
 
 /**
  * @alpha
  */
-export type IReturnData<O extends Options = {}> = DomainData &
+export type IReturnData<O extends IOptions = {}> = IDomainData &
   IReturnCa<O> &
   IReturnCaPath<O>;
 
-const DEFAULT_CERT_OPTIONS: CertOptions = {
-  caCertExpiry: 180,
-  domainCertExpiry: 30
-};
-
-async function certificateForImpl<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
+async function certificateForImpl<O extends IOptions>(
+  workspace: Workspace,
   commonName: string,
   alternativeNames: string[],
-  options: O = {} as O,
-  partialCertOptions: CO = {} as CO
+  options: O = {} as O
 ): Promise<IReturnData<O>> {
   debug(
     `Certificate requested for ${commonName}. Skipping certutil install: ${Boolean(
       options.skipCertutilInstall
     )}. Skipping hosts file: ${Boolean(options.skipHostsFile)}`
   );
-  const certOptions: CertOptions = {
-    ...DEFAULT_CERT_OPTIONS,
-    ...partialCertOptions
-  };
   if (options.ui) {
     Object.assign(UI, options.ui);
   }
@@ -131,26 +78,32 @@ async function certificateForImpl<
     );
   }
 
-  const domainKeyPath = pathForDomain(commonName, `private-key.key`);
-  const domainCertPath = pathForDomain(commonName, `certificate.crt`);
+  const domainKeyPath = workspace.cfg.getPathForDomain(
+    commonName,
+    `private-key.key`
+  );
+  const domainCertPath = workspace.cfg.getPathForDomain(
+    commonName,
+    `certificate.crt`
+  );
 
-  if (!exists(rootCAKeyPath)) {
+  if (!exists(workspace.cfg.rootCAKeyPath)) {
     debug(
       "Root CA is not installed yet, so it must be our first run. Installing root CA ..."
     );
-    await installCertificateAuthority(options, certOptions);
+    await installCertificateAuthority(workspace, options);
   } else if (options.getCaBuffer || options.getCaPath) {
     debug(
       "Root CA is not readable, but it probably is because an earlier version of certin locked it. Trying to fix..."
     );
-    await ensureCACertReadable(options, certOptions);
+    await ensureCACertReadable(workspace, options);
   }
 
-  if (!exists(pathForDomain(commonName, `certificate.crt`))) {
+  if (!exists(workspace.cfg.getPathForDomain(commonName, `certificate.crt`))) {
     debug(
       `Can't find certificate file for ${commonName}, so it must be the first request for ${commonName}. Generating and caching ...`
     );
-    await generateDomainCertificate(commonName, alternativeNames, certOptions);
+    await generateDomainCertificate(workspace, commonName, alternativeNames);
   }
 
   if (!options.skipHostsFile) {
@@ -163,8 +116,9 @@ async function certificateForImpl<
     key: readFile(domainKeyPath),
     cert: readFile(domainCertPath)
   } as IReturnData<O>;
-  if (options.getCaBuffer) (ret as CaBuffer).ca = readFile(rootCACertPath);
-  if (options.getCaPath) (ret as CaPath).caPath = rootCACertPath;
+  if (options.getCaBuffer)
+    (ret as ICaBuffer).ca = readFile(workspace.cfg.rootCACertPath);
+  if (options.getCaPath) (ret as ICaPath).caPath = workspace.cfg.rootCACertPath;
 
   return ret;
 }
@@ -191,67 +145,34 @@ async function certificateForImpl<
  *
  * @alpha
  */
-export async function certificateFor<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
+export async function certificateFor<O extends IOptions>(
+  workspace: Workspace,
   domain: string,
-  options?: O,
-  partialCertOptions?: CO
+  options?: O
 ): Promise<IReturnData<O>>;
 /**
  * @alpha
  */
-export async function certificateFor<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
+export async function certificateFor<O extends IOptions>(
+  workspace: Workspace,
   commonName: string,
   alternativeNames: string[],
-  options?: O,
-  partialCertOptions?: CO
+  options?: O
 ): Promise<IReturnData<O>>;
-export async function certificateFor<
-  O extends Options,
-  CO extends Partial<CertOptions>
->(
+export async function certificateFor<O extends IOptions>(
+  workspace: Workspace,
   commonName: string,
   optionsOrAlternativeNames: string[] | O,
-  options?: O,
-  partialCertOptions?: CO
+  options?: O
 ): Promise<IReturnData<O>> {
   if (Array.isArray(optionsOrAlternativeNames)) {
     return certificateForImpl(
+      workspace,
       commonName,
       optionsOrAlternativeNames,
-      options,
-      partialCertOptions
+      options
     );
   } else {
-    return certificateForImpl(commonName, [], options, partialCertOptions);
+    return certificateForImpl(workspace, commonName, [], options);
   }
-}
-/**
- *
- * @param commonName - commonName of certificate
- * @internal
- */
-export function hasCertificateFor(commonName: string): boolean {
-  return exists(pathForDomain(commonName, `certificate.crt`));
-}
-/**
- *
- * @param commonName - commonName of certificate
- * @internal
- */
-export function configuredDomains(): string[] {
-  return readdir(domainsDir);
-}
-/**
- *
- * @param commonName - commonName of certificate
- * @internal
- */
-export function removeDomain(commonName: string): void {
-  rimraf.sync(pathForDomain(commonName));
 }

@@ -1,7 +1,7 @@
 /**
  * @internal
  */
-export interface AlertContent {
+export interface IAlertContent {
   title: string;
   nba: string;
   body: string;
@@ -11,7 +11,7 @@ export interface AlertContent {
  * A loging function, for exposing messages to end users
  * @internal
  */
-export interface LoggerFn {
+export interface ILoggerFn {
   (...args: any[]): void;
 }
 
@@ -19,15 +19,15 @@ export interface LoggerFn {
  * A logger, for exposing warnings and informational messages to end users
  * @internal
  */
-export interface Logger {
-  log: LoggerFn;
-  warn: LoggerFn;
+export interface ILogger {
+  log: ILoggerFn;
+  warn: ILoggerFn;
 }
 
 /**
  * @internal
  */
-export interface CliUI {
-  logger(): Logger;
+export interface ICliUI {
+  logger(): ILogger;
   logPasswordRequestNotice(reason: string): void;
 }

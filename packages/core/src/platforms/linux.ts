@@ -8,20 +8,22 @@ import * as createDebug from "debug";
 import { sync as commandExists } from "command-exists";
 import {
   addCertificateToNSSCertDB,
-  assertNotTouchingFiles,
   openCertificateInFirefox,
   closeFirefox,
   removeCertificateFromNSSCertDB,
   HOME
 } from "./shared";
 import { run } from "../utils";
-import { Options } from "../legacy";
+import { IOptions } from "../legacy";
 import UI from "../user-interface";
-import { Platform } from "../platforms";
+import { IPlatform } from "../platforms";
+import Workspace from "../workspace";
 
 const debug = createDebug("certin:platforms:linux");
 
-export default class LinuxPlatform implements Platform {
+export default class LinuxPlatform implements IPlatform {
+  public constructor(protected workspace: Workspace) {}
+
   private FIREFOX_NSS_DIR = path.join(HOME, ".mozilla/firefox/*");
   private CHROME_NSS_DIR = path.join(HOME, ".pki/nssdb");
   private FIREFOX_BIN_PATH = "/usr/bin/firefox";
@@ -40,7 +42,7 @@ export default class LinuxPlatform implements Platform {
    */
   public async addToTrustStores(
     certificatePath: string,
-    options: Options = {}
+    options: IOptions = {}
   ): Promise<void> {
     debug("Adding root CA to Linux system-wide trust stores");
     // run(`sudo cp ${ certificatePath } /etc/ssl/certs/certin.crt`);
@@ -141,19 +143,19 @@ export default class LinuxPlatform implements Platform {
   }
 
   public deleteProtectedFiles(filepath: string): void {
-    assertNotTouchingFiles(filepath, "delete");
+    this.workspace.assertNotTouchingFiles(filepath, "delete");
     run(`sudo rm -rf "${filepath}"`);
   }
 
   public readProtectedFile(filepath: string): string {
-    assertNotTouchingFiles(filepath, "read");
+    this.workspace.assertNotTouchingFiles(filepath, "read");
     return run(`sudo cat "${filepath}"`)
       .toString()
       .trim();
   }
 
   public writeProtectedFile(filepath: string, contents: string): void {
-    assertNotTouchingFiles(filepath, "write");
+    this.workspace.assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
       run(`sudo rm "${filepath}"`);
     }

@@ -9,10 +9,10 @@ import {
   assertIsString,
   assertIsArray
 } from "../validation";
-import { ensureCertExists } from "@certin/core";
+import { ensureCertExists, Workspace } from "@certin/core";
 import chalk = require("chalk");
 import { existsSync } from "fs-extra";
-import { UI, UIOptions } from "@certin/cliux";
+import { UI, IUIOptions } from "@certin/cliux";
 
 const debug = _createDebug("certin:cli:cert");
 
@@ -87,7 +87,7 @@ function addCertCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
       assertIsBoolean(nonInteractive, "non-interactive");
       assertIsString(out, "out");
       const certParentFolderPath = join(out, "..");
-      const opts: Partial<UIOptions> = { silent };
+      const opts: Partial<IUIOptions> = { silent };
       if (process.env["CERTIN_APP_NAME"]) {
         opts.appName = process.env["CERTIN_APP_NAME"];
       }
@@ -104,19 +104,23 @@ function addCertCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
         "[generate-cert] validated all arguments for command. proceeding with execution"
       );
 
-      ensureCertExists(
-        name,
-        out,
-        {
-          subjectAlternateNames: san,
+      const workspace = new Workspace({
+        ux: {
           forceMode: force,
-          interactiveMode: !nonInteractive,
-          signDomainCertWithDevCa: signWithDevCa,
-          days: certDays,
-          caDays
+          silentMode: silent,
+          interactiveMode: !nonInteractive
         },
-        ui
-      )
+        ca: {
+          daysUntilExpire: caDays
+        },
+        domainCert: {
+          commonName: name,
+          signWithDevCa,
+          daysUntilExpire: certDays,
+          subjectAlternativeNames: san
+        }
+      });
+      ensureCertExists(workspace, name, out, ui)
         .then(() => {
           return debug("[generate-cert] completed execution");
         })

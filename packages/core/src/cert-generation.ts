@@ -19,34 +19,35 @@ import {
   PROMPT_SHOULD_WE_OVERWRITE_IT,
   SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS
 } from "@certin/messages";
-import { CliUI } from "@certin/types";
+import { ICliUI } from "@certin/types";
 import { hasSudo } from "@certin/utils";
+import Workspace from "./workspace";
 
 const debug = _debug("pemberly-secure");
 
-/**
- * Certificate generation options
- * @public
- */
-export interface CertGenerationOptions {
-  subjectAlternateNames: string[];
-  signDomainCertWithDevCa: boolean;
-  interactiveMode: boolean;
-  forceMode: boolean;
-  silentMode: boolean;
-  days: number;
-  caDays: number;
-}
+// /**
+//  * Certificate generation options
+//  * @public
+//  */
+// export interface ICertGenerationOptions {
+//   subjectAlternateNames: string[];
+//   signDomainCertWithDevCa: boolean;
+//   interactiveMode: boolean;
+//   forceMode: boolean;
+//   silentMode: boolean;
+//   days: number;
+//   caDays: number;
+// }
 
-const DEFAULT_CERT_GENERATION_OPTIONS: CertGenerationOptions = {
-  subjectAlternateNames: [],
-  signDomainCertWithDevCa: false,
-  interactiveMode: false,
-  forceMode: false,
-  silentMode: false,
-  days: 30,
-  caDays: 180
-};
+// const DEFAULT_CERT_GENERATION_OPTIONS: ICertGenerationOptions = {
+//   subjectAlternateNames: [],
+//   signDomainCertWithDevCa: false,
+//   interactiveMode: false,
+//   forceMode: false,
+//   silentMode: false,
+//   days: 30,
+//   caDays: 180
+// };
 
 /**
  * Generate a certificate, bound to a particular subject name (i.e., a domain)
@@ -55,27 +56,29 @@ const DEFAULT_CERT_GENERATION_OPTIONS: CertGenerationOptions = {
  * @public
  */
 export async function ensureCertExists(
+  workspace: Workspace,
   subjectName: string,
   pemPath: string,
-  opts: Partial<CertGenerationOptions> = {},
-  ui: CliUI
+  ui: ICliUI
 ): Promise<void> {
-  const options = { ...DEFAULT_CERT_GENERATION_OPTIONS, ...opts };
   const { log } = ui.logger();
   let certResult: {
     key: string;
     cert: string;
   };
-  if (options.signDomainCertWithDevCa && options.interactiveMode) {
+  if (
+    workspace.cfg.options.domainCert.signWithDevCa &&
+    workspace.cfg.options.ux.interactiveMode
+  ) {
     debug(LOG_PROCEEDING_IN_DEV_MODE);
-    certResult = await ensureDevCertExists(subjectName, options, ui);
+    certResult = await ensureDevCertExists(workspace, subjectName, ui);
   } else {
     debug(LOG_PROCEEDING_IN_HEADLESS_MODE);
-    certResult = ensureHeadlessCertExists(subjectName, options, ui);
+    certResult = ensureHeadlessCertExists(workspace, subjectName, ui);
   }
 
   const { key, cert } = certResult;
-  const { forceMode, interactiveMode } = options;
+  const { forceMode, interactiveMode } = workspace.cfg.options.ux;
 
   const foundExistingCert = fs.existsSync(pemPath);
   if (foundExistingCert) {
@@ -112,7 +115,7 @@ export async function ensureCertExists(
   log(
     LOG_CERT_WROTE_TO_LOCATION({
       subjectName,
-      subjectAlternateNames: options.subjectAlternateNames,
+      subjectAlternateNames: workspace.cfg.options.domainCert.subjectAltNames,
       pemPath,
       certSize
     })
@@ -125,12 +128,12 @@ export async function ensureCertExists(
  *
  * @beta
  */
-export function cleanupTrustStore(ui: CliUI): void {
+export function cleanupTrustStore(ui: ICliUI, workspace: Workspace): void {
   const { log } = ui.logger();
   log(LOG_CLEANING_UP_TRUST_STORE);
   if (!hasSudo()) {
     ui.logPasswordRequestNotice(SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS);
   }
-  core.uninstall();
+  workspace.uninstallCA();
   log(`Trust store cleanup: ${chalk.green.bold("complete")}`);
 }

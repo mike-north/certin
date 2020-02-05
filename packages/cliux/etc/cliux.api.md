@@ -4,36 +4,36 @@
 
 ```ts
 
-import { CliUI } from '@certin/types';
-import { Logger } from '@certin/types';
+import { ICliUI } from '@certin/types';
+import { ILogger } from '@certin/types';
+
+// Warning: (ae-internal-missing-underscore) The name "IUIOptions" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface IUIOptions {
+    // (undocumented)
+    appName: string;
+    // (undocumented)
+    silent: boolean;
+}
 
 // Warning: (ae-internal-missing-underscore) The name "UI" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export class UI implements CliUI {
-    constructor(opts: Partial<UIOptions>);
+export class UI implements ICliUI {
+    constructor(opts: Partial<IUIOptions>);
     // (undocumented)
     readonly LOG_PREFIX: string;
     // (undocumented)
     readonly LOG_PREFIX_TXT: string;
     // (undocumented)
-    logger(): Logger;
+    logger(): ILogger;
     // (undocumented)
     logPasswordRequestNotice(reason: string): void;
     // (undocumented)
-    protected options: UIOptions;
+    protected options: IUIOptions;
     // (undocumented)
     readonly WARN_PREFIX: string;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "UIOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface UIOptions {
-    // (undocumented)
-    appName: string;
-    // (undocumented)
-    silent: boolean;
 }
 
 
