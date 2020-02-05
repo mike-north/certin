@@ -1,5 +1,5 @@
 #!/bin/bash
-lerna version --conventional-prerelease --preid dev --no-commit-hooks --no-push --no-git-tag-version && \
+yarn lerna version --conventional-prerelease --preid dev --no-commit-hooks --no-push --no-git-tag-version && \
 git add -A && \
 git commit -m "version bump" --no-verify && \
 lerna run changelog && \
