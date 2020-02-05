@@ -1,6 +1,6 @@
 {
   "name": "@certin/utils",
-  "version": "0.0.0-dev.3",
+  "version": "0.0.1-dev.0",
   "description": "> TODO: description",
   "author": "Mike North <michael.l.north@gmail.com>",
   "homepage": "https://github.com/mike-north/certin#readme",
@@ -38,7 +38,7 @@
     "url": "https://github.com/mike-north/certin/issues"
   },
   "dependencies": {
-    "@certin/messages": "^0.0.0-dev.3",
+    "@certin/messages": "^0.0.1-dev.0",
     "application-config-path": "^0.1.0",
     "debug": "^4.1.1",
     "execa": "^0.7.0"

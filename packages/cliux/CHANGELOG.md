@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.0.2-dev.0"></a>
+## [0.0.2-dev.0](https://github.com/mike-north/certin/compare/@certin/cliux@0.0.1-dev.19...@certin/cliux@0.0.2-dev.0) (2020-02-05)
+
+
+### Bug Fixes
+
+* ensure that etc folders are published ([cb68801](https://github.com/mike-north/certin/commit/cb68801))
+
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## <small>0.0.1-dev.16 (2020-01-29)</small>
 
 - fix(cli): add debug dependency ([5cfc359](https://github.com/mike-north/certin/commit/5cfc359))
