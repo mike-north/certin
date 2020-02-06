@@ -8,6 +8,48 @@ import * as execa from 'execa';
 import { ExtractArgs } from '@mike-north/types';
 import * as tmp from 'tmp';
 
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsArray(arg: unknown): asserts arg is any[];
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsBoolean(arg: unknown, label: string): asserts arg is boolean;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsFQDN(arg: unknown, label: string): asserts arg is string;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsInteger(arg: unknown, label: string): asserts arg is number;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsNumber(arg: unknown, label: string): asserts arg is number;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsPositiveInteger(arg: unknown, label: string): asserts arg is number;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+//
+// @public
+export function assertIsString(arg: unknown, label: string): asserts arg is string;
+
 // Warning: (ae-internal-missing-underscore) The name "ExecaChildProcess" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
@@ -50,10 +92,23 @@ export function mkTmpFile(): tmp.SynchrounousResult;
 
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (ae-internal-missing-underscore) The name "openssl" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export function openssl(configPath: string, args: string[]): string;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (ae-internal-missing-underscore) The name "run" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
 export function run(cmd: string, args: string[], options?: Partial<ExecSyncOptions>): ExecaChildProcess;
+
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (ae-internal-missing-underscore) The name "sudo" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export function sudo(appName: string, cmd: string, args: string[]): Promise<string | null>;
 
 
 // (No @packageDocumentation comment for this package)

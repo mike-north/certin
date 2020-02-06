@@ -4,9 +4,3 @@
 
 ## types package
 
-## Interfaces
-
-|  Interface | Description |
-|  --- | --- |
-|  [ICertinUserFacingOptions](./types.icertinuserfacingoptions.md) |  |
-

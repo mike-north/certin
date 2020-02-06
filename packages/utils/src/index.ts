@@ -1,6 +1,8 @@
 import * as tmp from "tmp";
 export {
   run,
+  sudo,
+  openssl,
   ExecAsyncOptions,
   ExecSyncOptions,
   ExecaChildProcess
@@ -8,6 +10,15 @@ export {
 
 export { hasSudo } from "./sudo";
 export { isLinux, isWindows, isMac } from "./constants";
+export {
+  assertIsArray,
+  assertIsBoolean,
+  assertIsFQDN,
+  assertIsInteger,
+  assertIsNumber,
+  assertIsPositiveInteger,
+  assertIsString
+} from "./assertions";
 
 /**
  * Given a list of domains, return a list

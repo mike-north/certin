@@ -1,18 +1,10 @@
 import {
-  createConfig,
   createPopulatedCaCertConfig,
   createPopulatedDomainCertificateConfig,
   createPopulatedDomainSigningRequestConfig,
   Config
 } from "@certin/config";
-import {
-  ICertinConfig,
-  IPartialCertinConfigOptions,
-  ICertinUserFacingOptions,
-  IDomainSigningRequestConfigOptions,
-  IDomainCertificateConfigOptions
-} from "@certin/types";
-import { mkTmpFile } from "@certin/utils";
+import { ICertinOptionsArg, Options } from "@certin/options";
 import * as assert from "assert";
 import * as _createDebug from "debug";
 import * as eol from "eol";
@@ -24,8 +16,16 @@ import {
   writeFileSync as writeFile
 } from "fs";
 import * as rimraf from "rimraf";
+import { sync as mkdirp } from "mkdirp";
+
 import * as path from "path";
 import { IPlatform, IPlatformFactory } from "./platforms";
+import {
+  IDomainSigningRequestConfig,
+  ISystemUserInterface
+} from "@certin/types";
+import { openssl, mkTmpFile, sudo } from "@certin/utils";
+import { generateKey } from "./certificates";
 
 const debug = _createDebug("certin:core:workspace");
 
@@ -33,10 +33,12 @@ const debug = _createDebug("certin:core:workspace");
  * @internal
  */
 class Workspace {
-  public readonly cfg: Config;
-  public platform: IPlatform;
-  public constructor(opts: ICertinUserFacingOptions) {
-    this.cfg = createConfig(opts);
+  private readonly opts: Options;
+  private readonly cfg: Config;
+  protected platform: IPlatform;
+  public constructor(opts: ICertinOptionsArg) {
+    this.opts = new Options(opts);
+    this.cfg = this.opts.toConfig();
     const platformName = process.platform;
     assert(platformName, "platform name is missing");
     debug(`identified current platform name: ${platformName}`);
@@ -52,8 +54,121 @@ class Workspace {
     debug(`instantiated platform helper ${this.platform}`);
   }
 
-  public getOpenSSLCaGenerationCommand(rootKeyPath: string): string {
-    return `req -new -x509 -config "${this.cfg.caSelfSignConfig}" -key "${rootKeyPath}" -out "${this.cfg.rootCACertPath}" -days ${this.cfg.options.ca.defaultDays}`;
+  public async ensureReady(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await this.cfg.ensureConfigDirs();
+  }
+
+  public get shouldUseHeadlessMode(): boolean {
+    return this.opts.shouldUseHeadlessMode;
+  }
+
+  public openssl(args: string[]): void {
+    openssl(this.cfg.getConfigDir(), args);
+  }
+
+  public sudo(cmd: string, args: string[] = []): Promise<string | null> {
+    return sudo(this.opts.appName, cmd, args);
+  }
+
+  public getOpenSSLCaGenerationCommand(): string[] {
+    return [
+      "req",
+      "-new",
+      "-x509",
+      "-config",
+      `"${this.cfg.getCaSelfSignConfig()}"`,
+      "-key",
+      `"${this.cfg.getRootCAKeyPath()}"`,
+      "-out",
+      `"${this.cfg.getRootCACertPath()}"`,
+      "-days",
+      `${this.opts.ca.defaultDays}`
+    ];
+  }
+  public getOpenSSLCaErrors(): string {
+    try {
+      this.openssl([
+        `x509`,
+        `-in`,
+        `"${this.cfg.getRootCACertPath()}"`,
+        `-noout`
+      ]);
+      return "";
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Smoothly migrate the certificate storage from v1.0.x to >= v1.1.0.
+   * In v1.1.0 there are new options for retrieving the CA cert directly,
+   * to help third-party Node apps trust the root CA.
+   *
+   * If a v1.0.x cert already exists, then we have written it with
+   * platform.writeProtectedFile(), so an unprivileged readFile cannot access it.
+   * Pre-detect and remedy this; it should only happen once per installation.
+   *
+   * @internal
+   */
+  public async ensureCACertReadable(workspace: Workspace): Promise<void> {
+    if (!this.getOpenSSLCaErrors()) {
+      return;
+    }
+    /**
+     * on windows, writeProtectedFile left the cert encrypted on *nix, the cert
+     * has no read permissions either way, openssl will fail and that means we
+     * have to fix it
+     */
+    try {
+      const caFileContents = await this.platform.readProtectedFile(
+        this.cfg.getRootCACertPath()
+      );
+      this.platform.deleteProtectedFiles(this.cfg.getRootCACertPath());
+      writeFile(this.cfg.getRootCACertPath(), caFileContents);
+    } catch (e) {
+      return this.installCertificateAuthority();
+    }
+
+    // double check that we have a live one
+    const remainingErrors = this.getOpenSSLCaErrors();
+    if (remainingErrors) {
+      return this.installCertificateAuthority();
+    }
+  }
+
+  /**
+   * Install the once-per-machine trusted root CA. We'll use this CA to sign
+   * per-app certs.
+   *
+   * @internal
+   */
+  public async installCertificateAuthority(): Promise<void> {
+    debug(
+      `Uninstalling existing certificates, which will be void once any existing CA is gone`
+    );
+    this.uninstallCA();
+    this.ensureReady();
+
+    debug(`Making a temp working directory for files to copied in`);
+    const rootKeyPath = mkTmpFile();
+
+    debug(
+      `Generating the OpenSSL configuration needed to setup the certificate authority`
+    );
+    this.seedConfigFiles();
+
+    debug(`Generating a private key`);
+    generateKey(this, this.cfg.getRootCAKeyPath());
+
+    debug(`Generating a CA certificate`);
+    this.openssl(this.getOpenSSLCaGenerationCommand());
+
+    debug("Saving certificate authority credentials");
+    await this.saveCertificateAuthorityCredentials();
+
+    debug(`Adding the root certificate authority to trust stores`);
+    await this.platform.addToTrustStores(this.cfg.getRootCACertPath());
   }
 
   /**
@@ -70,7 +185,7 @@ class Workspace {
    * @internal
    */
   public configuredDomains(): string[] {
-    return readdir(this.cfg.domainsDir);
+    return readdir(this.cfg.getDomainsDir());
   }
 
   /**
@@ -88,25 +203,20 @@ class Workspace {
    */
   public seedConfigFiles(): void {
     // This is v2 of the certificate authority setup
-    writeFile(this.cfg.caVersionFile, "2");
+    writeFile(this.cfg.getCaVersionFile(), "2");
     // OpenSSL CA files
-    writeFile(this.cfg.opensslDatabaseFilePath, "");
-    writeFile(this.cfg.opensslSerialFilePath, "01");
+    writeFile(this.cfg.getOpensslDatabaseFilePath(), "");
+    writeFile(this.cfg.getOpensslSerialFilePath(), "01");
   }
 
-  public async saveCertificateAuthorityCredentials(
-    keypath: string
-  ): Promise<void> {
+  public async saveCertificateAuthorityCredentials(): Promise<void> {
     debug(`Saving certificate authority credentials`);
-    const key = readFile(keypath, "utf-8");
-    await this.platform.writeProtectedFile(this.cfg.rootCAKeyPath, key);
+    const key = readFile(this.cfg.getRootCAKeyPath(), "utf-8");
+    await this.platform.writeProtectedFile(this.cfg.getRootCAKeyPath(), key);
   }
 
   public assertNotTouchingFiles(filepath: string, operation: string): void {
-    if (
-      !filepath.startsWith(this.cfg.configDir) &&
-      !filepath.startsWith(this.cfg.getConfigDir())
-    ) {
+    if (!filepath.startsWith(this.cfg.getConfigDir())) {
       throw new Error(
         `Cannot ${operation} ${filepath}; it is outside known certin config directories!`
       );
@@ -129,27 +239,68 @@ class Workspace {
    * @alpha
    */
   public uninstallCA(): void {
-    this.platform.removeFromTrustStores(this.cfg.rootCACertPath);
-    this.platform.deleteProtectedFiles(this.cfg.domainsDir);
-    this.platform.deleteProtectedFiles(this.cfg.rootCADir);
+    this.platform.removeFromTrustStores(this.cfg.getRootCACertPath());
+    this.platform.deleteProtectedFiles(this.cfg.getDomainsDir());
+    this.platform.deleteProtectedFiles(this.cfg.getRootCADir());
     this.platform.deleteProtectedFiles(this.cfg.getConfigDir());
   }
 
   public withCertAuthorityConfig(cb: (filepath: string) => void): void {
     const { name: tmpFile } = mkTmpFile();
-    const result = createPopulatedCaCertConfig(this.cfg.options.ca);
+    const result = createPopulatedCaCertConfig(this.cfg.getCAParams());
     writeFile(tmpFile, eol.auto(result));
     cb(tmpFile);
     rm(tmpFile);
   }
 
+  public getKeyPathForDomain(commonName: string): string {
+    return this.cfg.getPathForDomain(commonName, `private-key.key`);
+  }
+  public ensureDomainPathExists(commonName: string): void {
+    mkdirp(this.cfg.getPathForDomain(commonName));
+  }
+  public getCertPathForDomain(commonName: string): string {
+    return this.cfg.getPathForDomain(commonName, `certificate.crt`);
+  }
+  public getCsrPathForDomain(commonName: string): string {
+    return this.cfg.getPathForDomain(
+      commonName,
+      `certificate-signing-request.csr`
+    );
+  }
+  public domainCertExists(commonName: string): boolean {
+    return exists(this.getCertPathForDomain(commonName));
+  }
+  public isRootCaInstalled(): boolean {
+    return !exists(this.cfg.getRootCAKeyPath());
+  }
+  public get isForceModeEnabled(): boolean {
+    return this.opts.isForceModeEnabled;
+  }
+  public get isSilentModeEnabled(): boolean {
+    return this.opts.isSilentModeEnabled;
+  }
+  public get isInteractiveModeEnabled(): boolean {
+    return this.opts.isSilentModeEnabled;
+  }
+
+  public get shouldSkipCertutilInstall(): boolean {
+    return this.opts.skipCertutilInstall;
+  }
+  public get shouldSkipHostsFile(): boolean {
+    return this.opts.skipHostsFile;
+  }
+  public get ui(): ISystemUserInterface {
+    return this.ui;
+  }
+
   public withDomainSigningRequestConfig(
-    opts: Partial<IDomainSigningRequestConfigOptions>,
+    opts: Partial<IDomainSigningRequestConfig>,
     cb: (filepath: string) => void
   ): void {
     const { name: tmpFile } = mkTmpFile();
     const result = createPopulatedDomainSigningRequestConfig({
-      ...this.cfg.options.domainCert,
+      ...this.cfg.getDomainCSRParams(),
       ...opts
     });
     writeFile(tmpFile, eol.auto(result));
@@ -158,13 +309,12 @@ class Workspace {
   }
 
   public withDomainCertificateConfig(
-    opts: Partial<IDomainSigningRequestConfigOptions>,
+    opts: Partial<IDomainSigningRequestConfig>,
     cb: (filepath: string) => void
   ): void {
     const { name: tmpFile } = mkTmpFile();
-    this.cfg.options.domainCert;
     const result = createPopulatedDomainCertificateConfig({
-      ...this.cfg.options.domainCert,
+      ...this.cfg.getDomainCertParams(),
       ...opts
     });
     writeFile(tmpFile, eol.auto(result));
@@ -188,11 +338,13 @@ class Workspace {
   ): Promise<void> {
     debug(`Retrieving certificate authority credentials`);
     const { name: tmpCAKeyPath } = mkTmpFile();
-    const caKey = await this.platform.readProtectedFile(this.cfg.rootCAKeyPath);
+    const caKey = await this.platform.readProtectedFile(
+      this.cfg.getRootCAKeyPath()
+    );
     writeFile(tmpCAKeyPath, caKey);
     await cb({
       caKeyPath: tmpCAKeyPath,
-      caCertPath: this.cfg.rootCACertPath
+      caCertPath: this.cfg.getRootCACertPath()
     });
     rm(tmpCAKeyPath);
   }

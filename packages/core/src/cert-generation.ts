@@ -25,67 +25,43 @@ import Workspace from "./workspace";
 
 const debug = _debug("certin");
 
-// /**
-//  * Certificate generation options
-//  * @public
-//  */
-// export interface ICertGenerationOptions {
-//   subjectAlternateNames: string[];
-//   signDomainCertWithDevCa: boolean;
-//   interactiveMode: boolean;
-//   forceMode: boolean;
-//   silentMode: boolean;
-//   days: number;
-//   caDays: number;
-// }
-
-// const DEFAULT_CERT_GENERATION_OPTIONS: ICertGenerationOptions = {
-//   subjectAlternateNames: [],
-//   signDomainCertWithDevCa: false,
-//   interactiveMode: false,
-//   forceMode: false,
-//   silentMode: false,
-//   days: 30,
-//   caDays: 180
-// };
-
 /**
- * Generate a certificate, bound to a particular subject name (i.e., a domain)
- * @param subjectName - subject name of certificate
- * @param altNames - alternative names
+ *
+ * @param workspace
+ * @param param1
+ * @param param2
  * @public
  */
 export async function ensureCertExists(
   workspace: Workspace,
-  subjectName: string,
-  pemPath: string,
-  ui: ICliUI
+  { pemPath, cli }: { pemPath: string; cli: ICliUI },
+  {
+    commonName,
+    subjectAltNames = []
+  }: { commonName: string; subjectAltNames?: string[] }
 ): Promise<void> {
-  const { log } = ui.logger();
+  const { log } = cli.logger();
   let certResult: {
     key: string;
     cert: string;
   };
-  if (
-    workspace.cfg.options.domainCert.signWithDevCa &&
-    workspace.cfg.options.ux.interactiveMode
-  ) {
+  if (workspace.shouldUseHeadlessMode) {
     debug(LOG_PROCEEDING_IN_DEV_MODE);
-    certResult = await ensureDevCertExists(workspace, subjectName, ui);
+    certResult = await ensureDevCertExists(workspace, cli, { commonName });
   } else {
     debug(LOG_PROCEEDING_IN_HEADLESS_MODE);
-    certResult = ensureHeadlessCertExists(workspace, subjectName, ui);
+    certResult = ensureHeadlessCertExists(workspace, cli, { commonName });
   }
 
   const { key, cert } = certResult;
-  const { forceMode, interactiveMode } = workspace.cfg.options.ux;
+  const { isForceModeEnabled, isInteractiveModeEnabled } = workspace;
 
   const foundExistingCert = fs.existsSync(pemPath);
   if (foundExistingCert) {
-    if (forceMode) {
+    if (isForceModeEnabled) {
       debug(LOG_FORCE_MODE_ENABLED);
     } else {
-      if (interactiveMode) {
+      if (isInteractiveModeEnabled) {
         log(LOG_EXISTING_CERT_USER_RESPONSE_REQUIRED(pemPath));
         const overwriteResponse = await inquirer.prompt<{
           overwritePem: boolean;
@@ -114,8 +90,8 @@ export async function ensureCertExists(
 
   log(
     LOG_CERT_WROTE_TO_LOCATION({
-      subjectName,
-      subjectAlternateNames: workspace.cfg.options.domainCert.subjectAltNames,
+      commonName,
+      subjectAltNames,
       pemPath,
       certSize
     })

@@ -4,45 +4,90 @@
 
 ```ts
 
-import { Config } from '@certin/config';
-import { ICertinUserFacingOptions } from '@certin/types';
+import { ICertinOptionsArg } from '@certin/options';
 import { ICliUI } from '@certin/types';
-import { IDomainSigningRequestConfigOptions } from '@certin/types';
+import { IDomainSigningRequestConfig } from '@certin/types';
+import { ISystemUserInterface } from '@certin/types';
+import { Options } from '@certin/options';
 
 // Warning: (ae-incompatible-release-tags) The symbol "cleanupTrustStore" is marked as @beta, but its signature references "Workspace" which is marked as @internal
 //
 // @beta
 export function cleanupTrustStore(ui: ICliUI, workspace: Workspace): void;
 
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
+// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (ae-incompatible-release-tags) The symbol "ensureCertExists" is marked as @public, but its signature references "Workspace" which is marked as @internal
 //
-// @public
-export function ensureCertExists(workspace: Workspace, subjectName: string, pemPath: string, ui: ICliUI): Promise<void>;
+// @public (undocumented)
+export function ensureCertExists(workspace: Workspace, { pemPath, cli }: {
+    pemPath: string;
+    cli: ICliUI;
+}, { commonName, subjectAltNames }: {
+    commonName: string;
+    subjectAltNames?: string[];
+}): Promise<void>;
 
 // Warning: (ae-internal-missing-underscore) The name "Workspace" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
 export class Workspace {
-    constructor(opts: ICertinUserFacingOptions);
+    constructor(opts: ICertinOptionsArg);
     // (undocumented)
     assertNotTouchingFiles(filepath: string, operation: string): void;
     // (undocumented)
-    readonly cfg: Config;
-    // (undocumented)
     configuredDomains(): string[];
     // (undocumented)
-    getOpenSSLCaGenerationCommand(rootKeyPath: string): string;
+    domainCertExists(commonName: string): boolean;
+    // Warning: (tsdoc-escape-greater-than) The ">" character should be escaped using a backslash to avoid confusion with an HTML tag
+    ensureCACertReadable(workspace: Workspace): Promise<void>;
+    // (undocumented)
+    ensureDomainPathExists(commonName: string): void;
+    // (undocumented)
+    ensureReady(): Promise<void>;
+    // (undocumented)
+    getCertPathForDomain(commonName: string): string;
+    // (undocumented)
+    getCsrPathForDomain(commonName: string): string;
+    // (undocumented)
+    getKeyPathForDomain(commonName: string): string;
+    // (undocumented)
+    getOpenSSLCaErrors(): string;
+    // (undocumented)
+    getOpenSSLCaGenerationCommand(): string[];
     // (undocumented)
     hasCertificateFor(commonName: string): boolean;
+    installCertificateAuthority(): Promise<void>;
+    // (undocumented)
+    get isForceModeEnabled(): boolean;
+    // (undocumented)
+    get isInteractiveModeEnabled(): boolean;
+    // (undocumented)
+    isRootCaInstalled(): boolean;
+    // (undocumented)
+    get isSilentModeEnabled(): boolean;
+    // (undocumented)
+    openssl(args: string[]): void;
     // Warning: (ae-forgotten-export) The symbol "IPlatform" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    platform: IPlatform;
+    protected platform: IPlatform;
     // (undocumented)
     removeDomain(commonName: string): void;
     // (undocumented)
-    saveCertificateAuthorityCredentials(keypath: string): Promise<void>;
+    saveCertificateAuthorityCredentials(): Promise<void>;
     seedConfigFiles(): void;
+    // (undocumented)
+    get shouldSkipCertutilInstall(): boolean;
+    // (undocumented)
+    get shouldSkipHostsFile(): boolean;
+    // (undocumented)
+    get shouldUseHeadlessMode(): boolean;
+    // (undocumented)
+    sudo(cmd: string, args?: string[]): Promise<string | null>;
+    // (undocumented)
+    get ui(): ISystemUserInterface;
     // @alpha
     uninstallCA(): void;
     // (undocumented)
@@ -55,9 +100,9 @@ export class Workspace {
         caCertPath: string;
     }) => Promise<void> | void): Promise<void>;
     // (undocumented)
-    withDomainCertificateConfig(opts: Partial<IDomainSigningRequestConfigOptions>, cb: (filepath: string) => void): void;
+    withDomainCertificateConfig(opts: Partial<IDomainSigningRequestConfig>, cb: (filepath: string) => void): void;
     // (undocumented)
-    withDomainSigningRequestConfig(opts: Partial<IDomainSigningRequestConfigOptions>, cb: (filepath: string) => void): void;
+    withDomainSigningRequestConfig(opts: Partial<IDomainSigningRequestConfig>, cb: (filepath: string) => void): void;
 }
 
 

@@ -41,7 +41,9 @@
     "@certin/messages": "^0.0.2-dev.4",
     "application-config-path": "^0.1.0",
     "debug": "^4.1.1",
-    "execa": "^0.7.0"
+    "execa": "^0.7.0",
+    "sudo-prompt": "^9.1.1",
+    "validator": "^12.2.0"
   },
   "devDependencies": {
     "@microsoft/api-documenter": "^7.7.12",
@@ -50,6 +52,7 @@
     "@types/execa": "^0.7.0",
     "@types/node": "^8.5.7",
     "@types/qunit": "^2.9.0",
+    "@types/validator": "^12.0.1",
     "eslint-plugin-node": "^11.0.0",
     "prettier": "^1.19.1",
     "qunit": "^2.9.3",

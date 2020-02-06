@@ -8,11 +8,13 @@ import {
   assertIsBoolean,
   assertIsString,
   assertIsArray
-} from "../validation";
+} from "@certin/utils";
 import { ensureCertExists, Workspace } from "@certin/core";
 import chalk = require("chalk");
 import { existsSync } from "fs-extra";
 import { UI, IUIOptions } from "@certin/cliux";
+import { camelCase } from "camel-case";
+import { titleCase } from "title-case";
 
 const debug = _createDebug("certin:cli:cert");
 
@@ -68,7 +70,10 @@ function addCertCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
         out,
         nonInteractive,
         force,
-        silent
+        silent,
+        appName,
+        certutilInstall,
+        updateHostsFile
       } = argv as any;
       debug("[generate-cert] running command", argv);
       assertIsFQDN(name, "subject name");
@@ -105,22 +110,27 @@ function addCertCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
       );
 
       const workspace = new Workspace({
-        ux: {
-          forceMode: force,
-          silentMode: silent,
-          interactiveMode: !nonInteractive
-        },
-        ca: {
+        force: force,
+        silent: silent,
+        interactive: !nonInteractive,
+        appName,
+        skipCertutilInstall: !certutilInstall,
+        skipHostsFile: !updateHostsFile,
+        defaultCa: {
+          label: camelCase(appName),
+          name: titleCase(appName),
           daysUntilExpire: caDays
         },
-        domainCert: {
-          commonName: name,
-          signWithDevCa,
+        defaultDomainCert: {
           daysUntilExpire: certDays,
-          subjectAlternativeNames: san
+          signWithDevCa
         }
       });
-      ensureCertExists(workspace, name, out, ui)
+      ensureCertExists(
+        workspace,
+        { pemPath: out, cli: ui },
+        { commonName: name, subjectAltNames: san }
+      )
         .then(() => {
           return debug("[generate-cert] completed execution");
         })

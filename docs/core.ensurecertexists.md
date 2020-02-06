@@ -4,12 +4,16 @@
 
 ## ensureCertExists() function
 
-Generate a certificate, bound to a particular subject name (i.e., a domain)
-
 <b>Signature:</b>
 
 ```typescript
-export declare function ensureCertExists(workspace: Workspace, subjectName: string, pemPath: string, ui: ICliUI): Promise<void>;
+export declare function ensureCertExists(workspace: Workspace, { pemPath, cli }: {
+    pemPath: string;
+    cli: ICliUI;
+}, { commonName, subjectAltNames }: {
+    commonName: string;
+    subjectAltNames?: string[];
+}): Promise<void>;
 ```
 
 ## Parameters
@@ -17,9 +21,8 @@ export declare function ensureCertExists(workspace: Workspace, subjectName: stri
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  workspace | <code>Workspace</code> |  |
-|  subjectName | <code>string</code> | subject name of certificate |
-|  pemPath | <code>string</code> |  |
-|  ui | <code>ICliUI</code> |  |
+|  { pemPath, cli } | <code>{</code><br/><code>    pemPath: string;</code><br/><code>    cli: ICliUI;</code><br/><code>}</code> |  |
+|  { commonName, subjectAltNames } | <code>{</code><br/><code>    commonName: string;</code><br/><code>    subjectAltNames?: string[];</code><br/><code>}</code> |  |
 
 <b>Returns:</b>
 

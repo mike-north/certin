@@ -4,74 +4,77 @@
 
 ```ts
 
-import { ICACertConfigOptions } from '@certin/types';
-import { ICertinConfig } from '@certin/types';
-import { ICertinConfigOptions } from '@certin/types';
-import { ICertinUserFacingOptions } from '@certin/types';
-import { IDomainCertificateConfigOptions } from '@certin/types';
-import { IDomainSigningRequestConfigOptions } from '@certin/types';
+import { ICACertConfig } from '@certin/types';
+import { IDomainCertificateConfig } from '@certin/types';
+import { IDomainSigningRequestConfig } from '@certin/types';
 
 // Warning: (ae-internal-missing-underscore) The name "Config" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export class Config implements ICertinConfig {
-    constructor(options: ICertinUserFacingOptions);
-    // (undocumented)
-    readonly caSelfSignConfig: string;
-    // (undocumented)
-    readonly caVersionFile: string;
-    // (undocumented)
-    readonly configDir: string;
-    // (undocumented)
-    readonly domainCertConfig: string;
-    // (undocumented)
-    readonly domainCsrConfig: string;
-    // (undocumented)
-    get domainsDir(): string;
+export class Config {
+    constructor(arg: IConfigArg);
     // (undocumented)
     ensureConfigDirs(): void;
+    // (undocumented)
+    getCAParams(): ICACertConfig;
+    // (undocumented)
+    getCaSelfSignConfig(): string;
+    // (undocumented)
+    getCaVersionFile(): string;
     // (undocumented)
     getConfigDir(): string;
     // (undocumented)
     getConfigPath(...pathSegments: string[]): string;
     // (undocumented)
+    getDomainCertConfig(): string;
+    // (undocumented)
+    getDomainCertParams(): IDomainCertificateConfig;
+    // (undocumented)
+    getDomainCsrConfig(): string;
+    // (undocumented)
+    getDomainCSRParams(): IDomainSigningRequestConfig;
+    // (undocumented)
+    getDomainsDir(): string;
+    // (undocumented)
+    getOpenSSLConfigPath(): string;
+    // (undocumented)
+    getOpensslDatabaseFilePath(): string;
+    // (undocumented)
+    getOpensslSerialFilePath(): string;
+    // (undocumented)
     getPathForDomain(domain: string, ...pathSegments: string[]): string;
     // (undocumented)
     getPathForOpenSSLConfig(...pathSegments: string[]): string;
     // (undocumented)
-    readonly opensslDatabaseFilePath: string;
+    getRootCACertPath(): string;
     // (undocumented)
-    readonly opensslSerialFilePath: string;
+    getRootCADir(): string;
     // (undocumented)
-    options: ICertinConfigOptions;
-    // (undocumented)
-    readonly rootCACertPath: string;
-    // (undocumented)
-    readonly rootCADir: string;
-    // (undocumented)
-    readonly rootCAKeyPath: string;
+    getRootCAKeyPath(): string;
 }
-
-// Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
-// Warning: (ae-internal-missing-underscore) The name "createConfig" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export function createConfig(opts: ICertinUserFacingOptions): Config;
 
 // Warning: (ae-internal-missing-underscore) The name "createPopulatedCaCertConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export function createPopulatedCaCertConfig(opts: ICACertConfigOptions): string;
+export function createPopulatedCaCertConfig(opts: ICACertConfig): string;
 
 // Warning: (ae-internal-missing-underscore) The name "createPopulatedDomainCertificateConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export function createPopulatedDomainCertificateConfig(opts: IDomainCertificateConfigOptions): string;
+export function createPopulatedDomainCertificateConfig(opts: IDomainCertificateConfig): string;
 
 // Warning: (ae-internal-missing-underscore) The name "createPopulatedDomainSigningRequestConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export function createPopulatedDomainSigningRequestConfig(opts: IDomainSigningRequestConfigOptions): string;
+export function createPopulatedDomainSigningRequestConfig(opts: IDomainSigningRequestConfig): string;
+
+// Warning: (ae-internal-missing-underscore) The name "IConfigArg" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export interface IConfigArg {
+    // (undocumented)
+    appName: string;
+}
 
 
 // (No @packageDocumentation comment for this package)

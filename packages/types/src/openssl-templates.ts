@@ -1,14 +1,14 @@
 /**
  * @internal
  */
-export interface ICACertConfigOptions {
+export interface ICACertConfig {
   name: string;
   defaultDays: number;
 }
 /**
  * @internal
  */
-export interface IDomainSigningRequestConfigOptions {
+export interface IDomainSigningRequestConfig {
   commonName: string;
   subjectAltNames: string[];
 }
@@ -16,7 +16,7 @@ export interface IDomainSigningRequestConfigOptions {
 /**
  * @internal
  */
-export interface IDomainCertificateConfigOptions {
+export interface IDomainCertificateConfig {
   defaultCa: string;
   serial: string;
   database: string;

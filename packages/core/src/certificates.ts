@@ -3,16 +3,25 @@ import * as createDebug from "debug";
 import { sync as mkdirp } from "mkdirp";
 import { chmodSync as chmod } from "fs";
 
-import { openssl } from "./utils";
 import Workspace from "./workspace";
+import {
+  IDomainSigningRequestConfig,
+  IDomainCertificateConfig
+} from "@certin/types";
 
 const debug = createDebug("certin:certificates");
 
 // Generate a cryptographic key, used to sign certificates or certificate signing requests.
 export function generateKey(workspace: Workspace, filename: string): void {
   debug(`generateKey: ${filename}`);
-  openssl(workspace.cfg, `genrsa -out "${filename}" 2048`);
+  workspace.openssl([`genrsa`, `-out`, `"${filename}"`, `2048`]);
   chmod(filename, 400);
+}
+
+export interface IGenerateDomainCertOptions {
+  commonName: string;
+  subjectAltNames: string[];
+  defaultDays: number;
 }
 
 /**
@@ -24,50 +33,60 @@ export function generateKey(workspace: Workspace, filename: string): void {
  */
 export default async function generateDomainCertificate(
   workspace: Workspace,
-  commonName: string,
-  alternativeNames: string[]
+  opts: IGenerateDomainCertOptions
 ): Promise<void> {
-  mkdirp(workspace.cfg.getPathForDomain(commonName));
+  const { commonName, subjectAltNames, defaultDays } = opts;
+  workspace.ensureDomainPathExists(commonName);
 
   debug(`Generating private key for ${commonName}`);
-  const domainKeyPath = workspace.cfg.getPathForDomain(
-    commonName,
-    "private-key.key"
-  );
+  const domainKeyPath = workspace.getKeyPathForDomain(commonName);
   generateKey(workspace, domainKeyPath);
 
   debug(`Generating certificate signing request for ${commonName}`);
-  const csrFile = workspace.cfg.getPathForDomain(
-    commonName,
-    `certificate-signing-request.csr`
-  );
+  const csrFile = workspace.getCsrPathForDomain(commonName);
   workspace.withDomainSigningRequestConfig(
-    { commonName, subjectAltNames: alternativeNames },
+    { commonName, subjectAltNames },
     configpath => {
-      openssl(
-        workspace.cfg,
-        `req -new -config "${configpath}" -key "${domainKeyPath}" -out "${csrFile}" -days ${workspace.cfg.options.domainCert.defaultDays}`
-      );
+      workspace.openssl([
+        `req`,
+        `-new`,
+        `-config`,
+        `"${configpath}"`,
+        `-key`,
+        `"${domainKeyPath}"`,
+        `-out`,
+        `"${csrFile}"`,
+        `-days ${defaultDays}`
+      ]);
     }
   );
 
   debug(
     `Generating certificate for ${commonName} from signing request and signing with root CA`
   );
-  const domainCertPath = workspace.cfg.getPathForDomain(
-    commonName,
-    `certificate.crt`
-  );
+  const domainCertPath = workspace.getCertPathForDomain(commonName);
 
   await workspace.withCertificateAuthorityCredentials(
     ({ caKeyPath, caCertPath }) => {
       workspace.withDomainCertificateConfig(
-        { commonName, subjectAltNames: alternativeNames },
+        { commonName, subjectAltNames },
         domainCertConfigPath => {
-          openssl(
-            workspace.cfg,
-            `ca -config "${domainCertConfigPath}" -in "${csrFile}" -out "${domainCertPath}" -keyfile "${caKeyPath}" -cert "${caCertPath}" -days ${workspace.cfg.options.domainCert.defaultDays} -batch`
-          );
+          workspace.openssl([
+            `ca`,
+            `-config`,
+            `"${domainCertConfigPath}"`,
+            `-in`,
+            `"${csrFile}"`,
+            `-out`,
+            `"${domainCertPath}"`,
+            `-keyfile`,
+            `"${caKeyPath}"`,
+            `-cert`,
+            `"${caCertPath}"`,
+            `-days`,
+            `${defaultDays}`,
+            `-batch`
+          ]);
         }
       );
     }

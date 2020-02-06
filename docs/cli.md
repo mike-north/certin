@@ -4,3 +4,10 @@
 
 ## cli package
 
+## Functions
+
+|  Function | Description |
+|  --- | --- |
+|  [main(\_args)](./cli.main.md) | <b><i>(BETA)</i></b> Invoke the cli |
+|  [mainSync(args, opts)](./cli.mainsync.md) | <b><i>(BETA)</i></b> Invoke the cli synchronously |
+

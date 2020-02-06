@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../tests_js",
+    "rootDir": ".",
+    "types": ["qunit"],
+    "baseUrl": ".",
+    "paths": {
+      "@certin/options": ["../dist/options-private.d.ts"],
+      "@certin/types": ["../../types/dist/types-private.d.ts"],
+      "@certin/config": ["../../config/dist/config-private.d.ts"],
+      "@certin/messages": ["../../messages/dist/messages-private.d.ts"],
+      "*": ["../../../types/*"]
+    }
+  },
+  "references": [{ "path": ".." }],
+  "include": ["."]
+}
