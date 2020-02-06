@@ -14,6 +14,7 @@
       "@certin/cli": ["../cli/dist/cli-private.d.ts"],
       "@certin/cliux": ["../cliux/dist/cliux-private.d.ts"],
       "@certin/config": ["../config/dist/config-private.d.ts"],
+      "@certin/options": ["../options/dist/options-private.d.ts"],
       "@certin/core": ["../core/dist/core-private.d.ts"],
       "@certin/types": ["../types/dist/types-private.d.ts"],
       "@certin/messages": ["../messages/dist/messages-private.d.ts"],

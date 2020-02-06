@@ -9,5 +9,5 @@
 |  Function | Description |
 |  --- | --- |
 |  [cleanupTrustStore(ui, workspace)](./core.cleanuptruststore.md) | <b><i>(BETA)</i></b> Remove any existing self-signed certificates from the trust store. |
-|  [ensureCertExists(workspace, subjectName, pemPath, ui)](./core.ensurecertexists.md) | Generate a certificate, bound to a particular subject name (i.e., a domain) |
+|  [ensureCertExists(workspace, { pemPath, cli }, { commonName, subjectAltNames })](./core.ensurecertexists.md) |  |
 

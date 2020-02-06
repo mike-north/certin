@@ -13,11 +13,11 @@ import {
   removeCertificateFromNSSCertDB,
   HOME
 } from "./shared";
-import { run } from "../utils";
-import { IOptions } from "../legacy";
+import { run, sudo } from "@certin/utils";
 import UI from "../user-interface";
 import { IPlatform } from "../platforms";
 import Workspace from "../workspace";
+import { Options } from "@certin/options";
 
 const debug = createDebug("certin:platforms:linux");
 
@@ -42,15 +42,16 @@ export default class LinuxPlatform implements IPlatform {
    */
   public async addToTrustStores(
     certificatePath: string,
-    options: IOptions = {}
+    options: Options
   ): Promise<void> {
     debug("Adding root CA to Linux system-wide trust stores");
     // run(`sudo cp ${ certificatePath } /etc/ssl/certs/certin.crt`);
-    run(
-      `sudo cp "${certificatePath}" /usr/local/share/ca-certificates/certin.crt`
-    );
+    this.workspace.sudo("cp", [
+      `"${certificatePath}"`,
+      `/usr/local/share/ca-certificates/certin.crt`
+    ]);
     // run(`sudo bash -c "cat ${ certificatePath } >> /etc/ssl/certs/ca-certificates.crt"`);
-    run(`sudo update-ca-certificates`);
+    this.workspace.sudo(`update-ca-certificates`);
 
     if (this.isFirefoxInstalled()) {
       // Firefox
@@ -67,7 +68,7 @@ export default class LinuxPlatform implements IPlatform {
           debug(
             "NSS tooling is not already installed. Trying to install NSS tooling now with `apt install`"
           );
-          run("sudo apt install libnss3-tools");
+          this.workspace.sudo("apt", ["install", "libnss3-tools"]);
           debug(
             "Installing certificate into Firefox trust stores using NSS tooling"
           );
@@ -108,10 +109,14 @@ export default class LinuxPlatform implements IPlatform {
 
   public removeFromTrustStores(certificatePath: string): void {
     try {
-      run(`sudo rm /usr/local/share/ca-certificates/certin.crt`);
-      run(`sudo update-ca-certificates`);
+      // TODO remove hardcoded path to ca cert
+      this.workspace.sudo("rm", [
+        "/usr/local/share/ca-certificates/certin.crt"
+      ]);
+      this.workspace.sudo(`update-ca-certificates`);
     } catch (e) {
       debug(
+        // TODO remove hardcoded path to ca cert
         `failed to remove ${certificatePath} from /usr/local/share/ca-certificates, continuing. ${e.toString()}`
       );
     }
@@ -136,20 +141,30 @@ export default class LinuxPlatform implements IPlatform {
   public addDomainToHostFileIfMissing(domain: string): void {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
-      run(
-        `echo '127.0.0.1  ${domain}' | sudo tee -a "${this.HOST_FILE_PATH}" > /dev/null`
-      );
+      // TODO: can we use sudo() here?
+      run(`echo`, [
+        `'127.0.0.1`,
+        `${domain}'`,
+        `|`,
+        `sudo`,
+        `tee`,
+        `-a`,
+        `"${this.HOST_FILE_PATH}"`,
+        `>`,
+        `/dev/null`
+      ]);
     }
   }
 
   public deleteProtectedFiles(filepath: string): void {
     this.workspace.assertNotTouchingFiles(filepath, "delete");
-    run(`sudo rm -rf "${filepath}"`);
+    this.workspace.sudo("rm", [`-rf "${filepath}"`]);
   }
 
   public readProtectedFile(filepath: string): string {
     this.workspace.assertNotTouchingFiles(filepath, "read");
-    return run(`sudo cat "${filepath}"`)
+    return this.workspace
+      .sudo("cat", [`"${filepath}"]`])
       .toString()
       .trim();
   }
@@ -157,11 +172,11 @@ export default class LinuxPlatform implements IPlatform {
   public writeProtectedFile(filepath: string, contents: string): void {
     this.workspace.assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
-      run(`sudo rm "${filepath}"`);
+      this.workspace.sudo("rm", [`"${filepath}"`]);
     }
     writeFile(filepath, contents);
-    run(`sudo chown 0 "${filepath}"`);
-    run(`sudo chmod 600 "${filepath}"`);
+    this.workspace.sudo("chown", [`0`, `"${filepath}"`]);
+    this.workspace.sudo("chmod", [`600`, `"${filepath}"`]);
   }
 
   private isFirefoxInstalled(): boolean {

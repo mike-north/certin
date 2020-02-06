@@ -1,0 +1,58 @@
+{
+  "name": "@certin/options",
+  "version": "0.0.0-dev.0",
+  "description": "> TODO: description",
+  "author": "Mike North <michael.l.north@gmail.com>",
+  "homepage": "https://github.com/mike-north/certin#readme",
+  "license": "BSD-2-Clause",
+  "main": "dist/src/index.js",
+  "typings": "dist/options.d.ts",
+  "files": [
+    "dist/**/*",
+    "etc/**/*",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mike-north/certin.git"
+  },
+  "scripty": {
+    "path": "../../scripts"
+  },
+  "scripts": {
+    "build": "scripty",
+    "watch": "SCRIPTY_PARALLEL=true scripty",
+    "extract-api": "scripty",
+    "prepack": "scripty",
+    "build:ts": "scripty",
+    "lint": "scripty",
+    "clean": "scripty",
+    "changelog": "scripty",
+    "pretest": "scripty",
+    "test": "scripty"
+  },
+  "bugs": {
+    "url": "https://github.com/mike-north/certin/issues"
+  },
+  "dependencies": {
+    "@certin/config": "^0.0.2-dev.4",
+    "@certin/types": "^0.0.2-dev.3",
+    "@certin/utils": "^0.0.2-dev.4",
+    "debug": "^4.1.1"
+  },
+  "devDependencies": {
+    "@microsoft/api-documenter": "^7.7.12",
+    "@microsoft/api-extractor": "^7.7.8",
+    "@types/debug": "^4.1.5",
+    "@types/node": "^8.5.7",
+    "@types/qunit": "^2.9.0",
+    "eslint-plugin-node": "^11.0.0",
+    "prettier": "^1.19.1",
+    "qunit": "^2.9.3",
+    "rimraf": "^3.0.1",
+    "typescript": "^3.7.5"
+  }
+}

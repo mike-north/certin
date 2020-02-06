@@ -2,12 +2,12 @@ import * as createDebug from "debug";
 import * as crypto from "crypto";
 import { writeFileSync as write, readFileSync as read } from "fs";
 import { sync as rimraf } from "rimraf";
-import { IOptions } from "../legacy";
 import { openCertificateInFirefox } from "./shared";
 import { IPlatform } from "../platforms";
-import { run, sudo } from "../utils";
 import UI from "../user-interface";
 import Workspace from "../workspace";
+import { Options } from "@certin/options";
+import { run } from "@certin/utils";
 
 const debug = createDebug("certin:platforms:windows");
 
@@ -28,12 +28,12 @@ export default class WindowsPlatform implements IPlatform {
    */
   public async addToTrustStores(
     certificatePath: string,
-    options: IOptions = {}
+    options: Options
   ): Promise<void> {
     // IE, Chrome, system utils
     debug("adding root to Windows OS trust store");
     try {
-      run(`certutil -addstore -user root "${certificatePath}"`);
+      run("certutil", [`-addstore`, `-user`, `root`, `"${certificatePath}"`]);
     } catch (e) {
       e.output.map((buffer: Buffer) => {
         if (buffer) {
@@ -56,7 +56,8 @@ export default class WindowsPlatform implements IPlatform {
       console.warn(
         "Removing old certificates from trust stores. You may be prompted to grant permission for this. It's safe to delete old certificates."
       );
-      run(`certutil -delstore -user root certin`);
+      // TODO: remove hardcoded cert label
+      run("certutil", [`-delstore`, `-user`, `root`, `certin`]);
     } catch (e) {
       debug(
         `failed to remove ${certificatePath} from Windows OS trust store, continuing. ${e.toString()}`
@@ -67,7 +68,12 @@ export default class WindowsPlatform implements IPlatform {
   public async addDomainToHostFileIfMissing(domain: string): Promise<void> {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
-      await sudo(`echo 127.0.0.1  ${domain} >> ${this.HOST_FILE_PATH}`);
+      await this.workspace.sudo("echo", [
+        `127.0.0.1`,
+        domain,
+        `>>`,
+        this.HOST_FILE_PATH
+      ]);
     }
   }
 

@@ -4,7 +4,7 @@ import validator from "validator";
  * Test whether a value is a string, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsString(
   arg: unknown,
@@ -20,7 +20,7 @@ export function assertIsString(
  * Test whether a value is a number, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsNumber(
   arg: unknown,
@@ -36,7 +36,7 @@ export function assertIsNumber(
  * Test whether a value is an integer, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsInteger(
   arg: unknown,
@@ -53,7 +53,7 @@ export function assertIsInteger(
  * Test whether a value is a positive integer, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsPositiveInteger(
   arg: unknown,
@@ -70,7 +70,7 @@ export function assertIsPositiveInteger(
  * Test whether a value is a boolean, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsBoolean(
   arg: unknown,
@@ -86,7 +86,7 @@ export function assertIsBoolean(
  * Test whether a value is an array, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsArray(arg: unknown): asserts arg is any[] {
   if (!Array.isArray(arg)) throw new Error(`expected ${arg} to be an array`);
@@ -96,7 +96,7 @@ export function assertIsArray(arg: unknown): asserts arg is any[] {
  * Test whether a value is a FQDN, and throw an informative error if it's not
  * @param arg value to test
  * @param label description of the value
- * @internal
+ * @public
  */
 export function assertIsFQDN(
   arg: unknown,

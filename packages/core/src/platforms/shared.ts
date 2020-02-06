@@ -7,11 +7,10 @@ import * as http from "http";
 import { existsSync } from "fs";
 import { sync as glob } from "glob";
 import { readFileSync as readFile, existsSync as exists } from "fs";
-import { run } from "../utils";
 // import { configDir, getLegacyConfigDir } from "../constants";
 import UI from "../user-interface";
 import { execSync as exec } from "child_process";
-import { isMac, isLinux } from "@certin/utils";
+import { isMac, isLinux, run } from "@certin/utils";
 import { ICertinConfig } from "@certin/types";
 
 const debug = createDebug("certin:platforms:shared");
@@ -63,9 +62,17 @@ export function addCertificateToNSSCertDB(
   debug(`trying to install certificate into NSS databases in ${nssDirGlob}`);
   doForNSSCertDB(nssDirGlob, (dir, version) => {
     const dirArg = version === "modern" ? `sql:${dir}` : dir;
-    run(
-      `${certutilPath} -A -d "${dirArg}" -t 'C,,' -i "${certPath}" -n certin`
-    );
+    run(certutilPath, [
+      `-A`,
+      `-d`,
+      `"${dirArg}"`,
+      `-t`,
+      `'C,,'`,
+      `-i`,
+      `"${certPath}"`,
+      `-n`,
+      `certin`
+    ]);
   });
   debug(
     `finished scanning & installing certificate in NSS databases in ${nssDirGlob}`
@@ -82,9 +89,17 @@ export function removeCertificateFromNSSCertDB(
     const dirArg = version === "modern" ? `sql:${dir}` : dir;
     try {
       if (existsSync(certPath)) {
-        run(
-          `${certutilPath} -A -d "${dirArg}" -t 'C,,' -i "${certPath}" -n certin`
-        );
+        run(certutilPath, [
+          `-A`,
+          `-d`,
+          `"${dirArg}"`,
+          `-t`,
+          `'C,,'`,
+          `-i`,
+          `"${certPath}"`,
+          `-n`,
+          `certin`
+        ]);
       }
     } catch (e) {
       debug(
@@ -190,7 +205,7 @@ export async function openCertificateInFirefox(
     "Certificate server is up. Printing instructions for user and launching Firefox with hosted certificate URL"
   );
   await UI.startFirefoxWizard(`http://localhost:${port}`);
-  run(`${firefoxPath} http://localhost:${port}`);
+  run(firefoxPath, [`http://localhost:${port}`]);
   await UI.waitForFirefoxWizard();
   server.close();
 }

@@ -1,19 +1,14 @@
 import passwordPrompt from "password-prompt";
-import { waitForUser } from "./utils";
+import { ISystemUserInterface } from "@certin/types";
 
-/**
- * @alpha
- */
-export interface IUserInterface {
-  getWindowsEncryptionPassword(): string | Promise<string>;
-  warnChromeOnLinuxWithoutCertutil(): void | Promise<void>;
-  closeFirefoxBeforeContinuing(): void | Promise<void>;
-  startFirefoxWizard(certificateHost: string): void | Promise<void>;
-  firefoxWizardPromptPage(certificateURL: string): string | Promise<string>;
-  waitForFirefoxWizard(): void | Promise<void>;
+function waitForUser(): Promise<void> {
+  return new Promise(resolve => {
+    process.stdin.resume();
+    process.stdin.on("data", resolve);
+  });
 }
 
-const DefaultUI: IUserInterface = {
+const DefaultUI: ISystemUserInterface = {
   async getWindowsEncryptionPassword() {
     return await passwordPrompt(
       "cert password (http://bit.ly/devcert-what-password?):"

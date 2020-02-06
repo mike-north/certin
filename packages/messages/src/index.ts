@@ -6,15 +6,15 @@ import { resolve } from "path";
  * Build a string (for logging purposes) describing
  * the name and alternative names of the certificate
  *
- * @param subjectName - subject name of the cert
+ * @param commonName - subject name of the cert
  * @param altNames - subject alternative names for the cert
  * @private
  */
-function stringifySubjectNameAndAltNames(
-  subjectName: string,
+function stringifyCommonNameAndAltNames(
+  commonName: string,
   altNames: string[]
 ): string {
-  const parts = [chalk.underline(subjectName)];
+  const parts = [chalk.underline(commonName)];
   if (altNames.length > 0) {
     parts.push(
       chalk.dim(
@@ -55,15 +55,15 @@ export const LOG_NO_EXISTING_CERT_FOUND = (subjectName: string): string =>
 export const LOG_SUDO_MISSING = `process is NOT running with sudo. A password from the user is required`;
 /** @internal */
 export const LOG_CREATE_NEW_CERT = ({
-  subjectName,
-  subjectAlternateNames
+  commonName,
+  subjectAltNames
 }: {
-  subjectName: string;
-  subjectAlternateNames: string[];
+  commonName: string;
+  subjectAltNames: string[];
 }): string =>
-  `creating a new x509 certificate for ${stringifySubjectNameAndAltNames(
-    subjectName,
-    subjectAlternateNames
+  `creating a new x509 certificate for ${stringifyCommonNameAndAltNames(
+    commonName,
+    subjectAltNames
   )}`;
 
 /** @internal */
@@ -79,19 +79,19 @@ export const SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS =
 
 /** @internal */
 export const LOG_CERT_WROTE_TO_LOCATION = ({
-  subjectName,
-  subjectAlternateNames,
+  commonName,
+  subjectAltNames,
   pemPath,
   certSize
 }: {
-  subjectName: string;
-  subjectAlternateNames: string[];
+  commonName: string;
+  subjectAltNames: string[];
   pemPath: string;
   certSize: number;
 }): string =>
-  `wrote x509 certificate for ${stringifySubjectNameAndAltNames(
-    subjectName,
-    subjectAlternateNames
+  `wrote x509 certificate for ${stringifyCommonNameAndAltNames(
+    commonName,
+    subjectAltNames
   )} to ${chalk.blueBright(resolve(pemPath))} ${chalk.magenta(
     `(${Math.round(certSize / 100) / 10} Kb)`
   )}`;

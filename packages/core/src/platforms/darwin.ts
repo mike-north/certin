@@ -7,8 +7,6 @@ import {
 } from "fs";
 import * as createDebug from "debug";
 import { sync as commandExists } from "command-exists";
-import { run } from "../utils";
-import { IOptions } from "../legacy";
 import {
   addCertificateToNSSCertDB,
   openCertificateInFirefox,
@@ -18,12 +16,14 @@ import {
 } from "./shared";
 import { IPlatform } from "../platforms";
 import Workspace from "../workspace";
+import { Options } from "@certin/options";
+import { run } from "@certin/utils";
 
 const debug = createDebug("certin:platforms:macos");
 
 const getCertUtilPath = (): string =>
   path.join(
-    run("brew --prefix nss")
+    run("brew", ["--prefix nss"])
       .toString()
       .trim(),
     "bin",
@@ -53,13 +53,23 @@ export default class MacOSPlatform implements IPlatform {
    */
   public async addToTrustStores(
     certificatePath: string,
-    options: IOptions = {}
+    options: Options
   ): Promise<void> {
     // Chrome, Safari, system utils
     debug("Adding root CA to macOS system keychain");
-    run(
-      `sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain -p ssl -p basic "${certificatePath}"`
-    );
+    this.workspace.sudo(`security`, [
+      `add-trusted-cert`,
+      `-d`,
+      `-r`,
+      `trustRoot`,
+      `-k`,
+      `/Library/Keychains/System.keychain`,
+      `-p`,
+      `ssl`,
+      `-p`,
+      `basic`,
+      `"${certificatePath}"`
+    ]);
 
     if (this.isFirefoxInstalled()) {
       // Try to use certutil to install the cert automatically
@@ -70,7 +80,7 @@ export default class MacOSPlatform implements IPlatform {
             debug(
               `certutil is not already installed, but Homebrew is detected. Trying to install certutil via Homebrew...`
             );
-            run("brew install nss");
+            run("brew", ["install", "nss"]);
           } else {
             debug(
               `Homebrew isn't installed, so we can't try to install certutil. Falling back to manual certificate install`
@@ -107,7 +117,11 @@ export default class MacOSPlatform implements IPlatform {
     debug("Removing root CA from macOS system keychain");
     try {
       if (existsSync(certificatePath)) {
-        run(`sudo security remove-trusted-cert -d "${certificatePath}"`);
+        this.workspace.sudo("security", [
+          `remove-trusted-cert`,
+          `-d`,
+          `"${certificatePath}"`
+        ]);
       }
     } catch (e) {
       debug(
@@ -129,20 +143,28 @@ export default class MacOSPlatform implements IPlatform {
   public addDomainToHostFileIfMissing(domain: string): void {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
-      run(
-        `echo '\n127.0.0.1 ${domain}' | sudo tee -a "${this.HOST_FILE_PATH}" > /dev/null`
-      );
+      // TODO, can we use sudo() for this?
+      run("echo", [
+        `'\n127.0.0.1`,
+        `${domain}'`,
+        `|`,
+        `sudo`,
+        `tee`,
+        `-a`,
+        `"${this.HOST_FILE_PATH}" > /dev/null`
+      ]);
     }
   }
 
   public deleteProtectedFiles(filepath: string): void {
     this.workspace.assertNotTouchingFiles(filepath, "delete");
-    run(`sudo rm -rf "${filepath}"`);
+    this.workspace.sudo("rm", [`-rf`, `"${filepath}"`]);
   }
 
   public readProtectedFile(filepath: string): string {
     this.workspace.assertNotTouchingFiles(filepath, "read");
-    return run(`sudo cat "${filepath}"`)
+    return this.workspace
+      .sudo("cat", [`"${filepath}"`])
       .toString()
       .trim();
   }
@@ -150,11 +172,11 @@ export default class MacOSPlatform implements IPlatform {
   public writeProtectedFile(filepath: string, contents: string): void {
     this.workspace.assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
-      run(`sudo rm "${filepath}"`);
+      this.workspace.sudo("rm", [`"${filepath}"`]);
     }
     writeFile(filepath, contents);
-    run(`sudo chown 0 "${filepath}"`);
-    run(`sudo chmod 600 "${filepath}"`);
+    this.workspace.sudo("chown", [`0`, `"${filepath}"`]);
+    this.workspace.sudo("chmod", [`600`, `"${filepath}"`]);
   }
 
   private isFirefoxInstalled(): boolean {
@@ -163,7 +185,7 @@ export default class MacOSPlatform implements IPlatform {
 
   private isNSSInstalled(): boolean {
     try {
-      return run("brew list -1")
+      return run("brew", ["list", "-1"])
         .toString()
         .includes("\nnss\n");
     } catch (e) {

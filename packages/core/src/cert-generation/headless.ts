@@ -4,10 +4,13 @@ import Workspace from "../workspace";
 
 export function ensureHeadlessCertExists(
   workspace: Workspace,
-  subjectName: string,
-  _ui: ICliUI
+  _ui: ICliUI,
+  {
+    commonName,
+    subjectAltNames = []
+  }: { commonName: string; subjectAltNames?: string[] }
 ): { key: string; cert: string } {
-  const attrs = [{ name: "commonName", value: subjectName }];
+  const attrs = [{ name: "commonName", value: commonName }];
   const pems = selfsigned.generate(attrs, {
     days: 2,
     algorithm: "sha256",
@@ -32,10 +35,7 @@ export function ensureHeadlessCertExists(
       },
       {
         name: "subjectAltName",
-        altNames: [
-          subjectName,
-          ...workspace.cfg.options.domainCert.subjectAltNames
-        ]
+        altNames: [commonName, ...subjectAltNames]
           .reduce((list, item) => {
             list.push(item, `*.${item}`);
             return list;

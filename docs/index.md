@@ -13,6 +13,7 @@
 |  [@certin/config](./config.md) |  |
 |  [@certin/core](./core.md) |  |
 |  [@certin/messages](./messages.md) |  |
+|  [@certin/options](./options.md) |  |
 |  [@certin/types](./types.md) |  |
 |  [@certin/utils](./utils.md) |  |
 |  [certin](./certin.md) |  |

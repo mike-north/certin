@@ -1,12 +1,12 @@
 import {
-  ICACertConfigOptions,
-  IDomainCertificateConfigOptions,
-  IDomainSigningRequestConfigOptions
+  ICACertConfig,
+  IDomainCertificateConfig,
+  IDomainSigningRequestConfig
 } from "./openssl-templates";
 /**
  * @internal
  */
-export interface ICertinConfigUxOptions {
+export interface ICertinUxConfig {
   appName: string;
   interactiveMode: boolean;
   forceMode: boolean;
@@ -16,65 +16,23 @@ export interface ICertinConfigUxOptions {
 /**
  * @internal
  */
-export interface ICertinConfigOptions {
-  ux: ICertinConfigUxOptions;
-  ca: ICACertConfigOptions;
-  domainCsr: IDomainSigningRequestConfigOptions;
-  domainCert: IDomainCertificateConfigOptions;
-}
-
-/**
- * @internal
- */
-export interface IPartialCertinConfigOptions {
-  ux?: Partial<ICertinConfigUxOptions>;
-  ca?: Partial<ICACertConfigOptions>;
-  domainCsr?: Partial<IDomainSigningRequestConfigOptions> & {
-    commonName: string;
-  };
-  domainCert?: Partial<IDomainCertificateConfigOptions> & {
-    commonName: string;
-  };
-}
-
-/**
- * @internal
- */
 export interface ICertinConfig {
-  configDir: string;
-  rootCADir: string;
-  rootCAKeyPath: string;
-  caSelfSignConfig: string;
-  rootCACertPath: string;
-  domainsDir: string;
-  caVersionFile: string;
-  opensslDatabaseFilePath: string;
-  opensslSerialFilePath: string;
-  getConfigPath(...pathSegments: string[]): string;
-  getPathForDomain(domain: string, ...pathSegments: string[]): string;
-  getConfigDir(): string;
-  ensureConfigDirs(): void;
+  ux: ICertinUxConfig;
+  ca: ICACertConfig;
+  domainCsr: IDomainSigningRequestConfig;
+  domainCert: IDomainCertificateConfig;
 }
 
 /**
- * @public
+ * @internal
  */
-export interface ICertinUserFacingOptions {
-  ux?: {
-    appName?: string;
-    interactiveMode?: boolean;
-    forceMode?: boolean;
-    silentMode?: boolean;
-  };
-  domainCert?: {
+export interface IPartialCertinConfig {
+  ux?: Partial<ICertinUxConfig>;
+  ca?: Partial<ICACertConfig>;
+  domainCsr?: Partial<IDomainSigningRequestConfig> & {
     commonName: string;
-    signWithDevCa?: boolean;
-    subjectAlternativeNames?: string[];
-    daysUntilExpire?: number;
   };
-  ca?: {
-    name?: string;
-    label?: string;
-    daysUntilExpire?: number;
+  domainCert?: Partial<IDomainCertificateConfig> & {
+    commonName: string;
   };
 }

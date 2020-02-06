@@ -44,9 +44,9 @@ export const LOG_CERT_GENERATION_COMPLETE: (subjectName: string) => string;
 // Warning: (ae-internal-missing-underscore) The name "LOG_CERT_WROTE_TO_LOCATION" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export const LOG_CERT_WROTE_TO_LOCATION: ({ subjectName, subjectAlternateNames, pemPath, certSize }: {
-    subjectName: string;
-    subjectAlternateNames: string[];
+export const LOG_CERT_WROTE_TO_LOCATION: ({ commonName, subjectAltNames, pemPath, certSize }: {
+    commonName: string;
+    subjectAltNames: string[];
     pemPath: string;
     certSize: number;
 }) => string;
@@ -59,9 +59,9 @@ export const LOG_CLEANING_UP_TRUST_STORE = "Cleaning up any relevant self-signed
 // Warning: (ae-internal-missing-underscore) The name "LOG_CREATE_NEW_CERT" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export const LOG_CREATE_NEW_CERT: ({ subjectName, subjectAlternateNames }: {
-    subjectName: string;
-    subjectAlternateNames: string[];
+export const LOG_CREATE_NEW_CERT: ({ commonName, subjectAltNames }: {
+    commonName: string;
+    subjectAltNames: string[];
 }) => string;
 
 // Warning: (ae-internal-missing-underscore) The name "LOG_EXISTING_CERT_USER_RESPONSE_REQUIRED" should be prefixed with an underscore because the declaration is marked as @internal

@@ -1,5 +1,5 @@
-import { IOptions } from "../legacy";
 import Workspace from "../workspace";
+import { Options } from "@certin/options";
 
 export interface IPlatformFactory {
   new (workspace: Workspace): IPlatform;
@@ -7,7 +7,7 @@ export interface IPlatformFactory {
 export interface IPlatform {
   addToTrustStores(
     certificatePath: string,
-    options?: IOptions
+    options?: Options
   ): void | Promise<void>;
   removeFromTrustStores(certificatePath: string): void;
   addDomainToHostFileIfMissing(domain: string): void | Promise<void>;

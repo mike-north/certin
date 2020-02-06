@@ -6,6 +6,13 @@
 
 import { ExtractArgs } from '@mike-north/types';
 
+// Warning: (ae-internal-missing-underscore) The name "DeepPartial" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export type DeepPartial<O> = O extends Primitive | Function ? O : {
+    [K in keyof O]?: O[K] extends undefined ? O[K] : DeepPartial<O[K]>;
+};
+
 export { ExtractArgs }
 
 // Warning: (ae-internal-missing-underscore) The name "IAlertContent" should be prefixed with an underscore because the declaration is marked as @internal
@@ -26,10 +33,10 @@ export interface ICaBuffer {
     ca: Buffer;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "ICACertConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "ICACertConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface ICACertConfigOptions {
+export interface ICACertConfig {
     // (undocumented)
     defaultDays: number;
     // (undocumented)
@@ -47,51 +54,19 @@ export interface ICaPath {
 // @internal (undocumented)
 export interface ICertinConfig {
     // (undocumented)
-    caSelfSignConfig: string;
+    ca: ICACertConfig;
     // (undocumented)
-    caVersionFile: string;
+    domainCert: IDomainCertificateConfig;
     // (undocumented)
-    configDir: string;
+    domainCsr: IDomainSigningRequestConfig;
     // (undocumented)
-    domainsDir: string;
-    // (undocumented)
-    ensureConfigDirs(): void;
-    // (undocumented)
-    getConfigDir(): string;
-    // (undocumented)
-    getConfigPath(...pathSegments: string[]): string;
-    // (undocumented)
-    getPathForDomain(domain: string, ...pathSegments: string[]): string;
-    // (undocumented)
-    opensslDatabaseFilePath: string;
-    // (undocumented)
-    opensslSerialFilePath: string;
-    // (undocumented)
-    rootCACertPath: string;
-    // (undocumented)
-    rootCADir: string;
-    // (undocumented)
-    rootCAKeyPath: string;
+    ux: ICertinUxConfig;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "ICertinConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "ICertinUxConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface ICertinConfigOptions {
-    // (undocumented)
-    ca: ICACertConfigOptions;
-    // (undocumented)
-    domainCert: IDomainCertificateConfigOptions;
-    // (undocumented)
-    domainCsr: IDomainSigningRequestConfigOptions;
-    // (undocumented)
-    ux: ICertinConfigUxOptions;
-}
-
-// Warning: (ae-internal-missing-underscore) The name "ICertinConfigUxOptions" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal (undocumented)
-export interface ICertinConfigUxOptions {
+export interface ICertinUxConfig {
     // (undocumented)
     appName: string;
     // (undocumented)
@@ -100,30 +75,6 @@ export interface ICertinConfigUxOptions {
     interactiveMode: boolean;
     // (undocumented)
     silentMode: boolean;
-}
-
-// @public (undocumented)
-export interface ICertinUserFacingOptions {
-    // (undocumented)
-    ca?: {
-        name?: string;
-        label?: string;
-        daysUntilExpire?: number;
-    };
-    // (undocumented)
-    domainCert?: {
-        commonName: string;
-        signWithDevCa?: boolean;
-        subjectAlternativeNames?: string[];
-        daysUntilExpire?: number;
-    };
-    // (undocumented)
-    ux?: {
-        appName?: string;
-        interactiveMode?: boolean;
-        forceMode?: boolean;
-        silentMode?: boolean;
-    };
 }
 
 // Warning: (ae-internal-missing-underscore) The name "ICliUI" should be prefixed with an underscore because the declaration is marked as @internal
@@ -136,10 +87,10 @@ export interface ICliUI {
     logPasswordRequestNotice(reason: string): void;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "IDomainCertificateConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "IDomainCertificateConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface IDomainCertificateConfigOptions {
+export interface IDomainCertificateConfig {
     // (undocumented)
     commonName: string;
     // (undocumented)
@@ -166,10 +117,10 @@ export interface IDomainData {
     key: Buffer;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "IDomainSigningRequestConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "IDomainSigningRequestConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface IDomainSigningRequestConfigOptions {
+export interface IDomainSigningRequestConfig {
     // (undocumented)
     commonName: string;
     // (undocumented)
@@ -194,23 +145,44 @@ export interface ILoggerFn {
     (...args: any[]): void;
 }
 
-// Warning: (ae-internal-missing-underscore) The name "IPartialCertinConfigOptions" should be prefixed with an underscore because the declaration is marked as @internal
+// Warning: (ae-internal-missing-underscore) The name "IPartialCertinConfig" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export interface IPartialCertinConfigOptions {
+export interface IPartialCertinConfig {
     // (undocumented)
-    ca?: Partial<ICACertConfigOptions>;
+    ca?: Partial<ICACertConfig>;
     // (undocumented)
-    domainCert?: Partial<IDomainCertificateConfigOptions> & {
+    domainCert?: Partial<IDomainCertificateConfig> & {
         commonName: string;
     };
     // (undocumented)
-    domainCsr?: Partial<IDomainSigningRequestConfigOptions> & {
+    domainCsr?: Partial<IDomainSigningRequestConfig> & {
         commonName: string;
     };
     // (undocumented)
-    ux?: Partial<ICertinConfigUxOptions>;
+    ux?: Partial<ICertinUxConfig>;
 }
+
+// @alpha (undocumented)
+export interface ISystemUserInterface {
+    // (undocumented)
+    closeFirefoxBeforeContinuing(): void | Promise<void>;
+    // (undocumented)
+    firefoxWizardPromptPage(certificateURL: string): string | Promise<string>;
+    // (undocumented)
+    getWindowsEncryptionPassword(): string | Promise<string>;
+    // (undocumented)
+    startFirefoxWizard(certificateHost: string): void | Promise<void>;
+    // (undocumented)
+    waitForFirefoxWizard(): void | Promise<void>;
+    // (undocumented)
+    warnChromeOnLinuxWithoutCertutil(): void | Promise<void>;
+}
+
+// Warning: (ae-internal-missing-underscore) The name "Primitive" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
+export type Primitive = string | number | boolean | null | undefined | symbol;
 
 
 // (No @packageDocumentation comment for this package)

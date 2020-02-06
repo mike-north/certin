@@ -4,6 +4,18 @@
 
 ## utils package
 
+## Functions
+
+|  Function | Description |
+|  --- | --- |
+|  [assertIsArray(arg)](./utils.assertisarray.md) | Test whether a value is an array, and throw an informative error if it's not |
+|  [assertIsBoolean(arg, label)](./utils.assertisboolean.md) | Test whether a value is a boolean, and throw an informative error if it's not |
+|  [assertIsFQDN(arg, label)](./utils.assertisfqdn.md) | Test whether a value is a FQDN, and throw an informative error if it's not |
+|  [assertIsInteger(arg, label)](./utils.assertisinteger.md) | Test whether a value is an integer, and throw an informative error if it's not |
+|  [assertIsNumber(arg, label)](./utils.assertisnumber.md) | Test whether a value is a number, and throw an informative error if it's not |
+|  [assertIsPositiveInteger(arg, label)](./utils.assertispositiveinteger.md) | Test whether a value is a positive integer, and throw an informative error if it's not |
+|  [assertIsString(arg, label)](./utils.assertisstring.md) | Test whether a value is a string, and throw an informative error if it's not |
+
 ## Variables
 
 |  Variable | Description |

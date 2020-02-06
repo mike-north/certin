@@ -1,21 +1,25 @@
-import { execSync, ExecSyncOptions } from "child_process";
-import * as tmp from "tmp";
+import { Config } from "@certin/config";
 import * as createDebug from "debug";
 import * as path from "path";
 import sudoPrompt from "sudo-prompt";
-import { ICertinConfig } from "@certin/types";
+import * as tmp from "tmp";
+import * as execa from "execa";
 
 // import { configPath } from "./constants";
 
 const debug = createDebug("certin:util");
 
-export function run(cmd: string, options: ExecSyncOptions = {}): string {
+function run(
+  cmd: string,
+  args: string[],
+  options: execa.SyncOptions = {}
+): execa.ExecaReturns {
   debug(`exec: \`${cmd}\``);
-  return execSync(cmd, options).toString();
+  return execa.sync(cmd, args, options);
 }
 
-export function openssl(config: ICertinConfig, cmd: string): string {
-  return run(`openssl ${cmd}`, {
+function openssl(config: Config, args: string[]): string {
+  return run("openssl", args, {
     stdio: "pipe",
     env: Object.assign(
       {
@@ -26,38 +30,21 @@ export function openssl(config: ICertinConfig, cmd: string): string {
   }).toString();
 }
 
-export function waitForUser(): Promise<void> {
+function waitForUser(): Promise<void> {
   return new Promise(resolve => {
     process.stdin.resume();
     process.stdin.on("data", resolve);
   });
 }
 
-export function reportableError(message: string): Error {
+function reportableError(message: string): Error {
   return new Error(
     `${message} | This is a bug in certin, please report the issue at https://github.com/mike-north/certin/issues`
   );
 }
 
-export function mktmp(): string {
+function mktmp(): string {
   // discardDescriptor because windows complains the file is in use if we create a tmp file
   // and then shell out to a process that tries to use it
   return tmp.fileSync({ discardDescriptor: true }).name;
-}
-
-export function sudo(cmd: string): Promise<string | null> {
-  return new Promise((resolve, reject) => {
-    sudoPrompt.exec(
-      cmd,
-      { name: "certin" },
-      (err: Error | null, stdout: string | null, stderr: string | null) => {
-        const error =
-          err ||
-          (typeof stderr === "string" &&
-            stderr.trim().length > 0 &&
-            new Error(stderr));
-        error ? reject(error) : resolve(stdout);
-      }
-    );
-  });
 }

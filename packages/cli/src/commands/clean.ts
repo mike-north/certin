@@ -1,9 +1,10 @@
 import * as yargs from "yargs";
 import * as _createDebug from "debug";
-import { assertIsBoolean } from "../validation";
+import { assertIsBoolean, assertIsString } from "@certin/utils";
 import { cleanupTrustStore, Workspace } from "@certin/core";
 import { UI, IUIOptions } from "@certin/cliux";
-
+import { camelCase } from "camel-case";
+import { titleCase } from "title-case";
 const debug = _createDebug("certin:cli:cert");
 
 function addCleanCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
@@ -13,21 +14,38 @@ function addCleanCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
     {},
     argv => {
       debug("[clean] running command", argv);
-      const { nonInteractive, force, silent } = argv as any;
+      const {
+        nonInteractive,
+        force,
+        silent,
+        appName,
+        certutilInstall,
+        updateHostsFile
+      } = argv as any;
       assertIsBoolean(silent, "silent");
       const opts: Partial<IUIOptions> = { silent };
-      if (process.env["CERTIN_APP_NAME"]) {
-        opts.appName = process.env["CERTIN_APP_NAME"];
-      }
-      assertIsBoolean(force, "force");
+
+      assertIsString(appName, "appName");
       assertIsBoolean(silent, "silent");
       assertIsBoolean(nonInteractive, "non-interactive");
+      assertIsBoolean(certutilInstall, "certutil-install");
+      assertIsBoolean(updateHostsFile, "update-hosts-file");
       const ui = new UI(opts);
       const workspace = new Workspace({
-        ux: {
-          forceMode: force,
-          silentMode: silent,
-          interactiveMode: !nonInteractive
+        force: force,
+        silent: silent,
+        interactive: !nonInteractive,
+        appName,
+        skipCertutilInstall: !certutilInstall,
+        skipHostsFile: !updateHostsFile,
+        defaultCa: {
+          label: camelCase(appName),
+          name: titleCase(appName),
+          daysUntilExpire: 180
+        },
+        defaultDomainCert: {
+          daysUntilExpire: 30,
+          signWithDevCa: true
         }
       });
       cleanupTrustStore(ui, workspace);
