@@ -48,10 +48,11 @@ class Workspace {
       platformName
     )).default as IPlatformFactory;
     assert(PlatformClass, "platform class is missing");
-    debug(`found platform class ${PlatformClass}`);
+    debug(`found platform class ${PlatformClass.name}`);
     this.platform = new PlatformClass(this);
     assert(this.platform, "platform instance could not be created");
-    debug(`instantiated platform helper ${this.platform}`);
+    debug(`instantiated platform helper`);
+    this.ensureReady();
   }
 
   public async ensureReady(): Promise<void> {
@@ -63,8 +64,8 @@ class Workspace {
     return this.opts.shouldUseHeadlessMode;
   }
 
-  public openssl(args: string[]): void {
-    openssl(this.cfg.getConfigDir(), args);
+  public async openssl(args: string[]): Promise<void> {
+    await openssl(this.cfg.getConfigDir(), args);
   }
 
   public sudo(cmd: string, args: string[] = []): Promise<string | null> {
@@ -86,9 +87,9 @@ class Workspace {
       `${this.opts.ca.defaultDays}`
     ];
   }
-  public getOpenSSLCaErrors(): string {
+  public async getOpenSSLCaErrors(): Promise<string> {
     try {
-      this.openssl([
+      await this.openssl([
         `x509`,
         `-in`,
         `"${this.cfg.getRootCACertPath()}"`,
@@ -112,7 +113,7 @@ class Workspace {
    * @internal
    */
   public async ensureCACertReadable(workspace: Workspace): Promise<void> {
-    if (!this.getOpenSSLCaErrors()) {
+    if (!(await this.getOpenSSLCaErrors())) {
       return;
     }
     /**
@@ -131,7 +132,7 @@ class Workspace {
     }
 
     // double check that we have a live one
-    const remainingErrors = this.getOpenSSLCaErrors();
+    const remainingErrors = await this.getOpenSSLCaErrors();
     if (remainingErrors) {
       return this.installCertificateAuthority();
     }
@@ -162,13 +163,17 @@ class Workspace {
     generateKey(this, this.cfg.getRootCAKeyPath());
 
     debug(`Generating a CA certificate`);
-    this.openssl(this.getOpenSSLCaGenerationCommand());
+    await this.openssl(this.getOpenSSLCaGenerationCommand());
 
     debug("Saving certificate authority credentials");
     await this.saveCertificateAuthorityCredentials();
 
     debug(`Adding the root certificate authority to trust stores`);
-    await this.platform.addToTrustStores(this.cfg.getRootCACertPath());
+    await this.platform.addToTrustStores({
+      appName: this.opts.appName,
+      skipCertutilInstall: this.shouldSkipCertutilInstall,
+      certificatePath: this.cfg.getRootCACertPath()
+    });
   }
 
   /**
@@ -238,11 +243,15 @@ class Workspace {
    *
    * @alpha
    */
-  public uninstallCA(): void {
-    this.platform.removeFromTrustStores(this.cfg.getRootCACertPath());
-    this.platform.deleteProtectedFiles(this.cfg.getDomainsDir());
-    this.platform.deleteProtectedFiles(this.cfg.getRootCADir());
-    this.platform.deleteProtectedFiles(this.cfg.getConfigDir());
+  public async uninstallCA(): Promise<void> {
+    // todo: maybe this can be done in parallel
+    await this.platform.removeFromTrustStores({
+      certificatePath: this.cfg.getRootCACertPath(),
+      appName: this.opts.appName
+    });
+    await this.platform.deleteProtectedFiles(this.cfg.getDomainsDir());
+    await this.platform.deleteProtectedFiles(this.cfg.getRootCADir());
+    await this.platform.deleteProtectedFiles(this.cfg.getConfigDir());
   }
 
   public withCertAuthorityConfig(cb: (filepath: string) => void): void {
@@ -257,7 +266,9 @@ class Workspace {
     return this.cfg.getPathForDomain(commonName, `private-key.key`);
   }
   public ensureDomainPathExists(commonName: string): void {
-    mkdirp(this.cfg.getPathForDomain(commonName));
+    const dir = this.cfg.getPathForDomain(commonName);
+    debug(`ensuring path exists: ${dir}`);
+    mkdirp(dir);
   }
   public getCertPathForDomain(commonName: string): string {
     return this.cfg.getPathForDomain(commonName, `certificate.crt`);
@@ -290,35 +301,43 @@ class Workspace {
   public get shouldSkipHostsFile(): boolean {
     return this.opts.skipHostsFile;
   }
-  public get ui(): ISystemUserInterface {
-    return this.ui;
+  public get ui(): ISystemUserInterface | undefined {
+    return this.opts.ui;
   }
 
-  public withDomainSigningRequestConfig(
+  public async withDomainSigningRequestConfig(
     opts: Partial<IDomainSigningRequestConfig>,
-    cb: (filepath: string) => void
-  ): void {
+    cb: (filepath: string) => void | Promise<void>
+  ): Promise<void> {
     const { name: tmpFile } = mkTmpFile();
     const result = createPopulatedDomainSigningRequestConfig({
       ...this.cfg.getDomainCSRParams(),
       ...opts
     });
+    debug("populated CSR\n", result);
     writeFile(tmpFile, eol.auto(result));
-    cb(tmpFile);
+    debug("validated presence of temp file", readFile(tmpFile).toString());
+    const cbResult = cb(tmpFile);
+    if (cbResult instanceof Promise) {
+      await cbResult;
+    }
     rm(tmpFile);
   }
 
-  public withDomainCertificateConfig(
+  public async withDomainCertificateConfig(
     opts: Partial<IDomainSigningRequestConfig>,
-    cb: (filepath: string) => void
-  ): void {
+    cb: (filepath: string) => Promise<void>
+  ): Promise<void> {
     const { name: tmpFile } = mkTmpFile();
     const result = createPopulatedDomainCertificateConfig({
       ...this.cfg.getDomainCertParams(),
       ...opts
     });
     writeFile(tmpFile, eol.auto(result));
-    cb(tmpFile);
+    const cbResult = cb(tmpFile);
+    if (cbResult instanceof Promise) {
+      await cbResult;
+    }
     rm(tmpFile);
   }
 

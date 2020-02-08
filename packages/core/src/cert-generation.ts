@@ -104,12 +104,15 @@ export async function ensureCertExists(
  *
  * @beta
  */
-export function cleanupTrustStore(ui: ICliUI, workspace: Workspace): void {
+export async function cleanupTrustStore(
+  ui: ICliUI,
+  workspace: Workspace
+): Promise<void> {
   const { log } = ui.logger();
   log(LOG_CLEANING_UP_TRUST_STORE);
   if (!hasSudo()) {
     ui.logPasswordRequestNotice(SUDO_REASON_CLEAN_TRUST_STORE_PERMISSIONS);
   }
-  workspace.uninstallCA();
+  await workspace.uninstallCA();
   log(`Trust store cleanup: ${chalk.green.bold("complete")}`);
 }

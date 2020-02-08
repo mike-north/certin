@@ -2,6 +2,8 @@ import applicationConfigPath = require("application-config-path");
 import { isLinux, isWindows } from "@certin/utils";
 import { sync as mkdirp } from "mkdirp";
 import * as path from "path";
+import { paramCase } from "change-case";
+
 import {
   ICACertConfig,
   IDomainCertificateConfig,
@@ -21,12 +23,15 @@ export interface IConfigArg {
 class CertinConfig {
   private configDir: string;
   private appName: string;
+  private camelizedAppName: string;
   public constructor(arg: IConfigArg) {
     this.appName = arg.appName;
-    this.configDir = applicationConfigPath(this.appName);
+    this.camelizedAppName = paramCase(arg.appName);
+    this.configDir = applicationConfigPath(this.camelizedAppName);
   }
+
   public getCaVersionFile(): string {
-    return this.getConfigPath(this.appName + "-ca-version");
+    return this.getConfigPath(this.camelizedAppName + "-ca-version");
   }
   public getOpensslSerialFilePath(): string {
     return this.getConfigPath("certificate-authority", "serial");
@@ -66,7 +71,7 @@ class CertinConfig {
     return this.getConfigPath("domains");
   }
   public getPathForDomain(domain: string, ...pathSegments: string[]): string {
-    return this.getPathForDomain(domain, ...pathSegments);
+    return path.join(this.getDomainsDir(), domain, ...pathSegments);
   }
   public getPathForOpenSSLConfig(...pathSegments: string[]): string {
     return path.join(this.getOpenSSLConfigPath(), ...pathSegments);
@@ -89,14 +94,18 @@ class CertinConfig {
   }
   public getConfigDir(): string {
     if (isWindows && process.env.LOCALAPPDATA) {
-      return path.join(process.env.LOCALAPPDATA, this.appName, "config");
+      return path.join(
+        process.env.LOCALAPPDATA,
+        this.camelizedAppName,
+        "config"
+      );
     } else {
       const uid = process.getuid && process.getuid();
       const userHome =
         isLinux && uid === 0
           ? path.resolve("/usr/local/share")
           : require("os").homedir();
-      return path.join(userHome, ".config", this.appName);
+      return path.join(userHome, ".config", this.camelizedAppName);
     }
   }
 }

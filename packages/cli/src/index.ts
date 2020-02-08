@@ -35,7 +35,7 @@ export function main(_args: string[]): void {
     })
     .option("appName", {
       type: "string",
-      default: false,
+      default: "cert-in",
       hidden: true,
       description: "application name in logging output"
     })

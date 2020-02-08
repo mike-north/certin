@@ -75,70 +75,66 @@ function addCertCommand(y: yargs.Argv<{}>): yargs.Argv<{}> {
         certutilInstall,
         updateHostsFile
       } = argv as any;
-      debug("[generate-cert] running command", argv);
-      assertIsFQDN(name, "subject name");
-      assertIsArray(san);
-      const filteredSan: string[] = [];
-      for (let i = 0; i < san.length; i++) {
-        const an = san[i];
-        assertIsFQDN(an, `alt name [${i}]`);
-        filteredSan.push(an);
-      }
-      assertIsPositiveInteger(certDays, "certDays");
-      assertIsPositiveInteger(caDays, "caDays");
-      assertIsBoolean(force, "force");
-      assertIsBoolean(silent, "silent");
-      assertIsBoolean(signWithDevCa, "signWithDevCa");
-      assertIsBoolean(nonInteractive, "non-interactive");
-      assertIsString(out, "out");
-      const certParentFolderPath = join(out, "..");
-      const opts: Partial<IUIOptions> = { silent };
-      if (process.env["CERTIN_APP_NAME"]) {
-        opts.appName = process.env["CERTIN_APP_NAME"];
-      }
-      const ui = new UI(opts);
 
-      if (!existsSync(certParentFolderPath)) {
-        ui.logger().warn(
-          `folder in which cert will be placed (${chalk.bold(
-            certParentFolderPath
-          )}) does not yet exist`
-        );
-      }
-      debug(
-        "[generate-cert] validated all arguments for command. proceeding with execution"
-      );
-
-      const workspace = new Workspace({
-        force: force,
-        silent: silent,
-        interactive: !nonInteractive,
-        appName,
-        skipCertutilInstall: !certutilInstall,
-        skipHostsFile: !updateHostsFile,
-        defaultCa: {
-          label: camelCase(appName),
-          name: titleCase(appName),
-          daysUntilExpire: caDays
-        },
-        defaultDomainCert: {
-          daysUntilExpire: certDays,
-          signWithDevCa
+      (async function asyncFn(): Promise<void> {
+        debug("[generate-cert] running command", argv);
+        assertIsFQDN(name, "subject name");
+        assertIsArray(san);
+        const filteredSan: string[] = [];
+        for (let i = 0; i < san.length; i++) {
+          const an = san[i];
+          assertIsFQDN(an, `alt name [${i}]`);
+          filteredSan.push(an);
         }
-      });
-      ensureCertExists(
-        workspace,
-        { pemPath: out, cli: ui },
-        { commonName: name, subjectAltNames: san }
-      )
-        .then(() => {
-          return debug("[generate-cert] completed execution");
-        })
-        .catch((e: any) => {
-          throw new Error(
-            "Error encountered while trying to get or create cert\n" + e
+        assertIsPositiveInteger(certDays, "certDays");
+        assertIsPositiveInteger(caDays, "caDays");
+        assertIsBoolean(force, "force");
+        assertIsBoolean(silent, "silent");
+        assertIsBoolean(signWithDevCa, "signWithDevCa");
+        assertIsBoolean(nonInteractive, "non-interactive");
+        assertIsString(out, "out");
+        const certParentFolderPath = join(out, "..");
+        const opts: Partial<IUIOptions> = { silent, appName };
+
+        const ui = new UI(opts);
+
+        if (!existsSync(certParentFolderPath)) {
+          ui.logger().warn(
+            `folder in which cert will be placed (${chalk.bold(
+              certParentFolderPath
+            )}) does not yet exist`
           );
+        }
+        debug(
+          "[generate-cert] validated all arguments for command. proceeding with execution"
+        );
+
+        const workspace = new Workspace({
+          force: force,
+          silent: silent,
+          interactive: !nonInteractive,
+          appName,
+          skipCertutilInstall: !certutilInstall,
+          skipHostsFile: !updateHostsFile,
+          defaultCa: {
+            label: camelCase(appName),
+            name: titleCase(appName),
+            daysUntilExpire: caDays
+          },
+          defaultDomainCert: {
+            daysUntilExpire: certDays,
+            signWithDevCa
+          }
         });
+        await ensureCertExists(
+          workspace,
+          { pemPath: out, cli: ui },
+          { commonName: name, subjectAltNames: san }
+        );
+        debug("[generate-cert] completed execution");
+      })().catch(err => {
+        console.error(`Encountered problem in async command execution\n${err}`);
+      });
     }
   );
 }

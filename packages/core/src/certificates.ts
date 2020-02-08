@@ -1,7 +1,7 @@
 // import path from 'path';
 import * as createDebug from "debug";
 import { sync as mkdirp } from "mkdirp";
-import { chmodSync as chmod } from "fs";
+import { chmodSync as chmod, readFileSync } from "fs";
 
 import Workspace from "./workspace";
 import {
@@ -12,10 +12,15 @@ import {
 const debug = createDebug("certin:certificates");
 
 // Generate a cryptographic key, used to sign certificates or certificate signing requests.
-export function generateKey(workspace: Workspace, filename: string): void {
-  debug(`generateKey: ${filename}`);
-  workspace.openssl([`genrsa`, `-out`, `"${filename}"`, `2048`]);
+export async function generateKey(
+  workspace: Workspace,
+  filename: string
+): Promise<void> {
+  debug(`generating ssl key at: ${filename}`);
+  await workspace.openssl([`genrsa`, `-out`, `"${filename}"`, `2048`]);
+  debug(`key generation complete: ${filename}`);
   chmod(filename, 400);
+  debug(`file permissions set to 400 : ${filename}`);
 }
 
 export interface IGenerateDomainCertOptions {
@@ -40,14 +45,15 @@ export default async function generateDomainCertificate(
 
   debug(`Generating private key for ${commonName}`);
   const domainKeyPath = workspace.getKeyPathForDomain(commonName);
+  debug(`key location: ${domainKeyPath}`);
   generateKey(workspace, domainKeyPath);
 
   debug(`Generating certificate signing request for ${commonName}`);
   const csrFile = workspace.getCsrPathForDomain(commonName);
   workspace.withDomainSigningRequestConfig(
     { commonName, subjectAltNames },
-    configpath => {
-      workspace.openssl([
+    async configpath => {
+      await workspace.openssl([
         `req`,
         `-new`,
         `-config`,
@@ -70,8 +76,8 @@ export default async function generateDomainCertificate(
     ({ caKeyPath, caCertPath }) => {
       workspace.withDomainCertificateConfig(
         { commonName, subjectAltNames },
-        domainCertConfigPath => {
-          workspace.openssl([
+        async domainCertConfigPath => {
+          await workspace.openssl([
             `ca`,
             `-config`,
             `"${domainCertConfigPath}"`,

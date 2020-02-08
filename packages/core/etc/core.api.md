@@ -8,12 +8,11 @@ import { ICertinOptionsArg } from '@certin/options';
 import { ICliUI } from '@certin/types';
 import { IDomainSigningRequestConfig } from '@certin/types';
 import { ISystemUserInterface } from '@certin/types';
-import { Options } from '@certin/options';
 
 // Warning: (ae-incompatible-release-tags) The symbol "cleanupTrustStore" is marked as @beta, but its signature references "Workspace" which is marked as @internal
 //
 // @beta
-export function cleanupTrustStore(ui: ICliUI, workspace: Workspace): void;
+export function cleanupTrustStore(ui: ICliUI, workspace: Workspace): Promise<void>;
 
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
@@ -53,7 +52,7 @@ export class Workspace {
     // (undocumented)
     getKeyPathForDomain(commonName: string): string;
     // (undocumented)
-    getOpenSSLCaErrors(): string;
+    getOpenSSLCaErrors(): Promise<string>;
     // (undocumented)
     getOpenSSLCaGenerationCommand(): string[];
     // (undocumented)
@@ -68,7 +67,7 @@ export class Workspace {
     // (undocumented)
     get isSilentModeEnabled(): boolean;
     // (undocumented)
-    openssl(args: string[]): void;
+    openssl(args: string[]): Promise<void>;
     // Warning: (ae-forgotten-export) The symbol "IPlatform" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -87,9 +86,9 @@ export class Workspace {
     // (undocumented)
     sudo(cmd: string, args?: string[]): Promise<string | null>;
     // (undocumented)
-    get ui(): ISystemUserInterface;
+    get ui(): ISystemUserInterface | undefined;
     // @alpha
-    uninstallCA(): void;
+    uninstallCA(): Promise<void>;
     // (undocumented)
     withCertAuthorityConfig(cb: (filepath: string) => void): void;
     // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
@@ -100,9 +99,9 @@ export class Workspace {
         caCertPath: string;
     }) => Promise<void> | void): Promise<void>;
     // (undocumented)
-    withDomainCertificateConfig(opts: Partial<IDomainSigningRequestConfig>, cb: (filepath: string) => void): void;
+    withDomainCertificateConfig(opts: Partial<IDomainSigningRequestConfig>, cb: (filepath: string) => Promise<void>): Promise<void>;
     // (undocumented)
-    withDomainSigningRequestConfig(opts: Partial<IDomainSigningRequestConfig>, cb: (filepath: string) => void): void;
+    withDomainSigningRequestConfig(opts: Partial<IDomainSigningRequestConfig>, cb: (filepath: string) => void | Promise<void>): Promise<void>;
 }
 
 

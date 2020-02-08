@@ -5,15 +5,19 @@ export interface IPlatformFactory {
   new (workspace: Workspace): IPlatform;
 }
 export interface IPlatform {
-  addToTrustStores(
-    certificatePath: string,
-    options?: Options
-  ): void | Promise<void>;
-  removeFromTrustStores(certificatePath: string): void;
-  addDomainToHostFileIfMissing(domain: string): void | Promise<void>;
-  deleteProtectedFiles(filepath: string): void;
-  readProtectedFile(filepath: string): string | Promise<string>;
-  writeProtectedFile(filepath: string, contents: string): void | Promise<void>;
+  addToTrustStores(arg: {
+    appName: string;
+    skipCertutilInstall: boolean;
+    certificatePath: string;
+  }): void | Promise<void>;
+  removeFromTrustStores(arg: {
+    appName: string;
+    certificatePath: string;
+  }): Promise<void>;
+  addDomainToHostFileIfMissing(domain: string): Promise<void>;
+  deleteProtectedFiles(filepath: string): Promise<void>;
+  readProtectedFile(filepath: string): string | Promise<string | null>;
+  writeProtectedFile(filepath: string, contents: string): Promise<void>;
 }
 
 const PlatformClass = require(`./${process.platform}`).default;

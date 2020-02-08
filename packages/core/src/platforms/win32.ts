@@ -26,10 +26,15 @@ export default class WindowsPlatform implements IPlatform {
    * machine to try updating the Firefox store is basically a nightmare, so we
    * don't even try it - we just bail out to the GUI.
    */
-  public async addToTrustStores(
-    certificatePath: string,
-    options: Options
-  ): Promise<void> {
+  public async addToTrustStores({
+    appName,
+    skipCertutilInstall,
+    certificatePath
+  }: {
+    appName: string;
+    skipCertutilInstall: boolean;
+    certificatePath: string;
+  }): Promise<void> {
     // IE, Chrome, system utils
     debug("adding root to Windows OS trust store");
     try {
@@ -50,7 +55,14 @@ export default class WindowsPlatform implements IPlatform {
     }
   }
 
-  public removeFromTrustStores(certificatePath: string): void {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async removeFromTrustStores({
+    appName,
+    certificatePath
+  }: {
+    appName: string;
+    certificatePath: string;
+  }): Promise<void> {
     debug("removing root from Windows OS trust store");
     try {
       console.warn(
@@ -77,7 +89,8 @@ export default class WindowsPlatform implements IPlatform {
     }
   }
 
-  public deleteProtectedFiles(filepath: string): void {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async deleteProtectedFiles(filepath: string): Promise<void> {
     this.workspace.assertNotTouchingFiles(filepath, "delete");
     rimraf(filepath);
   }

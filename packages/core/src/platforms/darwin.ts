@@ -21,11 +21,9 @@ import { run } from "@certin/utils";
 
 const debug = createDebug("certin:platforms:macos");
 
-const getCertUtilPath = (): string =>
+const getCertUtilPath = async (): Promise<string> =>
   path.join(
-    run("brew", ["--prefix nss"])
-      .toString()
-      .trim(),
+    (await run("brew", ["--prefix nss"])).toString().trim(),
     "bin",
     "certutil"
   );
@@ -51,13 +49,18 @@ export default class MacOSPlatform implements IPlatform {
    * automatically install the cert with Firefox if we can use certutil via the
    * `nss` Homebrew package, otherwise we go manual with user-facing prompts.
    */
-  public async addToTrustStores(
-    certificatePath: string,
-    options: Options
-  ): Promise<void> {
+  public async addToTrustStores({
+    appName,
+    skipCertutilInstall,
+    certificatePath
+  }: {
+    appName: string;
+    skipCertutilInstall: boolean;
+    certificatePath: string;
+  }): Promise<void> {
     // Chrome, Safari, system utils
     debug("Adding root CA to macOS system keychain");
-    this.workspace.sudo(`security`, [
+    await this.workspace.sudo(`security`, [
       `add-trusted-cert`,
       `-d`,
       `-r`,
@@ -74,13 +77,13 @@ export default class MacOSPlatform implements IPlatform {
     if (this.isFirefoxInstalled()) {
       // Try to use certutil to install the cert automatically
       debug("Firefox install detected. Adding root CA to Firefox trust store");
-      if (!this.isNSSInstalled()) {
-        if (!options.skipCertutilInstall) {
+      if (!(await this.isNSSInstalled())) {
+        if (!skipCertutilInstall) {
           if (commandExists("brew")) {
             debug(
               `certutil is not already installed, but Homebrew is detected. Trying to install certutil via Homebrew...`
             );
-            run("brew", ["install", "nss"]);
+            await run("brew", ["install", "nss"]);
           } else {
             debug(
               `Homebrew isn't installed, so we can't try to install certutil. Falling back to manual certificate install`
@@ -101,10 +104,10 @@ export default class MacOSPlatform implements IPlatform {
         }
       }
       await closeFirefox();
-      addCertificateToNSSCertDB(
+      await addCertificateToNSSCertDB(
         this.FIREFOX_NSS_DIR,
         certificatePath,
-        getCertUtilPath()
+        await getCertUtilPath()
       );
     } else {
       debug(
@@ -113,11 +116,16 @@ export default class MacOSPlatform implements IPlatform {
     }
   }
 
-  public removeFromTrustStores(certificatePath: string): void {
+  public async removeFromTrustStores({
+    certificatePath
+  }: {
+    appName: string;
+    certificatePath: string;
+  }): Promise<void> {
     debug("Removing root CA from macOS system keychain");
     try {
       if (existsSync(certificatePath)) {
-        this.workspace.sudo("security", [
+        await this.workspace.sudo("security", [
           `remove-trusted-cert`,
           `-d`,
           `"${certificatePath}"`
@@ -128,23 +136,23 @@ export default class MacOSPlatform implements IPlatform {
         `failed to remove ${certificatePath} from macOS cert store, continuing. ${e.toString()}`
       );
     }
-    if (this.isFirefoxInstalled() && this.isNSSInstalled()) {
+    if (this.isFirefoxInstalled() && (await this.isNSSInstalled())) {
       debug(
         "Firefox install and certutil install detected. Trying to remove root CA from Firefox NSS databases"
       );
-      removeCertificateFromNSSCertDB(
+      await removeCertificateFromNSSCertDB(
         this.FIREFOX_NSS_DIR,
         certificatePath,
-        getCertUtilPath()
+        await getCertUtilPath()
       );
     }
   }
 
-  public addDomainToHostFileIfMissing(domain: string): void {
+  public async addDomainToHostFileIfMissing(domain: string): Promise<void> {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
       // TODO, can we use sudo() for this?
-      run("echo", [
+      await run("echo", [
         `'\n127.0.0.1`,
         `${domain}'`,
         `|`,
@@ -156,38 +164,39 @@ export default class MacOSPlatform implements IPlatform {
     }
   }
 
-  public deleteProtectedFiles(filepath: string): void {
+  public async deleteProtectedFiles(filepath: string): Promise<void> {
     this.workspace.assertNotTouchingFiles(filepath, "delete");
-    this.workspace.sudo("rm", [`-rf`, `"${filepath}"`]);
+    await this.workspace.sudo("rm", [`-rf`, `"${filepath}"`]);
   }
 
-  public readProtectedFile(filepath: string): string {
+  public async readProtectedFile(filepath: string): Promise<string | null> {
     this.workspace.assertNotTouchingFiles(filepath, "read");
-    return this.workspace
-      .sudo("cat", [`"${filepath}"`])
-      .toString()
-      .trim();
+    const result = await this.workspace.sudo("cat", [`"${filepath}"`]);
+    if (!result) return result;
+    return result.toString().trim();
   }
 
-  public writeProtectedFile(filepath: string, contents: string): void {
+  public async writeProtectedFile(
+    filepath: string,
+    contents: string
+  ): Promise<void> {
     this.workspace.assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
-      this.workspace.sudo("rm", [`"${filepath}"`]);
+      await this.workspace.sudo("rm", [`"${filepath}"`]);
     }
     writeFile(filepath, contents);
-    this.workspace.sudo("chown", [`0`, `"${filepath}"`]);
-    this.workspace.sudo("chmod", [`600`, `"${filepath}"`]);
+    await this.workspace.sudo("chown", [`0`, `"${filepath}"`]);
+    await this.workspace.sudo("chmod", [`600`, `"${filepath}"`]);
   }
 
   private isFirefoxInstalled(): boolean {
     return exists(this.FIREFOX_BUNDLE_PATH);
   }
 
-  private isNSSInstalled(): boolean {
+  private async isNSSInstalled(): Promise<boolean> {
     try {
-      return run("brew", ["list", "-1"])
-        .toString()
-        .includes("\nnss\n");
+      const result = await run("brew", ["list", "-1"]);
+      return result.toString().includes("\nnss\n");
     } catch (e) {
       return false;
     }
