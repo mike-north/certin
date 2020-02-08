@@ -95,7 +95,7 @@ export function mkTmpFile(): tmp.SynchrounousResult;
 // Warning: (ae-internal-missing-underscore) The name "openssl" should be prefixed with an underscore because the declaration is marked as @internal
 //
 // @internal (undocumented)
-export function openssl(configPath: string, args: string[]): string;
+export function openssl(configPath: string, args: string[]): Promise<string>;
 
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen
 // Warning: (tsdoc-param-tag-missing-hyphen) The @param block should be followed by a parameter name and then a hyphen

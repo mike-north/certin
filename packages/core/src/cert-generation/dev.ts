@@ -42,11 +42,13 @@ export async function ensureDevCertExists(
       ui.logPasswordRequestNotice(SUDO_REASON_NEW_CERT_PERMISSIONS);
     }
   }
+  debug("beginning cert creation process");
   const returnVal = await core.certificateFor(workspace, {
     commonName,
     subjectAltNames,
     defaultDays: days
   });
+  debug("cert creation process complete");
   const { key: keyBuffer, cert: certBuffer } = returnVal;
   debug(LOG_CERT_GENERATION_COMPLETE(commonName));
 

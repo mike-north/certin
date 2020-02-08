@@ -4,14 +4,13 @@ import * as createDebug from "debug";
 import * as assert from "assert";
 import * as getPort from "get-port";
 import * as http from "http";
+import * as execa from "execa";
 import { existsSync } from "fs";
 import { sync as glob } from "glob";
 import { readFileSync as readFile, existsSync as exists } from "fs";
 // import { configDir, getLegacyConfigDir } from "../constants";
 import UI from "../user-interface";
-import { execSync as exec } from "child_process";
 import { isMac, isLinux, run } from "@certin/utils";
-import { ICertinConfig } from "@certin/types";
 
 const debug = createDebug("certin:platforms:shared");
 
@@ -27,42 +26,44 @@ export const HOME = process.env.HOME
  *  Given a directory or glob pattern of directories, run a callback for each db
  *  directory, with a version argument.
  */
-function doForNSSCertDB(
+async function doForNSSCertDB(
   nssDirGlob: string,
-  callback: (dir: string, version: "legacy" | "modern") => void
-): void {
-  glob(nssDirGlob).forEach(potentialNSSDBDir => {
-    debug(
-      `checking to see if ${potentialNSSDBDir} is a valid NSS database directory`
-    );
-    if (exists(path.join(potentialNSSDBDir, "cert8.db"))) {
+  callback: (dir: string, version: "legacy" | "modern") => Promise<void>
+): Promise<void> {
+  await Promise.all(
+    glob(nssDirGlob).map(async potentialNSSDBDir => {
       debug(
-        `Found legacy NSS database in ${potentialNSSDBDir}, running callback...`
+        `checking to see if ${potentialNSSDBDir} is a valid NSS database directory`
       );
-      callback(potentialNSSDBDir, "legacy");
-    }
-    if (exists(path.join(potentialNSSDBDir, "cert9.db"))) {
-      debug(
-        `Found modern NSS database in ${potentialNSSDBDir}, running callback...`
-      );
-      callback(potentialNSSDBDir, "modern");
-    }
-  });
+      if (exists(path.join(potentialNSSDBDir, "cert8.db"))) {
+        debug(
+          `Found legacy NSS database in ${potentialNSSDBDir}, running callback...`
+        );
+        await callback(potentialNSSDBDir, "legacy");
+      }
+      if (exists(path.join(potentialNSSDBDir, "cert9.db"))) {
+        debug(
+          `Found modern NSS database in ${potentialNSSDBDir}, running callback...`
+        );
+        await callback(potentialNSSDBDir, "modern");
+      }
+    })
+  );
 }
 
 /**
  *  Given a directory or glob pattern of directories, attempt to install the
  *  CA certificate to each directory containing an NSS database.
  */
-export function addCertificateToNSSCertDB(
+export async function addCertificateToNSSCertDB(
   nssDirGlob: string,
   certPath: string,
   certutilPath: string
-): void {
+): Promise<void> {
   debug(`trying to install certificate into NSS databases in ${nssDirGlob}`);
-  doForNSSCertDB(nssDirGlob, (dir, version) => {
+  await doForNSSCertDB(nssDirGlob, async (dir, version) => {
     const dirArg = version === "modern" ? `sql:${dir}` : dir;
-    run(certutilPath, [
+    await run(certutilPath, [
       `-A`,
       `-d`,
       `"${dirArg}"`,
@@ -79,17 +80,17 @@ export function addCertificateToNSSCertDB(
   );
 }
 
-export function removeCertificateFromNSSCertDB(
+export async function removeCertificateFromNSSCertDB(
   nssDirGlob: string,
   certPath: string,
   certutilPath: string
-): void {
+): Promise<void> {
   debug(`trying to remove certificates from NSS databases in ${nssDirGlob}`);
-  doForNSSCertDB(nssDirGlob, (dir, version) => {
+  await doForNSSCertDB(nssDirGlob, async (dir, version) => {
     const dirArg = version === "modern" ? `sql:${dir}` : dir;
     try {
       if (existsSync(certPath)) {
-        run(certutilPath, [
+        await run(certutilPath, [
           `-A`,
           `-d`,
           `"${dirArg}"`,
@@ -123,7 +124,7 @@ function isFirefoxOpen(): boolean {
     isMac || isLinux,
     "checkForOpenFirefox was invoked on a platform other than Mac or Linux"
   );
-  return exec("ps aux").includes("firefox");
+  return execa.sync("ps aux").stdout.includes("firefox");
 }
 
 async function sleep(ms: number): Promise<void> {

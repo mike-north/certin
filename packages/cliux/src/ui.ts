@@ -32,6 +32,10 @@ class UI implements ICliUI {
     this._logger = makeLogger(this, this.options.silent);
   }
 
+  public get appName(): string {
+    return this.options.appName;
+  }
+
   public logger(): ILogger {
     return this._logger;
   }

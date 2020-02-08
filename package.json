@@ -49,7 +49,10 @@
     "lint": "yarn lint:sh && yarn lint:js",
     "lint:sh": "shellcheck scripts/**/*.sh",
     "lint:js": "lerna exec 'yarn lint'",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "cleanvalidate": "yarn cleanbuild && yarn lint && yarn test",
+    "cleanbuild": "yarn clean && yarn build",
+    "cleanwatch": "yarn cleanbuild && yarn watch"
   },
   "workspaces": [
     "packages/*"

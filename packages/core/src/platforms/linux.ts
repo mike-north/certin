@@ -18,6 +18,7 @@ import UI from "../user-interface";
 import { IPlatform } from "../platforms";
 import Workspace from "../workspace";
 import { Options } from "@certin/options";
+import { paramCase } from "change-case";
 
 const debug = createDebug("certin:platforms:linux");
 
@@ -40,18 +41,23 @@ export default class LinuxPlatform implements IPlatform {
    * flow when opening certs, if we can't use certutil to install our certificate
    * into the user's NSS database, we're out of luck.
    */
-  public async addToTrustStores(
-    certificatePath: string,
-    options: Options
-  ): Promise<void> {
+  public async addToTrustStores({
+    certificatePath,
+    appName,
+    skipCertutilInstall
+  }: {
+    appName: string;
+    skipCertutilInstall: boolean;
+    certificatePath: string;
+  }): Promise<void> {
     debug("Adding root CA to Linux system-wide trust stores");
     // run(`sudo cp ${ certificatePath } /etc/ssl/certs/certin.crt`);
-    this.workspace.sudo("cp", [
+    await this.workspace.sudo("cp", [
       `"${certificatePath}"`,
-      `/usr/local/share/ca-certificates/certin.crt`
+      `/usr/local/share/ca-certificates/${paramCase(appName)}.crt`
     ]);
     // run(`sudo bash -c "cat ${ certificatePath } >> /etc/ssl/certs/ca-certificates.crt"`);
-    this.workspace.sudo(`update-ca-certificates`);
+    await this.workspace.sudo(`update-ca-certificates`);
 
     if (this.isFirefoxInstalled()) {
       // Firefox
@@ -59,21 +65,24 @@ export default class LinuxPlatform implements IPlatform {
         "Firefox install detected: adding local root CA to Firefox-specific trust stores ..."
       );
       if (!commandExists("certutil")) {
-        if (options.skipCertutilInstall) {
+        if (skipCertutilInstall) {
           debug(
             "NSS tooling is not already installed, and `skipCertutil` is true, so falling back to manual certificate install for Firefox"
           );
-          openCertificateInFirefox(this.FIREFOX_BIN_PATH, certificatePath);
+          await openCertificateInFirefox(
+            this.FIREFOX_BIN_PATH,
+            certificatePath
+          );
         } else {
           debug(
             "NSS tooling is not already installed. Trying to install NSS tooling now with `apt install`"
           );
-          this.workspace.sudo("apt", ["install", "libnss3-tools"]);
+          await this.workspace.sudo("apt", ["install", "libnss3-tools"]);
           debug(
             "Installing certificate into Firefox trust stores using NSS tooling"
           );
           await closeFirefox();
-          addCertificateToNSSCertDB(
+          await addCertificateToNSSCertDB(
             this.FIREFOX_NSS_DIR,
             certificatePath,
             "certutil"
@@ -94,7 +103,7 @@ export default class LinuxPlatform implements IPlatform {
         UI.warnChromeOnLinuxWithoutCertutil();
       } else {
         await closeFirefox();
-        addCertificateToNSSCertDB(
+        await addCertificateToNSSCertDB(
           this.CHROME_NSS_DIR,
           certificatePath,
           "certutil"
@@ -107,13 +116,19 @@ export default class LinuxPlatform implements IPlatform {
     }
   }
 
-  public removeFromTrustStores(certificatePath: string): void {
+  public async removeFromTrustStores({
+    certificatePath,
+    appName
+  }: {
+    appName: string;
+    certificatePath: string;
+  }): Promise<void> {
     try {
       // TODO remove hardcoded path to ca cert
-      this.workspace.sudo("rm", [
-        "/usr/local/share/ca-certificates/certin.crt"
+      await this.workspace.sudo("rm", [
+        `/usr/local/share/ca-certificates/${paramCase(appName)}.crt`
       ]);
-      this.workspace.sudo(`update-ca-certificates`);
+      await this.workspace.sudo(`update-ca-certificates`);
     } catch (e) {
       debug(
         // TODO remove hardcoded path to ca cert
@@ -122,14 +137,14 @@ export default class LinuxPlatform implements IPlatform {
     }
     if (commandExists("certutil")) {
       if (this.isFirefoxInstalled()) {
-        removeCertificateFromNSSCertDB(
+        await removeCertificateFromNSSCertDB(
           this.FIREFOX_NSS_DIR,
           certificatePath,
           "certutil"
         );
       }
       if (this.isChromeInstalled()) {
-        removeCertificateFromNSSCertDB(
+        await removeCertificateFromNSSCertDB(
           this.CHROME_NSS_DIR,
           certificatePath,
           "certutil"
@@ -138,11 +153,11 @@ export default class LinuxPlatform implements IPlatform {
     }
   }
 
-  public addDomainToHostFileIfMissing(domain: string): void {
+  public async addDomainToHostFileIfMissing(domain: string): Promise<void> {
     const hostsFileContents = read(this.HOST_FILE_PATH, "utf8");
     if (!hostsFileContents.includes(domain)) {
       // TODO: can we use sudo() here?
-      run(`echo`, [
+      await run(`echo`, [
         `'127.0.0.1`,
         `${domain}'`,
         `|`,
@@ -156,27 +171,39 @@ export default class LinuxPlatform implements IPlatform {
     }
   }
 
-  public deleteProtectedFiles(filepath: string): void {
+  public async deleteProtectedFiles(filepath: string): Promise<void> {
     this.workspace.assertNotTouchingFiles(filepath, "delete");
-    this.workspace.sudo("rm", [`-rf "${filepath}"`]);
+    try {
+      await this.workspace.sudo("rm", [`-rf`, `"${filepath}"`]);
+    } catch (e) {
+      debug(
+        "error while attempting to remove protected file " + filepath + "\n" + e
+      );
+    }
   }
 
-  public readProtectedFile(filepath: string): string {
+  public async readProtectedFile(filepath: string): Promise<string | null> {
     this.workspace.assertNotTouchingFiles(filepath, "read");
-    return this.workspace
-      .sudo("cat", [`"${filepath}"]`])
-      .toString()
-      .trim();
+    const result = await this.workspace.sudo("cat", [`"${filepath}"]`]);
+    if (!result) return result;
+    return result.toString().trim();
   }
 
-  public writeProtectedFile(filepath: string, contents: string): void {
+  public async writeProtectedFile(
+    filepath: string,
+    contents: string
+  ): Promise<void> {
     this.workspace.assertNotTouchingFiles(filepath, "write");
     if (exists(filepath)) {
-      this.workspace.sudo("rm", [`"${filepath}"`]);
+      try {
+        await this.workspace.sudo("rm", [`"${filepath}"`]);
+      } catch (e) {
+        throw new Error(`Problem deleting exisitng file: ${filepath}`);
+      }
     }
     writeFile(filepath, contents);
-    this.workspace.sudo("chown", [`0`, `"${filepath}"`]);
-    this.workspace.sudo("chmod", [`600`, `"${filepath}"`]);
+    await this.workspace.sudo("chown", [`0`, `"${filepath}"`]);
+    await this.workspace.sudo("chmod", [`600`, `"${filepath}"`]);
   }
 
   private isFirefoxInstalled(): boolean {

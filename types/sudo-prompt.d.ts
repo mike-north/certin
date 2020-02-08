@@ -1,10 +1,10 @@
 declare namespace sudoPrompt {
-  interface Options {
+  interface IOptions {
     name: string;
   }
   export function exec(
     cmd: string,
-    opts: Options,
+    opts: IOptions,
     cb: (
       err: Error | null,
       stdout: string | null,
@@ -13,4 +13,4 @@ declare namespace sudoPrompt {
   ): void;
 }
 
-export default sudoPrompt;
+export = sudoPrompt;

@@ -39,13 +39,10 @@ export async function certificateFor(
   workspace: Workspace,
   arg: IGenerateDomainCertOptions
 ): Promise<{ key: Buffer; cert: Buffer }> {
+  debug("foo");
   const { shouldSkipCertutilInstall, shouldSkipHostsFile, ui } = workspace;
   debug(
-    `Certificate requested for ${
-      arg.commonName
-    }. Skipping certutil install: ${Boolean(
-      shouldSkipCertutilInstall
-    )}. Skipping hosts file: ${Boolean(shouldSkipHostsFile)}`
+    `Certificate requested for ${arg.commonName}. Skipping certutil install: ${shouldSkipCertutilInstall}. Skipping hosts file: ${shouldSkipHostsFile}`
   );
   if (ui) {
     Object.assign(UI, ui);

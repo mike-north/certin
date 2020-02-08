@@ -23,6 +23,8 @@ export interface IUIOptions {
 export class UI implements ICliUI {
     constructor(opts: Partial<IUIOptions>);
     // (undocumented)
+    get appName(): string;
+    // (undocumented)
     readonly LOG_PREFIX: string;
     // (undocumented)
     readonly LOG_PREFIX_TXT: string;
