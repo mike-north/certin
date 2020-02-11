@@ -57,7 +57,7 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "prettier": "^1.19.1",
-    "typescript": "3.8.1-rc"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "@certin/config": "^0.0.2-dev.4",
