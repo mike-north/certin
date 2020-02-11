@@ -3,16 +3,14 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "../tests_js",
-    "rootDir": ".",
+    "rootDir": "..",
     "types": ["qunit"],
     "baseUrl": ".",
     "paths": {
-      "@certin/types": [
-        "../../../node_modules/@certin/types/dist/types-private.d.ts"
-      ],
-      "@certin/messages": ["../dist/messages-private.d.ts"]
+      "@certin/types": ["../../types/dist/types-private.d.ts"],
+      "@certin/messages": ["../dist/messages-private.d.ts"],
+      "*": ["../../../types/*"]
     }
   },
-  "references": [{ "path": ".." }],
-  "include": ["."]
+  "include": [".", "../src"]
 }

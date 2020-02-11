@@ -60,9 +60,9 @@ export function assertIsPositiveInteger(
   label: string
 ): asserts arg is number {
   assertIsInteger(arg, label);
-  if (arg <= 0)
+  if (arg < 0)
     throw new Error(
-      `expected ${label} to be > 0. Found: ${JSON.stringify(arg)}`
+      `expected ${label} to be >= 0. Found: ${JSON.stringify(arg)}`
     );
 }
 
@@ -89,7 +89,8 @@ export function assertIsBoolean(
  * @public
  */
 export function assertIsArray(arg: unknown): asserts arg is any[] {
-  if (!Array.isArray(arg)) throw new Error(`expected ${arg} to be an array`);
+  if (Array.isArray(arg)) return;
+  throw new Error(`expected ${JSON.stringify(arg)} to be an array`);
 }
 
 /**

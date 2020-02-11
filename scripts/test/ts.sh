@@ -1,2 +1,2 @@
 #!/bin/bash
-yarn qunit 'tests_js/**/*.test.js'
+yarn qunit 'tests_js/tests/**/*.test.js'

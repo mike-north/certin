@@ -1,12 +1,21 @@
 import * as execa from "execa";
 import { ERROR_WHILE_SUDOING } from "@certin/messages";
 
+const DEFAULT_SUDO_TEST_FN = (): void => {
+  execa.sync("sudo", ["-n", "true"]);
+};
 /**
  * @internal
  */
-export function hasSudo(): boolean {
+export function hasSudo(fn: () => void): boolean;
+
+/**
+ * @alpha
+ */
+export function hasSudo(): boolean;
+export function hasSudo(fn = DEFAULT_SUDO_TEST_FN): boolean {
   try {
-    execa.sync("sudo", ["-n", "true"]);
+    fn();
     return true;
   } catch (e) {
     if (
